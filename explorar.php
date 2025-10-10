@@ -29,10 +29,10 @@
                         <input type="email" placeholder="Digite seu e-mail" class="input-estilizado">
                         <input type="password" placeholder="Digite sua senha" class="input-estilizado">
                     </div>
-                    <a href="">Não tem uma conta? <strong>Cadastre-se clicando aqui</strong></a>
+                    <a class="conta" href="">Não tem uma conta? <strong>Cadastre-se clicando aqui</strong></a>
                 </div>
 
-                <button type="submit">Entrar</button>
+                <button class="botao-entrar" type="submit">Entrar</button>
             </form>
         </div>
     </div>

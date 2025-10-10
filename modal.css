@@ -62,9 +62,25 @@
 }
 
 .label-estilizado {
-    display: flex;
-    flex-direction: column; /* Empilha os inputs verticalmente */
-    align-items: center;     /* Centraliza os inputs na horizontal */
-    gap: 10px;               /* Espaço entre os inputs (opcional) */
+  display: flex;
+  flex-direction: column; /* Empilha os inputs verticalmente */
+  align-items: center; /* Centraliza os inputs na horizontal */
+  gap: 10px; /* Espaço entre os inputs (opcional) */
 }
 
+.conta {
+  margin-left: 3rem;
+}
+
+.botao-entrar {
+  border-radius: 40px;
+  background: #6a53b8;
+  padding: 1rem;
+  border: none;
+  display: block; /* Para permitir centralização com margin */
+  margin: 0 auto; /* Centraliza horizontalmente */
+  color: #fff; /* Texto branco */
+  font-size: 1rem; /* Opcional, para deixar o texto legível */
+  cursor: pointer; /* Dá o cursor de "mãozinha" ao passar o mouse */
+  width: 25vh;
+}
