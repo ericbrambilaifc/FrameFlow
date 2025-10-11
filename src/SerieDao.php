@@ -1,67 +1,80 @@
 <?php
 require_once "ConexaoBD.php";
-require_once "src/Util.php";
 
-class SerieDAO
+class SerieDao
 {
+    // Cadastrar nova série (apenas titulo e imagem_url)
     public static function inserir($dados)
     {
         $conexao = ConexaoBD::conectar();
 
-        $sql = "INSERT INTO serie (titulo, diretor, elenco, ano, temporadas, episodios, imagem, idcategoria, idclassificacao, detalhes)
-                VALUES (:titulo, :diretor, :elenco, :ano, :temporadas, :episodios, :imagem, :idcategoria, :idclassificacao, :detalhes)";
-
+        $sql = "INSERT INTO series (titulo, imagem_url) VALUES (:titulo, :imagem_url)";
         $stmt = $conexao->prepare($sql);
-        $stmt->execute([
-            ':titulo' => $dados['titulo'],
-            ':diretor' => $dados['diretor'] ?? null,
-            ':elenco' => $dados['elenco'] ?? null,
-            ':ano' => $dados['ano'] ?? null,
-            ':temporadas' => $dados['temporadas'] ?? null,
-            ':episodios' => $dados['episodios'] ?? null,
-            ':imagem' => Util::salvarArquivo(),
-            ':idcategoria' => $dados['idcategoria'] ?? null,
-            ':idclassificacao' => $dados['idclassificacao'] ?? null,
-            ':detalhes' => $dados['detalhes'] ?? null,
-        ]);
+        $stmt->bindParam(':titulo', $dados['titulo']);
+        $stmt->bindParam(':imagem_url', $dados['imagem_url']);
+
+        return $stmt->execute();
     }
 
+    // Listar todas as séries
     public static function listar()
     {
         $conexao = ConexaoBD::conectar();
-        $sql = "SELECT serie.*, categoria.nomecategoria, classificacao.nomeclassificacao
-                FROM serie
-                JOIN categoria ON serie.idcategoria = categoria.idcategoria
-                JOIN classificacao ON serie.idclassificacao = classificacao.idclassificacao";
-                
-        return $conexao->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    }
 
-    public static function listarPorClassificacao($idClassificacao)
-    {
-        $conexao = ConexaoBD::conectar();
-        $sql = "SELECT serie.*, categoria.nomecategoria, classificacao.nomeclassificacao
-                FROM serie
-                JOIN categoria ON serie.idcategoria = categoria.idcategoria
-                JOIN classificacao ON serie.idclassificacao = classificacao.idclassificacao
-                WHERE serie.idclassificacao = ?";
-                
+        $sql = "SELECT s.id, s.titulo, s.imagem_url,
+                COUNT(a.id) as total_avaliacoes,
+                COALESCE(AVG(a.nota), 0) as media_nota
+                FROM series s
+                LEFT JOIN avaliacoes a ON s.id = a.serie_id
+                GROUP BY s.id, s.titulo, s.imagem_url
+                ORDER BY s.titulo";
+
         $stmt = $conexao->prepare($sql);
-        $stmt->execute([$idClassificacao]);
+        $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function listarPorCategoria($idCategoria)
+    // Buscar série por ID
+    public static function buscarPorId($id)
     {
         $conexao = ConexaoBD::conectar();
-        $sql = "SELECT serie.*, categoria.nomecategoria, classificacao.nomeclassificacao
-                FROM serie
-                JOIN categoria ON serie.idcategoria = categoria.idcategoria
-                JOIN classificacao ON serie.idclassificacao = classificacao.idclassificacao
-                WHERE serie.idcategoria = ?";
-                
+
+        $sql = "SELECT s.id, s.titulo, s.imagem_url,
+                COUNT(a.id) as total_avaliacoes,
+                COALESCE(AVG(a.nota), 0) as media_nota
+                FROM series s
+                LEFT JOIN avaliacoes a ON s.id = a.serie_id
+                WHERE s.id = :id
+                GROUP BY s.id, s.titulo, s.imagem_url";
+
         $stmt = $conexao->prepare($sql);
-        $stmt->execute([$idCategoria]);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar séries por título
+    public static function buscar($termo)
+    {
+        $conexao = ConexaoBD::conectar();
+
+        $termo = "%{$termo}%";
+        $sql = "SELECT s.id, s.titulo, s.imagem_url,
+                COUNT(a.id) as total_avaliacoes,
+                COALESCE(AVG(a.nota), 0) as media_nota
+                FROM series s
+                LEFT JOIN avaliacoes a ON s.id = a.serie_id
+                WHERE s.titulo LIKE :termo
+                GROUP BY s.id, s.titulo, s.imagem_url
+                ORDER BY s.titulo
+                LIMIT 20";
+
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':termo', $termo);
+        $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
