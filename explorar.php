@@ -28,7 +28,7 @@
 
     </header>
 
-    <!-- Modal -->
+    <!-- modal fazer login -->
     <div id="modal" class="modal">
         <div class="modal-login ">
             <button class="close">
@@ -46,7 +46,7 @@
                         <input type="email" placeholder="Digite seu e-mail" class="input-estilizado">
                         <input type="password" placeholder="Digite sua senha" class="input-estilizado">
                     </div>
-                    <a href="">Não tem uma conta? <strong>Cadastre-se clicando aqui</strong></a>
+                    <a href="#" id="abrirCriarConta">Não tem uma conta? <strong>Cadastre-se clicando aqui</strong></a>
                 </div>
 
                 <button class="botao-entrar" type="submit">Entrar</button>
@@ -54,25 +54,78 @@
         </div>
     </div>
 
+    <!-- modal criar conta -->
+    <div id="modalCriarConta" class="modal">
+        <div class="modal-login">
+            <button class="close" id="closeCriar">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <h2 class="titulo">Criar Conta</h2>
+            <form action="cadastro.php" method="post">
+                <div class="form-grupo">
+                    <div class="label-estilizado">
+                        <input type="email" placeholder="Digite seu e-mail" class="input-estilizado" required>
+                        <p class="texto-ajuda">*Após criar sua conta, não será possível alterar o endereço de e-mail</p>
+
+                        <input type="text" placeholder="Crie seu nome de usuário" class="input-estilizado" required>
+
+                        <input type="password" placeholder="Crie sua senha" class="input-estilizado" required>
+
+                        <input type="password" placeholder="Repita sua senha" class="input-estilizado" required>
+                    </div>
+                </div>
+
+                <button class="botao-entrar" type="submit">Criar conta</button>
+            </form>
+        </div>
+    </div>
+
 
 
     <script>
-        // Abrir o modal
+        // Abrir o modal de LOGIN
         document.getElementById('openModal').addEventListener('click', function(event) {
-            event.preventDefault(); // Impede o link de recarregar a página
+            event.preventDefault();
             document.getElementById('modal').style.display = 'block';
         });
 
-        // Fechar o modalFD
+        // Abrir o modal de CRIAR CONTA
+        document.getElementById('abrirCriarConta').addEventListener('click', function(event) {
+            event.preventDefault();
+            // Fecha o modal de login
+            document.getElementById('modal').style.display = 'none';
+            // Abre o modal de criar conta
+            document.getElementById('modalCriarConta').style.display = 'block';
+        });
+
+        // Fechar o modal de LOGIN
         document.querySelector('.close').addEventListener('click', function() {
             document.getElementById('modal').style.display = 'none';
         });
 
-        // Fechar o modal clicando fora
+        // Fechar o modal de CRIAR CONTA
+        document.getElementById('closeCriar').addEventListener('click', function() {
+            document.getElementById('modalCriarConta').style.display = 'none';
+        });
+
+        // Fechar o modal de LOGIN clicando fora
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('modal');
             if (event.target === modal) {
                 modal.style.display = 'none';
+            }
+        });
+
+        // Fechar o modal de CRIAR CONTA clicando fora
+        window.addEventListener('click', function(event) {
+            const modalCriarConta = document.getElementById('modalCriarConta');
+            if (event.target === modalCriarConta) {
+                modalCriarConta.style.display = 'none';
             }
         });
     </script>
