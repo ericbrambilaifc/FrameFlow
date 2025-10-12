@@ -3,15 +3,25 @@ session_start();
 require_once('src/SerieDAO.php');
 require_once('src/ClassificacaoDAO.php');
 require_once('src/GeneroDAO.php');
-// Buscar séries para exibir
-$series = SerieDao::listar();
+
 $classificacoes = ClassificacaoDAO::listar();
 $generos = GeneroDAO::listar();
 
-// Busca de séries
-$resultadoBusca = [];
-if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
-    $resultadoBusca = SerieDao::buscar($_GET['buscar']);
+// Capturar filtros
+$buscar = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
+$genero_id = isset($_GET['genero']) && $_GET['genero'] !== '' ? $_GET['genero'] : null;
+$classificacao_id = isset($_GET['classificacao']) && $_GET['classificacao'] !== '' ? $_GET['classificacao'] : null;
+
+// Verificar se há algum filtro ativo
+$temFiltro = !empty($buscar) || $genero_id !== null || $classificacao_id !== null;
+
+// Buscar séries com ou sem filtros
+if ($temFiltro) {
+    // Se tiver filtros, usa o método buscar
+    $series = SerieDao::buscar($buscar, $genero_id, $classificacao_id);
+} else {
+    // Se não tiver filtros, lista todas
+    $series = SerieDao::listar();
 }
 ?>
 <!DOCTYPE html>
@@ -110,42 +120,32 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
 
 
         <!-- Resultados da busca -->
-        <?php if (isset($_GET['buscar'])): ?>
-            <h2 style="color: #6A53B8; margin-bottom: 20px;">
-                Resultados para: "<?php echo htmlspecialchars($_GET['buscar']); ?>"
-            </h2>
-            <?php if (count($resultadoBusca) > 0): ?>
-                <div class="grid-series">
-                    <?php foreach ($resultadoBusca as $serie): ?>
-                        <div class="card-serie">
-                            <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
-                            <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
-                            <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
-                            <p>Nota média: <?php echo number_format($serie['media_nota'], 1); ?>/10</p>
-                            <a href="serie.php?id=<?php echo $serie['id']; ?>" class="botao-entrar">Ver detalhes</a>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+        <!-- Resultados da busca -->
+        <h2 style="color: #6A53B8; margin-bottom: 20px;">
+            <?php if ($temFiltro): ?>
+                Resultados da busca
+                <?php if (!empty($buscar)): ?>
+                    para: "<?php echo htmlspecialchars($buscar); ?>"
+                <?php endif; ?>
             <?php else: ?>
-                <p style="text-align: center; color: #666;">Nenhuma série encontrada.</p>
+                Todas as Séries
             <?php endif; ?>
+        </h2>
+
+        <?php if (count($series) > 0): ?>
+            <div class="grid-series">
+                <?php foreach ($series as $serie): ?>
+                    <div class="card-serie">
+                        <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
+                        <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
+                        <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
+                        <p>Nota média: <?php echo number_format($serie['media_nota'], 1); ?>/10</p>
+                        <a href="serie.php?id=<?php echo $serie['id']; ?>" class="botao-entrar">Ver detalhes</a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         <?php else: ?>
-            <!-- Exibir todas as séries -->
-            <h2 style="color: #6A53B8; margin-bottom: 20px;">Todas as Séries</h2>
-            <?php if (count($series) > 0): ?>
-                <div class="grid-series">
-                    <?php foreach ($series as $serie): ?>
-                        <div class="card-serie">
-                            <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
-                            <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
-                            <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
-                            <p>Nota média: <?php echo number_format($serie['media_nota'], 1); ?>/10</p>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <p style="text-align: center; color: #666;">Nenhuma série cadastrada ainda.</p>
-            <?php endif; ?>
+            <p style="text-align: center; color: #666;">Nenhuma série encontrada com os filtros selecionados.</p>
         <?php endif; ?>
     </section>
 
