@@ -68,6 +68,7 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
                     <p class="perfil-email"><?php echo htmlspecialchars($usuario['email']); ?></p>
                     <div class="perfil-stats">
                         <span><strong><?php echo $usuario['total_avaliacoes']; ?></strong> avaliações</span>
+                        <span><strong><?php echo $usuario['total_seguidores']; ?></strong> seguidores</span>
                     </div>
                 </div>
             </div>
