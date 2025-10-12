@@ -43,28 +43,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
 </head>
 
 <body>
-    <header>
-        <ul>
-            <li><a href="explorar.php">Explorar</a></li>
-            <li><a href="comunidade.php">Comunidade</a></li>
-        </ul>
-        <div>
-            <?php if (isset($_SESSION['usuario_id'])): ?>
-                <a href="perfil.php?id=<?php echo $_SESSION['usuario_id']; ?>">
-                    <i>
-                        <svg width="30" height="30" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M137.799 271C211.529 271 271.299 211.23 271.299 137.5C271.299 63.77 211.529 4 137.799 4C64.0686 4 4.29858 63.77 4.29858 137.5C4.29858 211.23 64.0686 271 137.799 271Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </i>
-                    <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>
-                </a>
-            <?php else: ?>
-                <a href="explorar.php" style="color: #6A53B8;">Fazer Login</a>
-            <?php endif; ?>
-        </div>
-    </header>
 
     <div class="container-perfil">
         <!-- Botão Voltar -->
