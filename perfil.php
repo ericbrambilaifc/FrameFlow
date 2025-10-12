@@ -27,6 +27,9 @@ $avaliacoes = AvaliacaoDAO::listarPorUsuario($usuario_id);
 
 // Verifica se é o próprio perfil
 $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] == $usuario_id;
+
+// Verifica se o usuário logado é admin
+$eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -58,64 +61,94 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             <div class="perfil-info">
                 <div class="avatar">
                     <svg width="80" height="80" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="138" cy="137.5" r="137.5" fill="#6A53B8" />
+                        <circle cx="138" cy="137.5" r="137.5" fill="<?php echo $eh_admin ? '#FFD700' : '#6A53B8'; ?>" />
                         <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <div>
-                    <h1 class="perfil-nome"><?php echo htmlspecialchars($usuario['nome_completo']); ?></h1>
+                    <h1 class="perfil-nome">
+                        <?php echo htmlspecialchars($usuario['nome_completo']); ?>
+                        <?php if ($eh_admin): ?>
+                            <span style="background: #FFD700; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 14px; margin-left: 10px;">⭐ ADMIN</span>
+                        <?php endif; ?>
+                    </h1>
                     <p class="perfil-email"><?php echo htmlspecialchars($usuario['email']); ?></p>
-                    <div class="perfil-stats">
-                        <span><strong><?php echo $usuario['total_avaliacoes']; ?></strong> avaliações</span>
-                        <span><strong><?php echo $usuario['total_seguidores']; ?></strong> seguidores</span>
-                    </div>
+
+                    <?php if (!$eh_admin): ?>
+                        <div class="perfil-stats">
+                            <span><strong><?php echo $usuario['total_avaliacoes']; ?></strong> avaliações</span>
+                            <span><strong><?php echo $usuario['total_seguidores']; ?></strong> seguidores</span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <?php if ($eh_proprio_perfil): ?>
                 <div class="perfil-acoes">
-                    <button class="btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
+                    <?php if ($eh_admin): ?>
+                        <a href="cadastrar_serie.php" class="btn-admin-serie">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
+                                <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                            Adicionar Série
+                        </a>
+                    <?php else: ?>
+                        <button class="btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
+                    <?php endif; ?>
                     <button class="btn-editar" onclick="abrirModalSenha()">Editar senha</button>
                     <a href="logout.php" class="btn-sair">Sair</a>
-
                 </div>
             <?php endif; ?>
         </div>
 
-        <!-- Avaliações -->
-        <div class="avaliacoes-secao">
-            <h2>Suas últimas avaliações</h2>
+        <!-- Avaliações (apenas para não-admin) -->
+        <?php if (!$eh_admin): ?>
+            <div class="avaliacoes-secao">
+                <h2>Suas últimas avaliações</h2>
 
-            <?php if (count($avaliacoes) > 0): ?>
-                <div class="avaliacoes-lista">
-                    <?php foreach ($avaliacoes as $avaliacao): ?>
-                        <div class="avaliacao-card">
-                            <div class="avaliacao-header">
-                                <h3 class="serie-titulo"><?php echo htmlspecialchars($avaliacao['titulo']); ?></h3>
-                                <div class="estrelas">
-                                    <?php
-                                    for ($i = 1; $i <= 5; $i++):
-                                        $preenchida = $i <= $avaliacao['nota'];
-                                    ?>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="<?php echo $preenchida ? '#FFD700' : 'none'; ?>" stroke="#FFD700" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                        </svg>
-                                    <?php endfor; ?>
+                <?php if (count($avaliacoes) > 0): ?>
+                    <div class="avaliacoes-lista">
+                        <?php foreach ($avaliacoes as $avaliacao): ?>
+                            <div class="avaliacao-card">
+                                <div class="avaliacao-header">
+                                    <h3 class="serie-titulo"><?php echo htmlspecialchars($avaliacao['titulo']); ?></h3>
+                                    <div class="estrelas">
+                                        <?php
+                                        for ($i = 1; $i <= 5; $i++):
+                                            $preenchida = $i <= $avaliacao['nota'];
+                                        ?>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="<?php echo $preenchida ? '#FFD700' : 'none'; ?>" stroke="#FFD700" stroke-width="2">
+                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                            </svg>
+                                        <?php endfor; ?>
+                                    </div>
                                 </div>
+                                <p class="avaliacao-comentario"><?php echo nl2br(htmlspecialchars($avaliacao['comentario'])); ?></p>
                             </div>
-                            <p class="avaliacao-comentario"><?php echo nl2br(htmlspecialchars($avaliacao['comentario'])); ?></p>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <p class="sem-avaliacoes">Nenhuma avaliação realizada ainda.</p>
-            <?php endif; ?>
-        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p class="sem-avaliacoes">Nenhuma avaliação realizada ainda.</p>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <!-- Mensagem para Admin -->
+            <div class="admin-info" style="text-align: center; padding: 40px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border-radius: 15px; margin-top: 30px;">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="margin-bottom: 15px;">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                </svg>
+                <h2 style="color: #fff; margin: 15px 0;">Painel do Administrador</h2>
+                <p style="color: #fff; font-size: 16px; margin-bottom: 20px;">Você tem acesso total para gerenciar as séries da plataforma</p>
+                <a href="cadastrar_serie.php" style="display: inline-block; background: #fff; color: #FFA500; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
+                    ➕ Cadastrar Nova Série
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- Modal Editar Usuário -->
-    <?php if ($eh_proprio_perfil): ?>
+    <?php if ($eh_proprio_perfil && !$eh_admin): ?>
         <div id="modalEditarUsuario" class="modal">
             <div class="modal-login">
                 <button class="close" onclick="fecharModal('modalEditarUsuario')">
@@ -131,7 +164,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
                     <div class="form-grupo">
                         <div class="label-estilizado">
                             <input type="text" name="nome_completo" id="nome_completo" placeholder="Crie seu novo nome de usuário" class="input-estilizado" required>
-
                             <input type="password" name="senha_confirmacao" id="senha_confirmacao" placeholder="Digite sua senha" class="input-estilizado" required>
                         </div>
                     </div>
@@ -139,8 +171,10 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
                 </form>
             </div>
         </div>
+    <?php endif; ?>
 
-        <!-- Modal Editar Senha -->
+    <!-- Modal Editar Senha -->
+    <?php if ($eh_proprio_perfil): ?>
         <div id="modalEditarSenha" class="modal">
             <div class="modal-login">
                 <button class="close" onclick="fecharModal('modalEditarSenha')">
@@ -166,12 +200,34 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
         </div>
     <?php endif; ?>
 
+    <style>
+        .btn-admin-serie {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-admin-serie:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+    </style>
+
     <script>
         function abrirModalEditar() {
             const modal = document.getElementById('modalEditarUsuario');
             if (modal) {
                 modal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Previne scroll
+                document.body.style.overflow = 'hidden';
             }
         }
 
@@ -179,7 +235,7 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             const modal = document.getElementById('modalEditarSenha');
             if (modal) {
                 modal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Previne scroll
+                document.body.style.overflow = 'hidden';
             }
         }
 
@@ -187,11 +243,10 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Restaura scroll
+                document.body.style.overflow = 'auto';
             }
         }
 
-        // Fechar modais clicando fora (no fundo escuro)
         window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
@@ -199,7 +254,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             }
         });
 
-        // Fechar modal com tecla ESC
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const modais = document.querySelectorAll('.modal');
@@ -212,7 +266,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             }
         });
 
-        // Validar senhas no formulário
         const formSenha = document.getElementById('formSenha');
         if (formSenha) {
             formSenha.addEventListener('submit', function(event) {
@@ -233,7 +286,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             });
         }
 
-        // Sistema de notificações
         function mostrarNotificacao(tipo, titulo, mensagem) {
             const notificacoesExistentes = document.querySelectorAll('.notificacao-popup');
             notificacoesExistentes.forEach(n => n.remove());
@@ -272,7 +324,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
             }
         }
 
-        // Executar quando a página carregar
         document.addEventListener('DOMContentLoaded', function() {
             <?php if (isset($_SESSION['sucesso'])): ?>
                 mostrarNotificacao('sucesso', 'Sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');

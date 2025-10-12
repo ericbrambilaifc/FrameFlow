@@ -1,8 +1,12 @@
 <?php
 session_start();
 require_once('src/SerieDAO.php');
+require_once('src/ClassificacaoDAO.php');
+require_once('src/GeneroDAO.php');
 // Buscar séries para exibir
 $series = SerieDao::listar();
+$classificacoes = ClassificacaoDAO::listar();
+$generos = GeneroDAO::listar();
 
 // Busca de séries
 $resultadoBusca = [];
@@ -58,17 +62,50 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
 
 
     <!-- Barra de busca de séries -->
-    <section style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+    <section style="padding: 20px; max-width: 90%; margin: 0 auto;">
+        <!-- Formulário de Busca em Linha -->
         <form method="GET" action="explorar.php" style="margin-bottom: 30px;">
-            <input
-                type="text"
-                name="buscar"
-                placeholder="Buscar série por título..."
-                class="input-estilizado"
-                value="<?php echo isset($_GET['buscar']) ? htmlspecialchars($_GET['buscar']) : ''; ?>"
-                style="width: 100%; padding: 12px; font-size: 16px;">
-            <button type="submit" class="botao-entrar" style="margin-top: 10px;">Buscar</button>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <input
+                    type="text"
+                    name="buscar"
+                    placeholder="Pesquisar por título de série"
+                    class="input-estilizado"
+                    value="<?php echo isset($_GET['buscar']) ? htmlspecialchars($_GET['buscar']) : ''; ?>"
+                    style="flex: 1; min-width: 200px; padding: 12px; font-size: 16px;">
+
+                <select
+                    name="genero"
+                    class="input-estilizado"
+                    style="flex: 1; min-width: 200px; padding: 12px; font-size: 16px;">
+                    <option value="">Todos os gêneros</option>
+                    <?php foreach ($generos as $genero): ?>
+                        <option value="<?php echo $genero['id']; ?>"
+                            <?php echo (isset($_GET['genero']) && $_GET['genero'] == $genero['id']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($genero['nome']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <select
+                    name="classificacao"
+                    class="input-estilizado"
+                    style="flex: 1; min-width: 200px; padding: 12px; font-size: 16px;">
+                    <option value="">Todas as classificações</option>
+                    <?php foreach ($classificacoes as $classificacao): ?>
+                        <option value="<?php echo $classificacao['id']; ?>"
+                            <?php echo (isset($_GET['classificacao']) && $_GET['classificacao'] == $classificacao['id']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($classificacao['nome']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <button type="submit" class="botao-entrar" style="padding: 12px 30px; font-size: 16px;">Buscar</button>
+            </div>
         </form>
+
+
+
 
         <!-- Resultados da busca -->
         <?php if (isset($_GET['buscar'])): ?>

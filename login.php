@@ -18,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($usuario) {
         // Login bem-sucedido
-        
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome_completo'];
         $_SESSION['usuario_email'] = $usuario['email'];
-    
+        $_SESSION['is_admin'] = $usuario['is_admin']; // ✅ ADICIONE ESTA LINHA
+
         $_SESSION['sucesso'] = "Você acessou sua conta com sucesso. Aproveite todos os recursos do nosso sistema.";
         header("Location: explorar.php");
         exit();

@@ -3,30 +3,29 @@ require_once "ConexaoBD.php";
 
 class ClassificacaoDAO
 {
-    // A tabela `classificacao` tem apenas 'idclassificacao' e 'nome'.
-    // A função de inserir pode não ser necessária se a tabela é estática,
-    // mas aqui está a implementação caso precise.
-    public static function inserir($dados)
-    {
-        $conexao = ConexaoBD::conectar();
-
-        $nome = $dados['nome'];
-
-        $sql = "INSERT INTO classificacao (nome) VALUES (:nome)";
-        $stmt = $conexao->prepare($sql);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->execute();
-    }
-
+    // Listar todas as classificações
     public static function listar()
     {
         $conexao = ConexaoBD::conectar();
-        
-        $sql = "SELECT * FROM classificacao";
+
+        $sql = "SELECT * FROM classificacoes ORDER BY id";
         $stmt = $conexao->prepare($sql);
         $stmt->execute();
-        $classificacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return $classificacoes;
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar classificação por ID
+    public static function buscarPorId($id)
+    {
+        $conexao = ConexaoBD::conectar();
+
+        $sql = "SELECT * FROM classificacoes WHERE id = :id";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
+?>  
