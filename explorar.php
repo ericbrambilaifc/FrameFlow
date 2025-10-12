@@ -65,7 +65,7 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
     <section style="padding: 20px; max-width: 90%; margin: 0 auto;">
         <!-- Formulário de Busca em Linha -->
         <form method="GET" action="explorar.php" style="margin-bottom: 30px;">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: stretch;">
                 <input
                     type="text"
                     name="buscar"
@@ -100,7 +100,9 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
                     <?php endforeach; ?>
                 </select>
 
-                <button type="submit" class="botao-entrar" style="padding: 12px 30px; font-size: 16px;">Buscar</button>
+                <button type="submit" class="botao-buscar" style="padding: 12px 30px; font-size: 16px;">
+                    Buscar
+                </button>
             </div>
         </form>
 
