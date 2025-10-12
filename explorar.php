@@ -140,7 +140,6 @@ if ($temFiltro) {
                         <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
                         <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
                         <p>Nota média: <?php echo number_format($serie['media_nota'], 1); ?>/10</p>
-                        <a href="serie.php?id=<?php echo $serie['id']; ?>" class="botao-entrar">Ver detalhes</a>
                     </div>
                 <?php endforeach; ?>
             </div>
