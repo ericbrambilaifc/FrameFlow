@@ -101,6 +101,25 @@
     background: #5a4399;
 }
 
+.btn-sair {
+    text-decoration: none;
+    background-color: #D22232;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.btn-sair:hover {
+    background-color: rgb(190, 2, 18);
+
+}
+
 .avaliacoes-secao {
     background: white;
     padding: 30px;
@@ -231,6 +250,11 @@
 
     .btn-editar {
         width: 100%;
+    }
+
+    .btn-sair {
+        width: 100%;
+        text-align: center;
     }
 
     .avaliacao-header {

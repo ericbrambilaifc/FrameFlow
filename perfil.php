@@ -60,7 +60,6 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
                     </i>
                     <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>
                 </a>
-                <a href="logout.php" style="margin-left: 15px; color: #6A53B8; text-decoration: underline;">Sair</a>
             <?php else: ?>
                 <a href="explorar.php" style="color: #6A53B8;">Fazer Login</a>
             <?php endif; ?>
@@ -99,6 +98,8 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
                 <div class="perfil-acoes">
                     <button class="btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
                     <button class="btn-editar" onclick="abrirModalSenha()">Editar senha</button>
+                    <a href="logout.php" class="btn-sair">Sair</a>
+
                 </div>
             <?php endif; ?>
         </div>
@@ -150,11 +151,9 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
                 <form action="editar_perfil.php" method="post" id="formEditarPerfil">
                     <div class="form-grupo">
                         <div class="label-estilizado">
-                            <label>Nome Completo</label>
-                            <input type="text" name="nome_completo" id="nome_completo" value="<?php echo htmlspecialchars($usuario['nome_completo']); ?>" class="input-estilizado" required>
+                            <input type="text" name="nome_completo" id="nome_completo" placeholder="Crie seu novo nome de usuário" class="input-estilizado" required>
 
-                            <label style="margin-top: 1rem;">Digite sua senha para confirmar</label>
-                            <input type="password" name="senha_confirmacao" id="senha_confirmacao" placeholder="Sua senha atual" class="input-estilizado" required>
+                            <input type="password" name="senha_confirmacao" id="senha_confirmacao" placeholder="Digite sua senha" class="input-estilizado" required>
                         </div>
                     </div>
                     <button class="botao-entrar" type="submit">Salvar alterações</button>

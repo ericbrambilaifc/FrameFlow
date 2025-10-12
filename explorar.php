@@ -41,7 +41,6 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
                     </i>
                     <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>
                 </a>
-                <a href="logout.php" style="margin-left: 15px; color: #6A53B8; text-decoration: underline;">Sair</a>
             <?php else: ?>
                 <a href="#" id="openModal">
                     <i>
