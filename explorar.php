@@ -19,6 +19,7 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="modal.css">
     <link rel="stylesheet" href="explorar.css">
+    <link rel="stylesheet" href="alert.css">
     <title>FrameFlow | Opiniões que guiam suas próximas maratonas</title>
 </head>
 
@@ -56,24 +57,6 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
         </div>
     </header>
 
-    <!-- Mensagens de sucesso/erro -->
-    <?php if (isset($_SESSION['sucesso'])): ?>
-        <div class="mensagem sucesso" style="background: #4caf50; color: white; padding: 15px; margin: 20px; border-radius: 5px; text-align: center;">
-            <?php
-            echo htmlspecialchars($_SESSION['sucesso']);
-            unset($_SESSION['sucesso']);
-            ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($_SESSION['erro'])): ?>
-        <div class="mensagem erro" style="background: #f44336; color: white; padding: 15px; margin: 20px; border-radius: 5px; text-align: center;">
-            <?php
-            echo htmlspecialchars($_SESSION['erro']);
-            unset($_SESSION['erro']);
-            ?>
-        </div>
-    <?php endif; ?>
 
     <!-- Barra de busca de séries -->
     <section style="padding: 20px; max-width: 1200px; margin: 0 auto;">
@@ -187,113 +170,158 @@ if (isset($_GET['buscar']) && !empty($_GET['buscar'])) {
     </div>
 
     <script>
-        // Abrir o modal de LOGIN
-        document.getElementById('openModal').addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('modal').style.display = 'block';
-        });
+        // Sistema de notificações popup
+        function mostrarNotificacao(tipo, titulo, mensagem) {
+            // Remove notificações existentes
+            const notificacoesExistentes = document.querySelectorAll('.notificacao-popup');
+            notificacoesExistentes.forEach(n => n.remove());
 
-        // Abrir o modal de CRIAR CONTA
-        document.getElementById('abrirCriarConta').addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('modalCriarConta').style.display = 'block';
-        });
+            // Cria a estrutura da notificação
+            const notificacao = document.createElement('div');
+            notificacao.className = `notificacao-popup ${tipo}`;
 
-        // Fechar o modal de LOGIN
-        document.querySelector('.close').addEventListener('click', function() {
-            document.getElementById('modal').style.display = 'none';
-        });
+            // Define os ícones SVG
+            const iconeSucesso = `
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    `;
 
-        // Fechar o modal de CRIAR CONTA
-        document.getElementById('closeCriar').addEventListener('click', function() {
-            document.getElementById('modalCriarConta').style.display = 'none';
-        });
+            const iconeErro = `
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    `;
 
-        // Fechar modais clicando fora
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('modal');
-            const modalCriarConta = document.getElementById('modalCriarConta');
+            const icone = tipo === 'sucesso' ? iconeSucesso : iconeErro;
 
-            if (event.target === modal) {
-                modal.style.display = 'none';
+            notificacao.innerHTML = `
+        <button class="notificacao-fechar" onclick="fecharNotificacao(this)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 1L1 13" stroke="#BABABA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 1L13 13" stroke="#BABABA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+        </button>
+        <div class="notificacao-header">
+            <div class="notificacao-icone">
+                ${icone}
+            </div>
+            <h3 class="notificacao-titulo">${titulo}</h3>
+        </div>
+        <p class="notificacao-mensagem">${mensagem}</p>
+    `;
+
+            document.body.appendChild(notificacao);
+
+            // Mostra a notificação com animação
+            setTimeout(() => {
+                notificacao.classList.add('show');
+            }, 10);
+
+            // Remove automaticamente após 5 segundos
+            setTimeout(() => {
+                fecharNotificacao(notificacao);
+            }, 5000);
+        }
+
+        function fecharNotificacao(elemento) {
+            const notificacao = elemento.classList ? elemento : elemento.closest('.notificacao-popup');
+            if (notificacao) {
+                notificacao.classList.remove('show');
+                notificacao.classList.add('hide');
+
+                setTimeout(() => {
+                    notificacao.remove();
+                }, 300);
             }
-            if (event.target === modalCriarConta) {
-                modalCriarConta.style.display = 'none';
+        }
+
+        // Aguarda o DOM carregar completamente
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verifica se há mensagens de sessão e exibe como popup
+            <?php if (isset($_SESSION['sucesso'])): ?>
+                mostrarNotificacao('sucesso', 'Login efetuado com sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');
+                <?php unset($_SESSION['sucesso']); ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['erro'])): ?>
+                mostrarNotificacao('erro', 'Não foi possível efetuar o login', '<?php echo addslashes($_SESSION['erro']); ?>');
+                <?php unset($_SESSION['erro']); ?>
+            <?php endif; ?>
+
+            // Abrir o modal de LOGIN
+            const openModalBtn = document.getElementById('openModal');
+            if (openModalBtn) {
+                openModalBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    document.getElementById('modal').style.display = 'block';
+                });
             }
-        });
 
-        // Validar senhas no cadastro
-        document.getElementById('formCadastro').addEventListener('submit', function(event) {
-            const senha = document.getElementById('senha').value;
-            const confirmarSenha = document.getElementById('confirmar_senha').value;
-
-            if (senha !== confirmarSenha) {
-                event.preventDefault();
-                alert('As senhas não coincidem!');
-                return false;
+            // Abrir o modal de CRIAR CONTA
+            const abrirCriarContaBtn = document.getElementById('abrirCriarConta');
+            if (abrirCriarContaBtn) {
+                abrirCriarContaBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    document.getElementById('modal').style.display = 'none';
+                    document.getElementById('modalCriarConta').style.display = 'block';
+                });
             }
 
-            if (senha.length < 6) {
-                event.preventDefault();
-                alert('A senha deve ter no mínimo 6 caracteres!');
-                return false;
+            // Fechar o modal de LOGIN
+            const closeBtn = document.querySelector('.close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    document.getElementById('modal').style.display = 'none';
+                });
             }
-        });
 
-        // Auto-fechar mensagens após 5 segundos
-        setTimeout(function() {
-            const mensagens = document.querySelectorAll('.mensagem');
-            mensagens.forEach(function(mensagem) {
-                mensagem.style.display = 'none';
+            // Fechar o modal de CRIAR CONTA
+            const closeCriarBtn = document.getElementById('closeCriar');
+            if (closeCriarBtn) {
+                closeCriarBtn.addEventListener('click', function() {
+                    document.getElementById('modalCriarConta').style.display = 'none';
+                });
+            }
+
+            // Fechar modais clicando fora
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('modal');
+                const modalCriarConta = document.getElementById('modalCriarConta');
+
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+                if (event.target === modalCriarConta) {
+                    modalCriarConta.style.display = 'none';
+                }
             });
-        }, 5000);
+
+            // Validar senhas no cadastro
+            const formCadastro = document.getElementById('formCadastro');
+            if (formCadastro) {
+                formCadastro.addEventListener('submit', function(event) {
+                    const senha = document.getElementById('senha').value;
+                    const confirmarSenha = document.getElementById('confirmar_senha').value;
+
+                    if (senha !== confirmarSenha) {
+                        event.preventDefault();
+                        mostrarNotificacao('erro', 'Erro no cadastro', 'As senhas não coincidem!');
+                        return false;
+                    }
+
+                    if (senha.length < 6) {
+                        event.preventDefault();
+                        mostrarNotificacao('erro', 'Erro no cadastro', 'A senha deve ter no mínimo 6 caracteres!');
+                        return false;
+                    }
+                });
+            }
+        });
     </script>
 
-    <style>
-        .grid-series {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .card-serie {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .card-serie img {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .card-serie h3 {
-            color: #6A53B8;
-            margin: 10px 0;
-            font-size: 18px;
-        }
-
-        .card-serie p {
-            color: #666;
-            margin: 5px 0;
-            font-size: 14px;
-        }
-
-        .card-serie .botao-entrar {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 20px;
-            font-size: 14px;
-            text-decoration: none;
-        }
-    </style>
 </body>
 
 </html>

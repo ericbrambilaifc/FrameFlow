@@ -1,0 +1,127 @@
+/* Sistema de notificações popup */
+.notificacao-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    min-width: 320px;
+    max-width: 400px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    display: none;
+    animation: slideIn 0.3s ease-out;
+    z-index: 9999;
+}
+
+.notificacao-popup.show {
+    display: block;
+}
+
+.notificacao-popup.hide {
+    animation: slideOut 0.3s ease-out;
+}
+
+.notificacao-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.notificacao-icone {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notificacao-popup.sucesso .notificacao-icone {
+    background: #4caf50;
+}
+
+.notificacao-popup.erro .notificacao-icone {
+    background: #f44336;
+}
+
+.notificacao-icone svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    fill: none;
+}
+
+.notificacao-titulo {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.notificacao-popup.sucesso .notificacao-titulo {
+    color: #4caf50;
+}
+
+.notificacao-popup.erro .notificacao-titulo {
+    color: #f44336;
+}
+
+.notificacao-mensagem {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    padding-left: 44px;
+}
+
+.notificacao-fechar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.notificacao-fechar:hover {
+    color: #333;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .notificacao-popup {
+        left: 20px;
+        right: 20px;
+        min-width: auto;
+        max-width: none;
+    }
+}

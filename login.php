@@ -18,15 +18,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($usuario) {
         // Login bem-sucedido
+        
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome_completo'];
         $_SESSION['usuario_email'] = $usuario['email'];
-        $_SESSION['sucesso'] = "Bem-vindo(a), " . $usuario['nome_completo'] . "!";
+    
+        $_SESSION['sucesso'] = "Você acessou sua conta com sucesso. Aproveite todos os recursos do nosso sistema.";
         header("Location: explorar.php");
         exit();
     } else {
         // Login falhou
-        $_SESSION['erro'] = "E-mail ou senha incorretos!";
+        $_SESSION['erro'] = "Não conseguimos conectar sua conta. Verifique seus dados e tente novamente.";
         header("Location: explorar.php");
         exit();
     }
