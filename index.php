@@ -13,10 +13,7 @@
 </head>
 
 <style>
-    body {
-        font-family: "Mona Sans", sans-serif;
-        background: linear-gradient(293deg, #07182F 0%, #094492 100%);
-    }
+    
 </style>
 
 <body class="min-h-screen flex items-center justify-center p-5">
