@@ -3,6 +3,10 @@ session_start();
 require_once('src/SerieDAO.php');
 require_once('src/ClassificacaoDAO.php');
 require_once('src/GeneroDAO.php');
+require_once('src/AvaliacaoDAO.php');
+require_once('src/UsuarioDAO.php');
+require_once('src/AvaliacaoDAO.php');
+
 
 $classificacoes = ClassificacaoDAO::listar();
 $generos = GeneroDAO::listar();
@@ -135,8 +139,7 @@ if ($temFiltro) {
         <?php if (count($series) > 0): ?>
             <div class="grid-series">
                 <?php foreach ($series as $serie): ?>
-                    <div class="card-serie">
-                        <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
+                    <div class="card-serie" data-serie-id="<?php echo $serie['id']; ?>"> <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
                         <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
                         <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
                         <p>Nota média: <?php echo number_format($serie['media_nota'], 1); ?>/10</p>
@@ -201,6 +204,83 @@ if ($temFiltro) {
                 </div>
 
                 <button class="botao-entrar" type="submit">Criar conta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Avaliações -->
+    <div id="modalAvaliacoes" class="modal">
+        <div class="modal-avaliacoes">
+            <button class="close" id="closeAvaliacoes">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <div class="modal-avaliacoes-header">
+                <h2 class="titulo" id="tituloSerie"></h2>
+                <button class="botao-nova-avaliacao" id="btnNovaAvaliacao">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" />
+                        <path d="M12 8V16M8 12H16" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Nova avaliação
+                </button>
+            </div>
+
+            <div id="conteudoAvaliacoes">
+                <div class="loading">Carregando avaliações...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Nova Avaliação -->
+    <div id="modalNovaAvaliacao" class="modal">
+        <div class="modal-login">
+            <button class="close" id="closeNovaAvaliacao">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <h2 class="titulo">Nova Avaliação</h2>
+            <form id="formNovaAvaliacao" method="POST" action="salvar_avaliacao.php">
+                <input type="hidden" name="serie_id" id="serieIdAvaliacao">
+
+                <div class="form-grupo">
+                    <label style="color: #6A53B8; font-weight: 600; margin-bottom: 10px; display: block;">
+                        Sua nota:
+                    </label>
+                    <div class="rating-input">
+                        <input type="radio" name="nota" value="5" id="star5" required>
+                        <label for="star5">★</label>
+                        <input type="radio" name="nota" value="4" id="star4">
+                        <label for="star4">★</label>
+                        <input type="radio" name="nota" value="3" id="star3">
+                        <label for="star3">★</label>
+                        <input type="radio" name="nota" value="2" id="star2">
+                        <label for="star2">★</label>
+                        <input type="radio" name="nota" value="1" id="star1">
+                        <label for="star1">★</label>
+                    </div>
+
+                    <label style="color: #6A53B8; font-weight: 600; margin: 20px 0 10px; display: block;">
+                        Seu comentário:
+                    </label>
+                    <textarea
+                        name="comentario"
+                        class="input-estilizado"
+                        rows="5"
+                        placeholder="Escreva sua opinião sobre a série..."
+                        required
+                        style="resize: vertical; min-height: 120px; max-width: 100%;"></textarea>
+                </div>
+
+                <button class="botao-entrar" type="submit">Publicar Avaliação</button>
             </form>
         </div>
     </div>
@@ -354,6 +434,123 @@ if ($temFiltro) {
                         return false;
                     }
                 });
+            }
+        });
+
+        // Tornar cards clicáveis
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-serie');
+
+            cards.forEach(card => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function() {
+                    const titulo = this.querySelector('h3').textContent;
+                    const serieId = this.dataset.serieId; // Você precisará adicionar data-serie-id no card
+                    abrirModalAvaliacoes(serieId, titulo);
+                });
+            });
+        });
+
+        // Abrir modal de avaliações
+        function abrirModalAvaliacoes(serieId, titulo) {
+            document.getElementById('modalAvaliacoes').style.display = 'block';
+            document.getElementById('tituloSerie').textContent = titulo;
+
+            // Carregar avaliações via AJAX
+            carregarAvaliacoes(serieId);
+
+            // Salvar serieId para uso posterior
+            document.getElementById('modalAvaliacoes').dataset.serieId = serieId;
+        }
+
+        // Carregar avaliações
+        function carregarAvaliacoes(serieId) {
+            const conteudo = document.getElementById('conteudoAvaliacoes');
+            conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
+
+            fetch(`buscar_avaliacoes.php?serie_id=${serieId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.avaliacoes && data.avaliacoes.length > 0) {
+                        conteudo.innerHTML = data.avaliacoes.map(av => `
+                    <div class="avaliacao-item">
+                        <div class="avaliacao-header">
+                            <div class="avaliacao-usuario">
+                                <div class="avatar-usuario">${av.usuario_nome.charAt(0).toUpperCase()}</div>
+                                <span class="usuario-nome">${av.usuario_nome}</span>
+                            </div>
+                            <div class="avaliacao-nota">
+                                ${gerarEstrelas(av.nota)}
+                            </div>
+                        </div>
+                        <p class="avaliacao-comentario">${av.comentario}</p>
+                        <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
+                    </div>
+                `).join('');
+                    } else {
+                        conteudo.innerHTML = '<p class="sem-avaliacoes">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar avaliações:', error);
+                    conteudo.innerHTML = '<p class="erro-avaliacoes">Erro ao carregar avaliações. Tente novamente.</p>';
+                });
+        }
+
+        // Gerar estrelas HTML
+        function gerarEstrelas(nota) {
+            let estrelas = '';
+            for (let i = 1; i <= 5; i++) {
+                estrelas += i <= nota ? '★' : '☆';
+            }
+            return estrelas;
+        }
+
+        // Formatar data
+        function formatarData(data) {
+            const date = new Date(data);
+            const opcoes = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            return date.toLocaleDateString('pt-BR', opcoes);
+        }
+
+        // Botão Nova Avaliação
+        document.getElementById('btnNovaAvaliacao').addEventListener('click', function() {
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+                const serieId = document.getElementById('modalAvaliacoes').dataset.serieId;
+                document.getElementById('serieIdAvaliacao').value = serieId;
+                document.getElementById('modalAvaliacoes').style.display = 'none';
+                document.getElementById('modalNovaAvaliacao').style.display = 'block';
+            <?php else: ?>
+                mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para avaliar uma série!');
+                document.getElementById('modalAvaliacoes').style.display = 'none';
+                document.getElementById('modal').style.display = 'block';
+            <?php endif; ?>
+        });
+
+        // Fechar modal de avaliações
+        document.getElementById('closeAvaliacoes').addEventListener('click', function() {
+            document.getElementById('modalAvaliacoes').style.display = 'none';
+        });
+
+        // Fechar modal de nova avaliação
+        document.getElementById('closeNovaAvaliacao').addEventListener('click', function() {
+            document.getElementById('modalNovaAvaliacao').style.display = 'none';
+        });
+
+        // Fechar modais clicando fora (adicionar aos existentes)
+        window.addEventListener('click', function(event) {
+            const modalAvaliacoes = document.getElementById('modalAvaliacoes');
+            const modalNovaAvaliacao = document.getElementById('modalNovaAvaliacao');
+
+            if (event.target === modalAvaliacoes) {
+                modalAvaliacoes.style.display = 'none';
+            }
+            if (event.target === modalNovaAvaliacao) {
+                modalNovaAvaliacao.style.display = 'none';
             }
         });
     </script>
