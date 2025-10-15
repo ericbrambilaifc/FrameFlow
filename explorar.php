@@ -44,6 +44,7 @@ if ($temFiltro) {
 <body>
     <header>
         <ul>
+            <img src="/src/assets/icons/logo.svg" alt="LOGO">
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
         </ul>
@@ -332,6 +333,14 @@ if ($temFiltro) {
     </div>
 
     <script>
+        // Verifica se deve abrir o modal ao carregar a página
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('login') === 'true') {
+                document.getElementById('modal').style.display = 'block';
+            }
+        });
+
         // Sistema de notificações popup
         function mostrarNotificacao(tipo, titulo, mensagem) {
             // Remove notificações existentes
@@ -510,6 +519,7 @@ if ($temFiltro) {
         }
 
         // Carregar avaliações
+        // Carregar avaliações
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
@@ -519,21 +529,25 @@ if ($temFiltro) {
                 .then(data => {
                     if (data.avaliacoes && data.avaliacoes.length > 0) {
                         conteudo.innerHTML = data.avaliacoes.map(av => `
-                    <div class="avaliacao-item">
+                    <div class="avaliacao-item" data-usuario-id="${av.usuario_id}" style="cursor: pointer;">
                         <div class="avaliacao-header">
                             <div class="avaliacao-usuario">
                                 <div class="avatar-usuario">${av.usuario_nome.charAt(0).toUpperCase()}</div>
                                 <span class="usuario-nome">${av.usuario_nome}</span>
-                                <div class="avaliacao-nota"></div>
-                                ${gerarEstrelas(av.nota)}
+                                <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
                             </div>
-                            </div>
-                            
                         </div>
                         <p class="avaliacao-comentario">${av.comentario}</p>
                         <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
                     </div>
                 `).join('');
+
+                        // Adicionar clique para ir ao perfil
+                        document.querySelectorAll('.avaliacao-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                window.location.href = `perfil.php?id=${this.dataset.usuarioId}`;
+                            });
+                        });
                     } else {
                         conteudo.innerHTML = '<p class="sem-avaliacoes">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>';
                     }

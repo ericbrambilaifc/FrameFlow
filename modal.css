@@ -133,13 +133,14 @@
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  /* Use padding ao invés de width/height fixos */
   cursor: pointer;
   transition: all 0.3s ease;
   color: #6A53B8;
   font-size: 17px;
   font-weight: 600;
   white-space: nowrap;
+  margin-left: auto;
+  /* Empurra o botão para a direita */
 }
 
 .botao-nova-avaliacao:hover {
@@ -148,18 +149,19 @@
 }
 
 .botao-nova-avaliacao svg {
-  stroke: #6A53B8; 
+  stroke: #6A53B8;
   fill: none;
 }
 
 .botao-nova-avaliacao svg path {
-  stroke: #6A53B8 !important; 
+  stroke: #6A53B8 !important;
 }
 
 .botao-nova-avaliacao svg circle {
-  stroke: #6A53B8 !important; 
-  
+  stroke: #6A53B8 !important;
+
 }
+
 .usuario-nome {
   color: rgba(0, 0, 0, 0.50);
   font-size: 1rem;
@@ -176,6 +178,21 @@
 .avaliacao-data {
   color: rgba(0, 0, 0, 0.50);
   font-size: 0.7rem;
+}
+
+.avaliacao-item {
+  transition: all 0.3s ease;
+}
+
+.avaliacao-item:hover {
+  background-color: rgba(106, 83, 184, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.usuario-nome:hover {
+  text-decoration: underline;
+  color: #6A53B8;
 }
 
 /* Media Queries para responsividade extra */
