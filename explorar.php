@@ -44,11 +44,11 @@ if ($temFiltro) {
 <body>
     <header>
         <ul>
-            <img src="/src/assets/icons/logo.svg" alt="LOGO">
+            <li><a href="/explorar.php"><img src="/src/assets/img/logo-text.png" style="width: 25%" alt="LOGO"></a></li>
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
         </ul>
-        <div>
+        <div class="header-perfil">
             <?php if (isset($_SESSION['usuario_id'])): ?>
                 <a href="perfil.php?id=<?php echo $_SESSION['usuario_id']; ?>">
                     <i>
