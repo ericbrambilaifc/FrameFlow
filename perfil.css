@@ -225,6 +225,100 @@
     }
 }
 
+/* Botão de Seguir */
+.btn-seguir {
+    background: linear-gradient(135deg, #6A53B8 0%, #8B73D8 100%);
+    color: #fff;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(106, 83, 184, 0.3);
+}
+
+.btn-seguir:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 83, 184, 0.5);
+    background: linear-gradient(135deg, #8B73D8 0%, #6A53B8 100%);
+}
+
+.btn-seguir:active {
+    transform: translateY(0);
+}
+
+.btn-seguir svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+.btn-seguir:hover svg {
+    transform: scale(1.1);
+}
+
+/* Estado quando já está seguindo */
+.btn-seguir.seguindo {
+    background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.btn-seguir.seguindo:hover {
+    background: linear-gradient(135deg, #F44336 0%, #EF5350 100%);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.5);
+}
+
+.btn-seguir.seguindo:hover::after {
+    content: 'Deixar de seguir';
+}
+
+.btn-seguir.seguindo span {
+    display: inline;
+}
+
+.btn-seguir.seguindo:hover span {
+    display: none;
+}
+
+/* Animação de loading */
+.btn-seguir.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-seguir.loading svg {
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .btn-seguir {
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+
+    .btn-seguir svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .container-perfil {

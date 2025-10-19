@@ -2,6 +2,7 @@
 session_start();
 require_once('src/UsuarioDAO.php');
 require_once('src/AvaliacaoDAO.php');
+require_once('src/SeguidorDAO.php');
 
 // Pega o ID do usuário da URL
 $usuario_id = isset($_GET['id']) ? (int)$_GET['id'] : null;
@@ -30,6 +31,12 @@ $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] =
 
 // Verifica se o usuário logado é admin
 $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
+
+// Verifica se está seguindo (apenas se não for o próprio perfil e estiver logado)
+$esta_seguindo = false;
+if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
+    $esta_seguindo = SeguidorDAO::estaSeguindo($_SESSION['usuario_id'], $usuario_id);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -42,7 +49,8 @@ $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="perfil.css">
     <link rel="stylesheet" href="alert.css">
-    <title><?php echo htmlspecialchars($usuario['nome_completo']); ?> | Seu Perfil</title>
+    <link rel="stylesheet" href="seguir.css">
+    <title><?php echo htmlspecialchars($usuario['nome_completo']); ?> | Perfil</title>
 </head>
 
 <body>
@@ -69,7 +77,6 @@ $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
                 <div>
                     <h1 class="perfil-nome">
                         <?php echo htmlspecialchars($usuario['nome_completo']); ?>
-
                     </h1>
                     <p class="perfil-email"><?php echo htmlspecialchars($usuario['email']); ?></p>
 
@@ -82,17 +89,31 @@ $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
                 </div>
             </div>
 
-            <?php if ($eh_proprio_perfil): ?>
-                <div class="perfil-acoes">
-                    <?php if ($eh_admin): ?>
+            <div class="perfil-acoes">
+                <?php if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])): ?>
+                    <!-- Botão de Seguir (apenas quando está visitando perfil de outra pessoa) -->
+                    <button class="btn-seguir <?php echo $esta_seguindo ? 'seguindo' : ''; ?>"
+                        onclick="toggleSeguir(<?php echo $usuario_id; ?>)"
+                        id="btnSeguir">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <?php if ($esta_seguindo): ?>
+                                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <?php else: ?>
+                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <?php endif; ?>
+                        </svg>
+                        <span><?php echo $esta_seguindo ? 'Seguindo' : 'Seguir'; ?></span>
+                    </button>
+                <?php endif; ?>
 
-                    <?php else: ?>
+                <?php if ($eh_proprio_perfil): ?>
+                    <?php if (!$eh_admin): ?>
                         <button class="btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
                     <?php endif; ?>
                     <button class="btn-editar" onclick="abrirModalSenha()">Editar senha</button>
                     <a href="logout.php" class="btn-sair">Sair</a>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Avaliações (apenas para não-admin) -->
@@ -110,7 +131,7 @@ $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
                                         <?php
                                         for ($i = 1; $i <= 5; $i++):
                                             $preenchida = $i <= $avaliacao['nota'];
-                                            $corPreenchimento = $preenchida ? '#FFF600' : 'none'; // Amarelo se preenchida, vazio se não
+                                            $corPreenchimento = $preenchida ? '#FFF600' : 'none';
                                         ?>
                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M10.5268 1.29489C10.5706 1.20635 10.6383 1.13183 10.7223 1.07972C10.8062 1.02761 10.903 1 11.0018 1C11.1006 1 11.1974 1.02761 11.2813 1.07972C11.3653 1.13183 11.433 1.20635 11.4768 1.29489L13.7868 5.97389C13.939 6.28186 14.1636 6.5483 14.4414 6.75035C14.7192 6.95239 15.0419 7.08401 15.3818 7.13389L20.5478 7.88989C20.6457 7.90408 20.7376 7.94537 20.8133 8.00909C20.8889 8.07282 20.9452 8.15644 20.9758 8.2505C21.0064 8.34456 21.0101 8.4453 20.9864 8.54133C20.9627 8.63736 20.9126 8.72485 20.8418 8.79389L17.1058 12.4319C16.8594 12.672 16.6751 12.9684 16.5686 13.2955C16.4622 13.6227 16.4369 13.9708 16.4948 14.3099L17.3768 19.4499C17.3941 19.5477 17.3835 19.6485 17.3463 19.7406C17.3091 19.8327 17.2467 19.9125 17.1663 19.9709C17.086 20.0293 16.9908 20.0639 16.8917 20.0708C16.7926 20.0777 16.6935 20.0566 16.6058 20.0099L11.9878 17.5819C11.6835 17.4221 11.345 17.3386 11.0013 17.3386C10.6576 17.3386 10.3191 17.4221 10.0148 17.5819L5.3978 20.0099C5.31013 20.0563 5.2112 20.0772 5.11225 20.0701C5.0133 20.0631 4.91832 20.0285 4.83809 19.9701C4.75787 19.9118 4.69563 19.8321 4.65846 19.7401C4.62128 19.6482 4.61066 19.5476 4.6278 19.4499L5.5088 14.3109C5.567 13.9716 5.54178 13.6233 5.43534 13.2959C5.32889 12.9686 5.14441 12.672 4.8978 12.4319L1.1618 8.79489C1.09039 8.72593 1.03979 8.63829 1.01576 8.54197C0.991731 8.44565 0.995237 8.34451 1.02588 8.25008C1.05652 8.15566 1.11307 8.07174 1.18908 8.00788C1.26509 7.94402 1.3575 7.90279 1.4558 7.88889L6.6208 7.13389C6.96106 7.08439 7.28419 6.95295 7.56238 6.75088C7.84058 6.54881 8.0655 6.28216 8.2178 5.97389L10.5268 1.29489Z"
@@ -197,29 +218,59 @@ $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
         </div>
     <?php endif; ?>
 
-    <style>
-        .btn-admin-serie {
-            background: linear-gradient(135deg, #070706ff 0%, #FFA500 100%);
-            color: #000;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .btn-admin-serie:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-        }
-    </style>
-
     <script>
+        // Função para seguir/deixar de seguir
+        async function toggleSeguir(usuarioId) {
+            const btn = document.getElementById('btnSeguir');
+            const estaSeguindo = btn.classList.contains('seguindo');
+
+            // Adiciona classe de loading
+            btn.classList.add('loading');
+
+            try {
+                const response = await fetch('seguir_usuario.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        usuario_id: usuarioId,
+                        acao: estaSeguindo ? 'deixar_seguir' : 'seguir'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.sucesso) {
+                    // Atualiza o botão
+                    if (estaSeguindo) {
+                        btn.classList.remove('seguindo');
+                        btn.querySelector('span').textContent = 'Seguir';
+                        btn.querySelector('svg').innerHTML = '<path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                    } else {
+                        btn.classList.add('seguindo');
+                        btn.querySelector('span').textContent = 'Seguindo';
+                        btn.querySelector('svg').innerHTML = '<path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                    }
+
+                    // Atualiza contador de seguidores
+                    const seguidoresElement = document.querySelector('.perfil-stats span:last-child strong');
+                    if (seguidoresElement) {
+                        const novoTotal = parseInt(seguidoresElement.textContent) + (estaSeguindo ? -1 : 1);
+                        seguidoresElement.textContent = novoTotal;
+                    }
+
+                    mostrarNotificacao('sucesso', 'Sucesso', data.mensagem);
+                } else {
+                    mostrarNotificacao('erro', 'Erro', data.mensagem);
+                }
+            } catch (error) {
+                mostrarNotificacao('erro', 'Erro', 'Erro ao processar solicitação');
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+
         function abrirModalEditar() {
             const modal = document.getElementById('modalEditarUsuario');
             if (modal) {
