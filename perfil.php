@@ -81,31 +81,35 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     <p class="perfil-email"><?php echo htmlspecialchars($usuario['email']); ?></p>
 
                     <?php if (!$eh_admin): ?>
-                        <div class="perfil-stats">
+                        <div class="perfil-status">
                             <span><strong><?php echo $usuario['total_avaliacoes']; ?></strong> avaliações</span>
                             <span><strong><?php echo $usuario['total_seguidores']; ?></strong> seguidores</span>
+                            <div class="perfil-acoes">
+                                <?php if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])): ?>
+                                    <!-- Botão de Seguir (apenas quando está visitando perfil de outra pessoa) -->
+                                    <button class="btn-seguir <?php echo $esta_seguindo ? 'seguindo' : ''; ?>"
+                                        onclick="toggleSeguir(<?php echo $usuario_id; ?>)"
+                                        id="btnSeguir">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <?php if ($esta_seguindo): ?>
+                                                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            <?php else: ?>
+                                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            <?php endif; ?>
+                                        </svg>
+                                        <span><?php echo $esta_seguindo ? 'Seguindo' : 'Seguir'; ?></span>
+                                    </button>
+                                <?php endif; ?>
+
+
+                            </div>
                         </div>
+
+
                     <?php endif; ?>
                 </div>
             </div>
-
-            <div class="perfil-acoes">
-                <?php if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])): ?>
-                    <!-- Botão de Seguir (apenas quando está visitando perfil de outra pessoa) -->
-                    <button class="btn-seguir <?php echo $esta_seguindo ? 'seguindo' : ''; ?>"
-                        onclick="toggleSeguir(<?php echo $usuario_id; ?>)"
-                        id="btnSeguir">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <?php if ($esta_seguindo): ?>
-                                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <?php else: ?>
-                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <?php endif; ?>
-                        </svg>
-                        <span><?php echo $esta_seguindo ? 'Seguindo' : 'Seguir'; ?></span>
-                    </button>
-                <?php endif; ?>
-
+            <div class="btn-editar-container"">
                 <?php if ($eh_proprio_perfil): ?>
                     <?php if (!$eh_admin): ?>
                         <button class="btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
@@ -114,6 +118,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     <a href="logout.php" class="btn-sair">Sair</a>
                 <?php endif; ?>
             </div>
+
         </div>
 
         <!-- Avaliações (apenas para não-admin) -->
@@ -254,7 +259,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     }
 
                     // Atualiza contador de seguidores
-                    const seguidoresElement = document.querySelector('.perfil-stats span:last-child strong');
+                    const seguidoresElement = document.querySelector('.perfil-status span:last-child strong');
                     if (seguidoresElement) {
                         const novoTotal = parseInt(seguidoresElement.textContent) + (estaSeguindo ? -1 : 1);
                         seguidoresElement.textContent = novoTotal;

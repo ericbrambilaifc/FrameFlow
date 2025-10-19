@@ -179,6 +179,34 @@ if ($temFiltro) {
     </div>
 
     <!-- Modal criar conta -->
+    <div id="modalCriarConta" class="modal">
+        <div class="modal-login">
+            <button class="close" id="closeCriar">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <h2 class="titulo">Criar Conta</h2>
+            <form action="cadastro.php" method="post" id="formCadastro">
+                <div class="form-grupo">
+                    <div class="label-estilizado">
+                        <input type="text" name="nome_completo" placeholder="Digite seu nome completo" class="input-estilizado" required>
+                        <input type="email" name="email" placeholder="Digite seu e-mail" class="input-estilizado" required>
+                        <input type="password" name="senha" id="senha" placeholder="Crie uma senha" class="input-estilizado" required>
+                        <input type="password" name="confirmar_senha" id="confirmar_senha" placeholder="Confirme sua senha" class="input-estilizado" required>
+                    </div>
+                    <a href="#" id="voltarLogin">Já tem uma conta? <strong>Faça login aqui</strong></a>
+                </div>
+
+                <button class="botao-entrar" type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal avaliacao conta -->
     <div id="modalAvaliacoes" class="modal">
         <div class="modal-login">
             <button class="close" id="closeAvaliacoes">
@@ -340,6 +368,16 @@ if ($temFiltro) {
                 document.getElementById('modal').style.display = 'block';
             }
         });
+
+        // Voltar para o modal de login
+        const voltarLoginBtn = document.getElementById('voltarLogin');
+        if (voltarLoginBtn) {
+            voltarLoginBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                document.getElementById('modalCriarConta').style.display = 'none';
+                document.getElementById('modal').style.display = 'block';
+            });
+        }
 
         // Sistema de notificações popup
         function mostrarNotificacao(tipo, titulo, mensagem) {

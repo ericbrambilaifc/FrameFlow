@@ -65,14 +65,15 @@
     margin: 0 0 15px 0;
 }
 
-.perfil-stats {
+.perfil-status {
     display: flex;
+    align-items: center;
     gap: 20px;
     font-size: 14px;
     color: #666;
 }
 
-.perfil-stats strong {
+.perfil-status strong {
     color: #333;
     font-weight: 600;
 }
@@ -81,6 +82,12 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+.btn-editar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .btn-editar {
@@ -242,15 +249,6 @@
     box-shadow: 0 4px 15px rgba(106, 83, 184, 0.3);
 }
 
-.btn-seguir:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(106, 83, 184, 0.5);
-    background: linear-gradient(135deg, #8B73D8 0%, #6A53B8 100%);
-}
-
-.btn-seguir:active {
-    transform: translateY(0);
-}
 
 .btn-seguir svg {
     width: 18px;
@@ -258,13 +256,10 @@
     transition: transform 0.3s ease;
 }
 
-.btn-seguir:hover svg {
-    transform: scale(1.1);
-}
 
 /* Estado quando já está seguindo */
 .btn-seguir.seguindo {
-    background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+    background: linear-gradient(90deg, #4CAF50 0%, #74b678 100%);
     box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
@@ -385,7 +380,7 @@
         font-size: 20px;
     }
 
-    .perfil-stats {
+    .perfil-status {
         flex-direction: column;
         gap: 8px;
     }
