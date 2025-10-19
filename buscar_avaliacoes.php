@@ -27,7 +27,8 @@ try {
             'comentario' => $avaliacao['comentario'],
             'data_avaliacao' => $avaliacao['data_avaliacao'],
             'usuario_id' => $avaliacao['usuario_id'],
-            'usuario_nome' => $usuario ? $usuario['nome_completo'] : 'Usuário'
+            'usuario_nome' => $usuario ? $usuario['nome_completo'] : 'Usuário',
+            'foto_perfil' => $usuario ? $usuario['foto_perfil'] : null
         ];
     }
 

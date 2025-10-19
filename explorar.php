@@ -19,6 +19,9 @@ $classificacao_id = isset($_GET['classificacao']) && $_GET['classificacao'] !== 
 // Verificar se há algum filtro ativo
 $temFiltro = !empty($buscar) || $genero_id !== null || $classificacao_id !== null;
 
+// Verifica se o usuário logado é admin
+$eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
+
 // Buscar séries com ou sem filtros
 if ($temFiltro) {
     // Se tiver filtros, usa o método buscar
@@ -206,34 +209,6 @@ if ($temFiltro) {
         </div>
     </div>
 
-    <!-- Modal avaliacao conta -->
-    <div id="modalAvaliacoes" class="modal">
-        <div class="modal-login">
-            <button class="close" id="closeAvaliacoes">
-                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-
-            <div class="modal-avaliacoes-header">
-                <h2 class="titulo" id="tituloSerie"></h2>
-                <button class="botao-nova-avaliacao" id="btnNovaAvaliacao">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" />
-                        <path d="M12 8V16M8 12H16" stroke="white" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                    Nova avaliação
-                </button>
-            </div>
-
-            <div id="conteudoAvaliacoes">
-                <div class="loading">Carregando avaliações...</div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal de Avaliações -->
     <div id="modalAvaliacoes" class="modal">
         <div class="modal-avaliacoes">
@@ -243,18 +218,20 @@ if ($temFiltro) {
                     <path d="M7.30005 11.5H15.7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M11.5 7.2998V15.6998" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-
             </button>
 
             <div class="modal-avaliacoes-header">
                 <h2 class="titulo" id="tituloSerie"></h2>
-                <button class="botao-nova-avaliacao" id="btnNovaAvaliacao">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" />
-                        <path d="M12 8V16M8 12H16" stroke="white" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                    Nova Avaliação
-                </button>
+
+                <?php if (!$eh_admin): ?>
+                    <button class="botao-nova-avaliacao" id="btnNovaAvaliacao">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" />
+                            <path d="M12 8V16M8 12H16" stroke="white" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Nova Avaliação
+                    </button>
+                <?php endif; ?>
             </div>
 
             <div id="conteudoAvaliacoes">
@@ -538,7 +515,7 @@ if ($temFiltro) {
                 card.style.cursor = 'pointer';
                 card.addEventListener('click', function() {
                     const titulo = this.querySelector('h3').textContent;
-                    const serieId = this.dataset.serieId; // Você precisará adicionar data-serie-id no card
+                    const serieId = this.dataset.serieId;
                     abrirModalAvaliacoes(serieId, titulo);
                 });
             });
@@ -557,7 +534,6 @@ if ($temFiltro) {
         }
 
         // Carregar avaliações
-        // Carregar avaliações
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
@@ -570,8 +546,13 @@ if ($temFiltro) {
                     <div class="avaliacao-item" data-usuario-id="${av.usuario_id}" style="cursor: pointer;">
                         <div class="avaliacao-header">
                             <div class="avaliacao-usuario">
-                                <div class="avatar-usuario">${av.usuario_nome.charAt(0).toUpperCase()}</div>
-                                <span class="usuario-nome">${av.usuario_nome}</span>
+                            <div class="avatar-usuario">
+                            ${av.foto_perfil && av.foto_perfil !== '' 
+                             ? `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
+                            : av.usuario_nome.charAt(0).toUpperCase()
+                                 }
+                            </div>                                
+                            <span class="usuario-nome">${av.usuario_nome}</span>
                                 <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
                             </div>
                         </div>
@@ -599,7 +580,7 @@ if ($temFiltro) {
         /**
          * Gera um conjunto de estrelas HTML (SVGs) baseado em uma nota de 1 a 5.
          * A nota determina quantas estrelas serão preenchidas.
-         * * @param {number} nota A nota para exibição, de 1 a 5.
+         * @param {number} nota A nota para exibição, de 1 a 5.
          * @returns {string} Uma string HTML contendo os SVGs das estrelas.
          */
         function gerarEstrelas(nota) {
@@ -608,7 +589,7 @@ if ($temFiltro) {
             // SVG para uma estrela PREENCHIDA (amarela com contorno escuro)
             const estrelaPreenchida = `
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10.5268 1.29489C10.5706 1.20635 10.6383 1.13183 10.7223 1.07972C10.8062 1.02761 10.903 1 11.0018 1C11.1006 1 11.1974 1.02761 11.2813 1.07972C11.3653 1.13183 11.433 1.20635 11.4768 1.29489L13.7868 5.97389C13.939 6.28186 14.1636 6.5483 14.4414 6.75035C14.7192 6.95239 15.0419 7.08401 15.3818 7.13389L20.5478 7.88989C20.6457 7.90408 20.7376 7.94537 20.8133 8.00909C20.8889 8.07282 20.9452 8.15644 20.9758 8.2505C21.0064 8.34456 21.0101 8.4453 20.9864 8.54133C20.9627 8.63736 20.9126 8.72485 20.8418 8.79389L17.1058 12.4319C16.8594 12.672 16.6751 12.9684 16.5686 13.2955C16.4622 13.6227 16.4369 13.9708 16.4948 14.3099L17.3768 19.4499C17.3941 19.5477 17.3835 19.6485 17.3463 19.7406C17.3091 19.8327 17.2467 19.9125 17.1663 19.9709C17.086 20.0293 16.9908 20.0639 16.8917 20.0708C16.7926 20.0777 16.6935 20.0566 16.6058 20.0099L11.9878 17.5819C11.6835 17.4221 11.345 17.3386 11.0013 17.3386C10.6576 17.3386 10.3191 17.4221 10.0148 17.5819L5.3978 20.0099C5.31013 20.0563 5.2112 20.0772 5.11225 20.0701C5.0133 20.0631 4.91832 20.0285 4.83809 19.9701C4.75787 19.9118 4.69563 19.8321 4.66041 19.7401C4.62323 19.6482 4.61261 19.5476 4.62975 19.4499L5.5088 14.3109C5.567 13.9716 5.54178 13.6233 5.43534 13.2959C5.32889 12.9686 5.14441 12.672 4.8978 12.4319L1.1618 8.79489C1.09039 8.72593 1.03979 8.63829 1.01576 8.54197C0.991731 8.44565 0.995237 8.34451 1.02588 8.25008C1.05652 8.15566 1.11307 8.07174 1.18908 8.00788C1.26509 7.94402 1.3575 7.90279 1.4558 7.88889L6.6208 7.13389C6.96106 7.08439 7.28419 6.95295 7.56238 6.75088C7.84058 6.54881 8.0655 6.28216 8.2178 5.97389L10.5268 1.29489Z"
+            <path d="M10.5268 1.29489C10.5706 1.20635 10.6383 1.13183 10.7223 1.07972C10.8062 1.02761 10.903 1 11.0018 1C11.1006 1 11.1974 1.02761 11.2813 1.07972C11.3653 1.13183 11.433 1.20635 11.4768 1.29489L13.7868 5.97389C13.939 6.28186 14.1636 6.5483 14.4414 6.75035C14.7192 6.95239 15.0419 7.08401 15.3818 7.13389L20.5478 7.88989C20.6457 7.90408 20.7376 7.94537 20.8133 8.00909C20.8889 8.07282 20.9452 8.15644 20.9758 8.2505C21.0064 8.34456 21.0101 8.4453 20.9864 8.54133C20.9627 8.63736 20.9126 8.72485 20.8418 8.79389L17.1058 12.4319C16.8594 12.672 16.6751 12.9684 16.5686 13.2955C16.4622 13.6227 16.4369 13.9708 16.4948 14.3099L17.3768 19.4499C17.3941 19.5477 17.3835 19.6485 17.3463 19.7406C17.3091 19.8327 17.2467 19.9125 17.1663 19.9709C17.086 20.0293 16.9908 20.0639 16.8917 20.0708C16.7926 20.0777 16.6935 20.0566 16.6058 20.0099L11.9878 17.5819C11.6835 17.4221 11.345 17.3386 11.0013 17.3386C10.6576 17.3386 10.3191 17.4221 10.0148 17.5819L5.3978 20.0099C5.31013 20.0563 5.2112 20.0772 5.11225 20.0701C5.0133 20.0631 4.91832 20.0285 4.83809 19.9701C4.75787 19.9118 4.69563 19.8321 4.65846 19.7401C4.62128 19.6482 4.61066 19.5476 4.6278 19.4499L5.5088 14.3109C5.567 13.9716 5.54178 13.6233 5.43534 13.2959C5.32889 12.9686 5.14441 12.672 4.8978 12.4319L1.1618 8.79489C1.09039 8.72593 1.03979 8.63829 1.01576 8.54197C0.991731 8.44565 0.995237 8.34451 1.02588 8.25008C1.05652 8.15566 1.11307 8.07174 1.18908 8.00788C1.26509 7.94402 1.3575 7.90279 1.4558 7.88889L6.6208 7.13389C6.96106 7.08439 7.28419 6.95295 7.56238 6.75088C7.84058 6.54881 8.0655 6.28216 8.2178 5.97389L10.5268 1.29489Z"
                 fill="#FFF600"
                 stroke="black"
                 stroke-opacity="0.6"
@@ -654,19 +635,22 @@ if ($temFiltro) {
             return date.toLocaleDateString('pt-BR', opcoes);
         }
 
-        // Botão Nova Avaliação
-        document.getElementById('btnNovaAvaliacao').addEventListener('click', function() {
-            <?php if (isset($_SESSION['usuario_id'])): ?>
-                const serieId = document.getElementById('modalAvaliacoes').dataset.serieId;
-                document.getElementById('serieIdAvaliacao').value = serieId;
-                document.getElementById('modalAvaliacoes').style.display = 'none';
-                document.getElementById('modalNovaAvaliacao').style.display = 'block';
-            <?php else: ?>
-                mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para avaliar uma série!');
-                document.getElementById('modalAvaliacoes').style.display = 'none';
-                document.getElementById('modal').style.display = 'block';
-            <?php endif; ?>
-        });
+        // Botão Nova Avaliação (apenas se existir - não existe para admins)
+        const btnNovaAvaliacao = document.getElementById('btnNovaAvaliacao');
+        if (btnNovaAvaliacao) {
+            btnNovaAvaliacao.addEventListener('click', function() {
+                <?php if (isset($_SESSION['usuario_id'])): ?>
+                    const serieId = document.getElementById('modalAvaliacoes').dataset.serieId;
+                    document.getElementById('serieIdAvaliacao').value = serieId;
+                    document.getElementById('modalAvaliacoes').style.display = 'none';
+                    document.getElementById('modalNovaAvaliacao').style.display = 'block';
+                <?php else: ?>
+                    mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para avaliar uma série!');
+                    document.getElementById('modalAvaliacoes').style.display = 'none';
+                    document.getElementById('modal').style.display = 'block';
+                <?php endif; ?>
+            });
+        }
 
         // Fechar modal de avaliações
         document.getElementById('closeAvaliacoes').addEventListener('click', function() {

@@ -11,7 +11,7 @@
   background-color: rgba(0, 0, 0, 0.6);
 }
 
-/* Conteúdo do modal */
+/* Conteúdo do modal de login/criar conta/nova avaliação */
 .modal-login {
   background-color: #fff;
   margin: 5% auto;
@@ -21,6 +21,28 @@
   overflow-y: auto;
   border-radius: clamp(1.5rem, 4vw, 2.5rem);
   position: relative;
+}
+
+/* Conteúdo do modal de avaliações */
+.modal-avaliacoes {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  width: min(90%, 50rem);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: clamp(1.5rem, 4vw, 2.5rem);
+  position: relative;
+}
+
+/* Header do modal de avaliações */
+.modal-avaliacoes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .close {
@@ -34,6 +56,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
 .close svg {
@@ -52,6 +75,13 @@
   text-align: center;
   margin: clamp(1.5rem, 4vw, 2rem);
   font-size: clamp(1.75rem, 5vw, 3rem);
+}
+
+.modal-avaliacoes-header .titulo {
+  margin: 0;
+  text-align: left;
+  flex: 1;
+  font-size: clamp(1.5rem, 4vw, 2rem);
 }
 
 .input-estilizado {
@@ -139,8 +169,7 @@
   font-size: 17px;
   font-weight: 600;
   white-space: nowrap;
-  margin-left: auto;
-  /* Empurra o botão para a direita */
+  flex-shrink: 0;
 }
 
 .botao-nova-avaliacao:hover {
@@ -159,28 +188,14 @@
 
 .botao-nova-avaliacao svg circle {
   stroke: #6A53B8 !important;
-
 }
 
-.usuario-nome {
-  color: rgba(0, 0, 0, 0.50);
-  font-size: 1rem;
-}
-
-.avaliacao-usuario {
-  display: flex;
-}
-
-.avaliacao-nota {
-  margin-left: 3rem;
-}
-
-.avaliacao-data {
-  color: rgba(0, 0, 0, 0.50);
-  font-size: 0.7rem;
-}
-
+/* Estilos para as avaliações */
 .avaliacao-item {
+  background: #f8f7fc;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
   transition: all 0.3s ease;
 }
 
@@ -190,30 +205,85 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.avaliacao-header {
+  margin-bottom: 1rem;
+}
+
+.avaliacao-usuario {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-usuario {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #6A53B8;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.usuario-nome {
+  color: rgba(0, 0, 0, 0.50);
+  font-size: 1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
 .usuario-nome:hover {
   text-decoration: underline;
   color: #6A53B8;
 }
 
-/* Media Queries para responsividade extra */
-@media (max-width: 768px) {
-  .modal-login {
-    margin: 10% auto;
-    width: 95%;
-  }
+.avaliacao-nota {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
 
-  .titulo {
-    margin: 1rem 0 1.5rem;
-  }
+.avaliacao-comentario {
+  color: #333;
+  line-height: 1.6;
+  margin: 1rem 0;
+}
 
-  .input-estilizado {
-    max-width: 100%;
-  }
+.avaliacao-data {
+  color: rgba(0, 0, 0, 0.50);
+  font-size: 0.7rem;
+  display: block;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6A53B8;
+  font-size: 1.1rem;
+}
+
+.sem-avaliacoes {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+  font-size: 1rem;
+}
+
+.erro-avaliacoes {
+  text-align: center;
+  padding: 2rem;
+  color: #d32f2f;
+  font-size: 1rem;
 }
 
 /* Media Queries para responsividade extra */
 @media (max-width: 768px) {
-  .modal-login {
+
+  .modal-login,
+  .modal-avaliacoes {
     margin: 10% auto;
     width: 95%;
   }
@@ -229,17 +299,37 @@
   .botao-nova-avaliacao {
     padding: 10px 20px;
     font-size: 15px;
-    margin-left: 0;
+  }
+
+  .modal-avaliacoes-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modal-avaliacoes-header .titulo {
+    text-align: center;
+    width: 100%;
+  }
+
+  .botao-nova-avaliacao {
     margin: 0 auto;
   }
 
+  .avaliacao-usuario {
+    flex-wrap: wrap;
+  }
+
   .avaliacao-nota {
-    margin-left: 1.5rem;
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .modal-login {
+
+  .modal-login,
+  .modal-avaliacoes {
     margin: 5% auto;
     padding: 1.5rem 1rem;
     border-radius: 1.25rem;
@@ -265,15 +355,20 @@
 
   .avaliacao-usuario {
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
   }
 
   .avaliacao-nota {
-    margin-left: 0;
+    margin-top: 0;
   }
 
   .avaliacao-data {
     font-size: 0.65rem;
+  }
+
+  .avaliacao-item {
+    padding: 1rem;
   }
 }
 
@@ -290,7 +385,9 @@
 }
 
 @media (max-height: 700px) {
-  .modal-login {
+
+  .modal-login,
+  .modal-avaliacoes {
     margin: 2% auto;
     max-height: 95vh;
   }

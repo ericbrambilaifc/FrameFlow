@@ -25,6 +25,9 @@ if (!$usuario) {
     exit;
 }
 
+// Verifica se o usuário logado é admin
+$eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
+
 // Busca as avaliações do usuário
 $avaliacoes = AvaliacaoDAO::listarPorUsuario($usuario_id);
 
