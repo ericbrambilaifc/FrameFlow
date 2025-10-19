@@ -213,11 +213,12 @@ if ($temFiltro) {
     <div id="modalAvaliacoes" class="modal">
         <div class="modal-avaliacoes">
             <button class="close" id="closeAvaliacoes">
-                <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke: #6A53B8;">
-                    <path d="M11.5 22C17.299 22 22 17.299 22 11.5C22 5.70101 17.299 1 11.5 1C5.70101 1 1 5.70101 1 11.5C1 17.299 5.70101 22 11.5 22Z" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M7.30005 11.5H15.7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M11.5 7.2998V15.6998" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 38C29.9411 38 38 29.9411 38 20C38 10.0589 29.9411 2 20 2C10.0589 2 2 10.0589 2 20C2 29.9411 10.0589 38 20 38Z" stroke="black" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M25.3999 14.6L14.5999 25.4" stroke="black" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M14.5999 14.6L25.3999 25.4" stroke="black" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
+
             </button>
 
             <div class="modal-avaliacoes-header">
