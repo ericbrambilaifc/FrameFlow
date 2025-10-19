@@ -42,7 +42,7 @@ class UsuarioDAO
     {
         $conexao = ConexaoBD::conectar();
 
-        $sql = "SELECT id, nome_completo, email FROM usuarios WHERE id = :id";
+        $sql = "SELECT id, nome_completo, email, foto_perfil FROM usuarios WHERE id = :id";
         $stmt = $conexao->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
@@ -69,7 +69,7 @@ class UsuarioDAO
         $conexao = ConexaoBD::conectar();
         $termo = "%{$termo}%";
 
-        $sql = "SELECT u.id, u.nome_completo, u.email,
+        $sql = "SELECT u.id, u.nome_completo, u.email, u.foto_perfil,
                 (SELECT COUNT(*) FROM avaliacoes WHERE usuario_id = u.id) as total_avaliacoes,
                 (SELECT COUNT(*) FROM seguidores WHERE seguindo_id = u.id) as total_seguidores
                 FROM usuarios u
@@ -89,7 +89,7 @@ class UsuarioDAO
     {
         $conexao = ConexaoBD::conectar();
 
-        $sql = "SELECT id, nome_completo, email FROM usuarios";
+        $sql = "SELECT id, nome_completo, email, foto_perfil FROM usuarios";
         $stmt = $conexao->prepare($sql);
         $stmt->execute();
 
@@ -101,7 +101,7 @@ class UsuarioDAO
     {
         $conexao = ConexaoBD::conectar();
 
-        $sql = "SELECT u.id, u.nome_completo, u.email,
+        $sql = "SELECT u.id, u.nome_completo, u.email, u.foto_perfil,
                 (SELECT COUNT(*) FROM avaliacoes WHERE usuario_id = u.id) as total_avaliacoes,
                 (SELECT COUNT(*) FROM seguidores WHERE seguindo_id = u.id) as total_seguidores,
                 (SELECT COUNT(*) FROM seguidores WHERE seguidor_id = u.id) as total_seguindo
@@ -113,5 +113,32 @@ class UsuarioDAO
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Atualizar foto de perfil
+    public static function atualizarFotoPerfil($usuario_id, $nomeFoto)
+    {
+        $conexao = ConexaoBD::conectar();
+
+        $sql = "UPDATE usuarios SET foto_perfil = :foto_perfil WHERE id = :id";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':foto_perfil', $nomeFoto);
+        $stmt->bindParam(':id', $usuario_id);
+
+        return $stmt->execute();
+    }
+
+    // Obter foto de perfil atual
+    public static function obterFotoPerfil($usuario_id)
+    {
+        $conexao = ConexaoBD::conectar();
+
+        $sql = "SELECT foto_perfil FROM usuarios WHERE id = :id";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':id', $usuario_id);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado ? $resultado['foto_perfil'] : null;
     }
 }

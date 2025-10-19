@@ -35,21 +35,66 @@
     gap: 25px;
 }
 
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
 .avatar {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     overflow: hidden;
-    flex-shrink: 0;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .avatar svg {
     width: 100%;
     height: 100%;
+}
+
+.avatar-upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+}
+
+.avatar:hover .avatar-upload-overlay {
+    opacity: 1;
+}
+
+.avatar-upload-overlay svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+}
+
+#foto_perfil_input {
+    display: none;
 }
 
 .perfil-nome {
@@ -303,19 +348,6 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .btn-seguir {
-        padding: 8px 20px;
-        font-size: 14px;
-    }
-
-    .btn-seguir svg {
-        width: 16px;
-        height: 16px;
-    }
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
     .container-perfil {
         max-width: 95%;
         padding: 15px;
@@ -325,25 +357,65 @@
         flex-direction: column;
         gap: 25px;
         padding: 20px;
+        align-items: center;
     }
 
     .perfil-info {
         flex-direction: column;
         text-align: center;
         width: 100%;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .avatar {
+        width: 90px;
+        height: 90px;
+        border: 2px solid #fff;
+    }
+
+    .avatar-upload-overlay svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .perfil-nome {
+        font-size: 24px;
+    }
+
+    .perfil-status {
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     .perfil-acoes {
-        width: 100%;
+        align-items: center;
+    }
+
+    .btn-editar-container {
+        align-items: center;
     }
 
     .btn-editar {
-        width: 100%;
+        width: auto;
+        min-width: 200px;
+        text-align: center;
     }
 
     .btn-sair {
-        width: 100%;
-        text-align: left;
+        width: auto;
+        min-width: 200px;
+        text-align: center;
+    }
+
+    .btn-seguir {
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+
+    .btn-seguir svg {
+        width: 16px;
+        height: 16px;
     }
 
     .avaliacao-header {
@@ -352,12 +424,12 @@
         gap: 10px;
     }
 
-    .perfil-nome {
-        font-size: 24px;
-    }
-
     .avaliacoes-secao {
         padding: 20px;
+    }
+
+    .avaliacoes-secao h2 {
+        font-size: 20px;
     }
 }
 
@@ -369,27 +441,109 @@
 
     .perfil-header {
         padding: 15px;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .perfil-info {
+        gap: 15px;
+        align-items: center;
     }
 
     .avatar {
-        width: 90px;
-        height: 90px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .avatar-upload-overlay svg {
+        width: 20px;
+        height: 20px;
     }
 
     .perfil-nome {
         font-size: 20px;
     }
 
+    .perfil-email {
+        font-size: 14px;
+    }
+
     .perfil-status {
         flex-direction: column;
         gap: 8px;
+        font-size: 13px;
+        align-items: center;
+    }
+
+    .btn-voltar {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .btn-editar,
+    .btn-sair {
+        padding: 10px 20px;
+        font-size: 13px;
+        width: auto;
+        min-width: 180px;
+        text-align: center;
+    }
+
+    .btn-seguir {
+        padding: 8px 16px;
+        font-size: 13px;
+        width: auto;
+        min-width: 150px;
+        justify-content: center;
     }
 
     .avaliacoes-secao {
         padding: 15px;
     }
 
+    .avaliacoes-secao h2 {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
     .avaliacao-card {
         padding: 15px;
+    }
+
+    .serie-titulo {
+        font-size: 16px;
+    }
+
+    .estrelas svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .avaliacao-comentario {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 360px) {
+    .avatar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .perfil-nome {
+        font-size: 18px;
+    }
+
+    .btn-editar-container {
+        gap: 8px;
+    }
+
+    .btn-editar,
+    .btn-sair {
+        min-width: 160px;
+    }
+
+    .btn-seguir {
+        min-width: 140px;
     }
 }
