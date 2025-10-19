@@ -146,7 +146,7 @@ if ($temFiltro) {
                     <div class="card-serie" data-serie-id="<?php echo $serie['id']; ?>"> <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
                         <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
                         <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
-                        <p>Nota média: <?php echo number_format($serie['media_nota'], 1); ?>/10</p>
+                        <p>Nota média: <?php echo number_format(($serie['media_nota'] * 2), 1); ?>/10</p>
                     </div>
                 <?php endforeach; ?>
             </div>
