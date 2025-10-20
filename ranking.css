@@ -1,0 +1,354 @@
+
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container-ranking {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+.ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.perfil-usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar-pequeno {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-pequeno img,
+.avatar-pequeno svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nome-usuario {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.btn-voltar-ranking {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    color: #6A53B8;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.btn-voltar-ranking:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(106, 83, 184, 0.2);
+}
+
+/* Título */
+.titulo-secao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 50px;
+}
+
+.titulo-secao h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+}
+
+.icone-medalha {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Pódio */
+.podio {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 60px;
+    padding: 0 20px;
+}
+
+.posicao {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    padding: 30px 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    min-width: 250px;
+}
+
+.posicao:hover {
+    transform: translateY(-5px);
+}
+
+.posicao-1 {
+    order: 2;
+    padding: 40px 30px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: white;
+    position: relative;
+}
+
+.posicao-1::before {
+    content: '👑';
+    position: absolute;
+    top: -30px;
+    font-size: 50px;
+    animation: crown 2s ease-in-out infinite;
+}
+
+@keyframes crown {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+}
+
+.posicao-2 {
+    order: 1;
+    background: linear-gradient(135deg, #E8E8E8 0%, #C0C0C0 100%);
+}
+
+.posicao-3 {
+    order: 3;
+    background: linear-gradient(135deg, #E6C8A0 0%, #CD7F32 100%);
+}
+
+.avatar-podio {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 4px solid white;
+}
+
+.avatar-podio img,
+.avatar-podio svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nome-link {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    text-decoration: none;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+.posicao-1 .nome-link {
+    color: white;
+    font-size: 26px;
+}
+
+.nome-link:hover {
+    color: #6A53B8;
+}
+
+.posicao-1 .nome-link:hover {
+    color: #FFF5CC;
+}
+
+.badge-posicao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.primeiro {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.segundo {
+    background: rgba(192, 192, 192, 0.3);
+    color: #333;
+}
+
+.terceiro {
+    background: rgba(205, 127, 50, 0.3);
+    color: #333;
+}
+
+.total-avaliacoes {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.posicao-1 .total-avaliacoes {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+}
+
+/* Lista demais colocados */
+.lista-demais {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.item-ranking {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.3s ease;
+}
+
+.item-ranking:last-child {
+    border-bottom: none;
+}
+
+.item-ranking:hover {
+    background: #f9f9f9;
+}
+
+.numero-posicao {
+    font-size: 20px;
+    font-weight: 700;
+    color: #6A53B8;
+    min-width: 40px;
+}
+
+.nome-usuario-item {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nome-usuario-item:hover {
+    color: #6A53B8;
+}
+
+.total-avaliacoes-item {
+    font-size: 14px;
+    color: #999;
+    font-weight: 500;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .podio {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .posicao-1,
+    .posicao-2,
+    .posicao-3 {
+        order: 0;
+        width: 100%;
+        max-width: 350px;
+    }
+
+    .posicao-1::before {
+        top: -25px;
+        font-size: 40px;
+    }
+
+    .titulo-secao h1 {
+        font-size: 28px;
+    }
+
+    .item-ranking {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .total-avaliacoes-item {
+        width: 100%;
+        margin-left: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .ranking-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .btn-voltar-ranking {
+        justify-content: center;
+    }
+
+    .titulo-secao {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .titulo-secao h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .posicao {
+        min-width: 100%;
+    }
+
+    .nome-link {
+        font-size: 18px;
+    }
+
+    .posicao-1 .nome-link {
+        font-size: 22px;
+    }
+}
