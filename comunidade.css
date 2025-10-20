@@ -6,13 +6,13 @@ body {
     padding: 20px;
 }
 
-.container-ranking {
+.container-comunidade {
     max-width: 1200px;
     margin: 0 auto;
 }
 
 /* Header */
-.ranking-header {
+.comunidade-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,23 +50,19 @@ body {
     color: #333;
 }
 
-.btn-voltar-ranking {
+.btn-voltar {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
-    background: white;
     color: #6A53B8;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+    font-size: 16px;
+    margin-bottom: 30px;
+    transition: opacity 0.2s;
 }
 
-.btn-voltar-ranking:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(106, 83, 184, 0.2);
+.btn-voltar:hover {
+    opacity: 0.7;
 }
 
 /* Título */
@@ -84,9 +80,6 @@ body {
     color: #333;
 }
 
-.icone-medalha {
-    animation: float 3s ease-in-out infinite;
-}
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -171,6 +164,10 @@ body {
     object-fit: cover;
 }
 
+.podio:hover {
+    cursor: pointer;
+}
+
 .nome-link {
     font-size: 22px;
     font-weight: 700;
@@ -186,11 +183,11 @@ body {
 }
 
 .nome-link:hover {
-    color: #6A53B8;
+    opacity: 0.7;
 }
 
 .posicao-1 .nome-link:hover {
-    color: #FFF5CC;
+    opacity: 0.7;
 }
 
 .badge-posicao {
@@ -237,7 +234,7 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.item-ranking {
+.item-comunidade {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -246,11 +243,11 @@ body {
     transition: background 0.3s ease;
 }
 
-.item-ranking:last-child {
+.item-comunidade:last-child {
     border-bottom: none;
 }
 
-.item-ranking:hover {
+.item-comunidade:hover {
     background: #f9f9f9;
 }
 
@@ -304,7 +301,7 @@ body {
         font-size: 28px;
     }
 
-    .item-ranking {
+    .item-comunidade {
         flex-wrap: wrap;
         gap: 10px;
     }
@@ -320,13 +317,13 @@ body {
         padding: 10px;
     }
 
-    .ranking-header {
+    .comunidade-header {
         flex-direction: column;
         gap: 20px;
         align-items: stretch;
     }
 
-    .btn-voltar-ranking {
+    .btn-voltar-comunidade {
         justify-content: center;
     }
 
