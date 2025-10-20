@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         if (SerieDao::inserir($dados)) {
-            "Série '$titulo' cadastrada com sucesso!";
+            $_SESSION['sucesso_serie'] = "Série '$titulo' cadastrada com sucesso!";
             header("Location: explorar.php");
             exit();
         } else {

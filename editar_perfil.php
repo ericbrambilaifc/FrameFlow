@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
     if ($stmt->execute()) {
         $_SESSION['usuario_nome'] = $nome_completo;
         $_SESSION['sucesso'] = 'Perfil atualizado com sucesso!';
+        $_SESSION['sucesso_serie'] = 'Serie atualizada com sucesso!';
     } else {
         $_SESSION['erro'] = 'Erro ao atualizar perfil.';
     }
