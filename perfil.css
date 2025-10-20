@@ -93,6 +93,24 @@
     fill: white;
 }
 
+.avatar-editavel {
+    cursor: pointer;
+    position: relative;
+}
+
+.avatar-editavel:hover .avatar-upload-overlay {
+    opacity: 1;
+}
+
+.avatar {
+    cursor: default;
+}
+
+.avatar-upload-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
 #foto_perfil_input {
     display: none;
 }

@@ -17,7 +17,6 @@ if (!$usuario_id) {
 $usuario = UsuarioDAO::obterPerfil($usuario_id);
 $foto_perfil = $usuario['foto_perfil'] ?? null;
 
-
 // Se usuário não existe, redireciona
 if (!$usuario) {
     $_SESSION['erro'] = 'Usuário não encontrado.';
@@ -33,9 +32,6 @@ $avaliacoes = AvaliacaoDAO::listarPorUsuario($usuario_id);
 
 // Verifica se é o próprio perfil
 $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] == $usuario_id;
-
-// Verifica se o usuário logado é admin
-$eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
 
 // Verifica se está seguindo (apenas se não for o próprio perfil e estiver logado)
 $esta_seguindo = false;
@@ -73,33 +69,48 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         <div class="perfil-header">
             <div class="perfil-info">
                 <div class="avatar-container">
-                    <form id="form-foto-perfil" action="atualizar_foto_perfil.php" method="POST" enctype="multipart/form-data">
-                        <div class="avatar" onclick="document.getElementById('foto_perfil_input').click()">
+                    <?php if ($eh_proprio_perfil): ?>
+                        <!-- Form de upload apenas para o próprio perfil -->
+                        <form id="form-foto-perfil" action="atualizar_foto_perfil.php" method="POST" enctype="multipart/form-data">
+                            <div class="avatar" style="cursor: pointer;" onclick="document.getElementById('foto_perfil_input').click()">
+                                <?php if ($foto_perfil && file_exists('uploads/perfil/' . $foto_perfil)): ?>
+                                    <img src="uploads/perfil/<?php echo htmlspecialchars($foto_perfil); ?>" alt="Foto de perfil" id="avatar-preview">
+                                <?php else: ?>
+                                    <svg width="80" height="80" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg" id="avatar-svg">
+                                        <circle cx="138" cy="137.5" r="137.5" fill="<?php echo $eh_admin ? '#070706ff' : '#6A53B8'; ?>" />
+                                        <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                <?php endif; ?>
 
+                                <div class="avatar-upload-overlay">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9v3H8v2h3v3h2v-3h3v-2h-3V9h-2z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <input
+                                type="file"
+                                name="foto_perfil"
+                                id="foto_perfil_input"
+                                accept="image/jpeg,image/png,image/jpg,image/gif"
+                                onchange="previewAndSubmit(this)">
+                        </form>
+                    <?php else: ?>
+                        <!-- Avatar apenas visualização para outros perfis -->
+                        <div class="avatar">
                             <?php if ($foto_perfil && file_exists('uploads/perfil/' . $foto_perfil)): ?>
-                                <img src="uploads/perfil/<?php echo htmlspecialchars($foto_perfil); ?>" alt="Foto de perfil" id="avatar-preview">
+                                <img src="uploads/perfil/<?php echo htmlspecialchars($foto_perfil); ?>" alt="Foto de perfil">
                             <?php else: ?>
-                                <svg width="80" height="80" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg" id="avatar-svg">
+                                <svg width="80" height="80" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="138" cy="137.5" r="137.5" fill="<?php echo $eh_admin ? '#070706ff' : '#6A53B8'; ?>" />
                                     <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
                                     <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             <?php endif; ?>
-
-                            <div class="avatar-upload-overlay">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9v3H8v2h3v3h2v-3h3v-2h-3V9h-2z" />
-                                </svg>
-                            </div>
                         </div>
-
-                        <input
-                            type="file"
-                            name="foto_perfil"
-                            id="foto_perfil_input"
-                            accept="image/jpeg,image/png,image/jpg,image/gif"
-                            onchange="previewAndSubmit(this)">
-                    </form>
+                    <?php endif; ?>
                 </div>
 
                 <script>
@@ -125,7 +136,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                             // Preview da imagem
                             const reader = new FileReader();
                             reader.onload = function(e) {
-                                const avatarDiv = document.querySelector('.avatar');
+                                const avatarDiv = document.querySelector('.avatar-editavel');
                                 const svg = document.getElementById('avatar-svg');
 
                                 if (svg) {
@@ -174,25 +185,20 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                         <span><?php echo $esta_seguindo ? 'Seguindo' : 'Seguir'; ?></span>
                                     </button>
                                 <?php endif; ?>
-
-
                             </div>
                         </div>
-
-
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="btn-editar-container"">
+            <div class="btn-editar-container">
                 <?php if ($eh_proprio_perfil): ?>
                     <?php if (!$eh_admin): ?>
-                        <button class=" btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
-            <?php endif; ?>
-            <button class="btn-editar" onclick="abrirModalSenha()">Editar senha</button>
-            <a href="logout.php" class="btn-sair">Sair</a>
-        <?php endif; ?>
+                        <button class="btn-editar" onclick="abrirModalEditar()">Editar usuário</button>
+                    <?php endif; ?>
+                    <button class="btn-editar" onclick="abrirModalSenha()">Editar senha</button>
+                    <a href="logout.php" class="btn-sair">Sair</a>
+                <?php endif; ?>
             </div>
-
         </div>
 
         <!-- Avaliações (apenas para não-admin) -->

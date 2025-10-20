@@ -41,6 +41,7 @@ if ($temFiltro) {
     <link rel="stylesheet" href="modal.css">
     <link rel="stylesheet" href="explorar.css">
     <link rel="stylesheet" href="alert.css">
+    <link rel="shortcut icon" href="/src/assets/icons/favicon.ico" type="image/x-icon">
     <title>FrameFlow | Opiniões que guiam suas próximas maratonas</title>
 </head>
 
