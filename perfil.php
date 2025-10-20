@@ -49,8 +49,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="modal.css">
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="perfil.css">
-    <link rel="stylesheet" href="alert.css">
-    <link rel="stylesheet" href="seguir.css">
     <title><?php echo htmlspecialchars($usuario['nome_completo']); ?> | Perfil</title>
 </head>
 
