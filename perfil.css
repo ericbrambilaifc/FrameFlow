@@ -239,6 +239,8 @@
 .estrelas > div {
     flex-basis: 100%;
     margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .estrelas > div svg {
