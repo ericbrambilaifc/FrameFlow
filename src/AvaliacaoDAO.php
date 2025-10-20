@@ -10,13 +10,13 @@ class AvaliacaoDAO
 
         $sql = "INSERT INTO avaliacoes (usuario_id, serie_id, nota, comentario) 
                 VALUES (:usuario_id, :serie_id, :nota, :comentario)";
-        
+
         $stmt = $conexao->prepare($sql);
         $stmt->bindParam(':usuario_id', $dados['usuario_id']);
         $stmt->bindParam(':serie_id', $dados['serie_id']);
         $stmt->bindParam(':nota', $dados['nota']);
         $stmt->bindParam(':comentario', $dados['comentario']);
-        
+
         return $stmt->execute();
     }
 
@@ -28,13 +28,13 @@ class AvaliacaoDAO
         $sql = "UPDATE avaliacoes 
                 SET nota = :nota, comentario = :comentario
                 WHERE usuario_id = :usuario_id AND serie_id = :serie_id";
-        
+
         $stmt = $conexao->prepare($sql);
         $stmt->bindParam(':nota', $dados['nota']);
         $stmt->bindParam(':comentario', $dados['comentario']);
         $stmt->bindParam(':usuario_id', $dados['usuario_id']);
         $stmt->bindParam(':serie_id', $dados['serie_id']);
-        
+
         return $stmt->execute();
     }
 
@@ -62,7 +62,7 @@ class AvaliacaoDAO
                 INNER JOIN usuarios u ON a.usuario_id = u.id
                 WHERE a.serie_id = :serie_id
                 ORDER BY a.id DESC";
-        
+
         $stmt = $conexao->prepare($sql);
         $stmt->bindParam(':serie_id', $serie_id);
         $stmt->execute();
@@ -80,7 +80,7 @@ class AvaliacaoDAO
                 INNER JOIN series s ON a.serie_id = s.id
                 WHERE a.usuario_id = :usuario_id
                 ORDER BY a.id DESC";
-        
+
         $stmt = $conexao->prepare($sql);
         $stmt->bindParam(':usuario_id', $usuario_id);
         $stmt->execute();
@@ -101,7 +101,7 @@ class AvaliacaoDAO
                 INNER JOIN series s ON a.serie_id = s.id
                 ORDER BY a.id DESC
                 LIMIT :limite";
-        
+
         $stmt = $conexao->prepare($sql);
         $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
         $stmt->execute();
@@ -109,16 +109,28 @@ class AvaliacaoDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Deletar avaliação
-    public static function deletar($usuario_id, $serie_id)
+    // Obter avaliação por ID
+    public static function obterPorId($avaliacao_id)
     {
         $conexao = ConexaoBD::conectar();
 
-        $sql = "DELETE FROM avaliacoes WHERE usuario_id = :usuario_id AND serie_id = :serie_id";
+        $sql = "SELECT * FROM avaliacoes WHERE id = :id";
         $stmt = $conexao->prepare($sql);
-        $stmt->bindParam(':usuario_id', $usuario_id);
-        $stmt->bindParam(':serie_id', $serie_id);
-        
+        $stmt->bindParam(':id', $avaliacao_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Deletar avaliação por ID
+    public static function deletarPorId($avaliacao_id)
+    {
+        $conexao = ConexaoBD::conectar();
+
+        $sql = "DELETE FROM avaliacoes WHERE id = :id";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(':id', $avaliacao_id, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 }

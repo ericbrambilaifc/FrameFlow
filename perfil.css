@@ -231,7 +231,27 @@
 
 .estrelas {
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
+    align-items: center;
+}
+
+.estrelas > div {
+    flex-basis: 100%;
+    margin-top: 8px;
+}
+
+.estrelas > div svg {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.estrelas > div svg:hover {
+    opacity: 0.7;
+}
+
+.estrelas > div svg:hover path {
+    stroke: #D22232;
 }
 
 .avaliacao-comentario {

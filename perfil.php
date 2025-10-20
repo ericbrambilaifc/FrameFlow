@@ -237,26 +237,29 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
                                         <?php endfor; ?>
-                                        
-                                        <div>   
-                                            <svg width="20" height="22" viewBox="0 0 20 22" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M12 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                            <path
-                                                d="M17 5V19C17 19.5304 16.7893 20.0391 16.4142 20.4142C16.0391 20.7893 15.5304 21 15 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5"
-                                                stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path d="M1 5H19" stroke="black" stroke-opacity="0.8" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                            <path
-                                                d="M6 5V3C6 2.46957 6.21071 1.96086 6.58579 1.58579C6.96086 1.21071 7.46957 1 8 1H12C12.5304 1 13.0391 1.21071 13.4142 1.58579C13.7893 1.96086 14 2.46957 14 3V5"
-                                                stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                        </div>
+
+                                        <?php if ($eh_proprio_perfil): ?>
+                                            <div>
+                                                <svg width="20" height="22" viewBox="0 0 20 22" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    onclick="excluirAvaliacao(<?php echo $avaliacao['id']; ?>, this)">
+                                                    <path d="M8 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path
+                                                        d="M17 5V19C17 19.5304 16.7893 20.0391 16.4142 20.4142C16.0391 20.7893 15.5304 21 15 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5"
+                                                        stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path d="M1 5H19" stroke="black" stroke-opacity="0.8" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path
+                                                        d="M6 5V3C6 2.46957 6.21071 1.96086 6.58579 1.58579C6.96086 1.21071 7.46957 1 8 1H12C12.5304 1 13.0391 1.21071 13.4142 1.58579C13.7893 1.96086 14 2.46957 14 3V5"
+                                                        stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                        <?php endif; ?>
 
                                     </div>
                                 </div>
@@ -514,6 +517,61 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 <?php unset($_SESSION['erro']); ?>
             <?php endif; ?>
         });
+
+        // Função para excluir avaliação
+        async function excluirAvaliacao(avaliacaoId, elemento) {
+            // Confirmação
+            if (!confirm('Tem certeza que deseja excluir esta avaliação?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('excluir_avaliacao.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        avaliacao_id: avaliacaoId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.sucesso) {
+                    // Remove o card da avaliação da tela
+                    const avaliacaoCard = elemento.closest('.avaliacao-card');
+                    avaliacaoCard.style.opacity = '0';
+                    avaliacaoCard.style.transform = 'translateX(-20px)';
+                    avaliacaoCard.style.transition = 'all 0.3s ease';
+
+                    setTimeout(() => {
+                        avaliacaoCard.remove();
+
+                        // Verifica se não há mais avaliações
+                        const avaliacoesLista = document.querySelector('.avaliacoes-lista');
+                        if (avaliacoesLista && avaliacoesLista.children.length === 0) {
+                            avaliacoesLista.innerHTML = '<p class="sem-avaliacoes">Nenhuma avaliação realizada ainda.</p>';
+                        }
+
+                        // Atualiza contador de avaliações no header
+                        const contadorElement = document.querySelector('.perfil-status span:first-child strong');
+                        if (contadorElement) {
+                            const novoTotal = parseInt(contadorElement.textContent) - 1;
+                            contadorElement.textContent = novoTotal;
+                        }
+                    }, 300);
+
+                    mostrarNotificacao('sucesso', 'Sucesso', data.mensagem);
+                } else {
+                    mostrarNotificacao('erro', 'Erro', data.mensagem);
+                }
+
+            } catch (error) {
+                mostrarNotificacao('erro', 'Erro', 'Erro ao excluir avaliação');
+            }
+        }
+
     </script>
 </body>
 
