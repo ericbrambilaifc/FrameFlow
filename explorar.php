@@ -46,11 +46,24 @@ if ($temFiltro) {
 
 <body>
     <header>
+        <!-- Menu Toggle para dispositivos móveis -->
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">
+            <svg fill="#ffffff" width="30" height="30" viewBox="0 0 100 80">
+                <rect width="100" height="10"></rect>
+                <rect y="30" width="100" height="10"></rect>
+                <rect y="60" width="100" height="10"></rect>
+            </svg>
+        </label>
+
+        <!-- Navegação principal -->
         <ul>
             <li><a href="/explorar.php"><img src="/src/assets/img/logo-text.png" style="width: 25%" alt="LOGO"></a></li>
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
         </ul>
+
+        <!-- Perfil do usuário -->
         <div class="header-perfil">
             <?php if (isset($_SESSION['usuario_id'])): ?>
                 <a href="perfil.php?id=<?php echo $_SESSION['usuario_id']; ?>">
@@ -77,6 +90,7 @@ if ($temFiltro) {
             <?php endif; ?>
         </div>
     </header>
+
 
 
     <!-- Barra de busca de séries -->

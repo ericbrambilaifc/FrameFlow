@@ -131,3 +131,98 @@ header div a svg {
     opacity: 0.9;
     transition: ease-in-out 0.2s;
 }
+
+/* --- Novo CSS para o Menu Hambúrguer (BASE) --- */
+
+/* Esconde o checkbox que controla o menu */
+#menu-toggle {
+    display: none;
+}
+
+/* Estiliza e esconde o ícone de hambúrguer por padrão */
+.menu-icon {
+    display: none; 
+    cursor: pointer;
+    position: relative;
+    z-index: 200; /* Garante que o ícone fique por cima do menu */
+}
+
+/* Estilo para o SVG de hambúrguer (se você estiver usando um SVG) */
+.menu-icon svg rect {
+    fill: white;
+}
+
+/* --- Media Query para Telas Pequenas (max-width: 480px) --- */
+@media (max-width: 480px) {
+
+    /* --- AJUSTES NO HEADER PARA MENU HAMBÚRGUER --- */
+
+    /* 1. Altera o flexbox do Header */
+    header {
+        /* Permite que o logo/perfil e o ícone fiquem na mesma linha */
+        flex-direction: row; 
+        /* Distribui o espaço entre os elementos principais */
+        justify-content: space-between; 
+        padding: 1rem 5%;
+        border-radius: 1.5rem;
+        flex-wrap: nowrap;
+        margin: 1rem auto;
+        max-width: 95%;
+    }
+
+    /* 2. Mostra o ícone de hambúrguer */
+    .menu-icon {
+        display: block; 
+        order: 3; /* Coloca o ícone na ponta direita */
+        margin-left: 1rem; 
+    }
+    
+    /* Reposiciona o botão de perfil/login */
+    .header-perfil {
+        margin-left: 0;
+        order: 2; /* Fica entre o logo (1) e o ícone (3) */
+    }
+    
+    /* 3. Oculta e Posiciona o Menu de Navegação */
+    header ul {
+        /* Transforma a lista em um menu vertical, fora da tela */
+        display: flex;
+        flex-direction: column;
+        position: absolute; 
+        top: 5rem; /* Posição ajustada abaixo do header */
+        right: 0;
+        width: 100%;
+        max-width: 200px; /* Largura do menu retrátil */
+        padding: 1rem;
+        background: #6A53B8; /* Cor de fundo do menu */
+        border-radius: 0 0 0 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        
+        /* Inicialmente move o menu para fora da tela (direita) */
+        transform: translateX(100%); 
+        transition: transform 0.3s ease-in-out;
+        z-index: 100;
+        align-items: flex-start;
+        gap: 0;
+    }
+
+    /* Oculta o item do logo/imagem dentro da lista, pois ele já está visível na linha principal */
+    header ul li:first-child {
+        display: none;
+    }
+    
+    /* Ajusta a aparência dos links no menu móvel */
+    header ul li {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+    header ul li a {
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    /* 4. A mágica: Se o checkbox estiver marcado (clicado), o menu entra na tela */
+    #menu-toggle:checked ~ ul {
+        transform: translateX(0);
+    }
+}
