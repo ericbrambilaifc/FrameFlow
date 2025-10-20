@@ -145,7 +145,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
                             // Preview da imagem
                             const reader = new FileReader();
-                            reader.onload = function (e) {
+                            reader.onload = function(e) {
                                 const avatarDiv = document.querySelector('.avatar-editavel');
                                 const svg = document.getElementById('avatar-svg');
 
@@ -222,13 +222,17 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                         <?php foreach ($avaliacoes as $avaliacao): ?>
                             <div class="avaliacao-card">
                                 <div class="avaliacao-header">
-                                    <h3 class="serie-titulo"><?php echo htmlspecialchars($avaliacao['titulo']); ?></h3>
+                                    <div>
+                                        <h3 class="serie-titulo"><?php echo htmlspecialchars($avaliacao['titulo']); ?></h3>
+                                        <p class="avaliacao-comentario"><?php echo nl2br(htmlspecialchars($avaliacao['comentario'])); ?></p>
+
+                                    </div>
                                     <div class="estrelas">
                                         <?php
                                         for ($i = 1; $i <= 5; $i++):
                                             $preenchida = $i <= $avaliacao['nota'];
                                             $corPreenchimento = $preenchida ? '#FFF600' : 'none';
-                                            ?>
+                                        ?>
                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -263,7 +267,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
                                     </div>
                                 </div>
-                                <p class="avaliacao-comentario"><?php echo nl2br(htmlspecialchars($avaliacao['comentario'])); ?></p>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -429,14 +432,14 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        window.addEventListener('click', function (event) {
+        window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
         });
 
-        document.addEventListener('keydown', function (event) {
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const modais = document.querySelectorAll('.modal');
                 modais.forEach(modal => {
@@ -450,7 +453,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
         const formSenha = document.getElementById('formSenha');
         if (formSenha) {
-            formSenha.addEventListener('submit', function (event) {
+            formSenha.addEventListener('submit', function(event) {
                 const novaSenha = document.getElementById('nova_senha').value;
                 const confirmarSenha = document.getElementById('confirmar_nova_senha').value;
 
@@ -506,7 +509,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             <?php if (isset($_SESSION['sucesso'])): ?>
                 mostrarNotificacao('sucesso', 'Sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');
                 <?php unset($_SESSION['sucesso']); ?>
@@ -571,7 +574,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 mostrarNotificacao('erro', 'Erro', 'Erro ao excluir avaliação');
             }
         }
-
     </script>
 </body>
 
