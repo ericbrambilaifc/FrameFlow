@@ -2,6 +2,7 @@
 require_once "ConexaoBD.php";
 
 class AvaliacaoDAO
+
 {
     // Cadastrar nova avaliação
     public static function inserir($dados)

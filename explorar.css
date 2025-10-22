@@ -17,7 +17,6 @@ header ul {
     margin: 0;
     padding: 0;
     align-items: center;
-
 }
 
 header ul li {
@@ -64,6 +63,170 @@ header div a i {
 header div a svg {
     width: 1.5rem;
     height: 1.5rem;
+}
+
+/* Search Container */
+.search-container {
+    position: relative;
+    width: 80%;
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.65rem 2.5rem 0.65rem 2.5rem;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.95);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    outline: none;
+    color: #333;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-input:focus {
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.clear-search {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    display: none;
+    padding: 5px;
+    transition: color 0.3s;
+}
+
+.clear-search:hover {
+    color: #D22232;
+}
+
+.clear-search.show {
+    display: block;
+}
+
+/* Search Results */
+.search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    width: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+}
+
+.search-results.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: #333;
+}
+
+.search-result-item:hover {
+    background: #f8f8f8;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #6A53B8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+    font-size: 14px;
+}
+
+.user-email {
+    font-size: 12px;
+    color: #999;
+}
+
+.search-empty {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.search-loading {
+    padding: 20px;
+    text-align: center;
+    color: #6A53B8;
+    font-size: 14px;
 }
 
 .header-perfil {
@@ -115,11 +278,8 @@ header div a svg {
 .botao-buscar {
     border-radius: 2.5rem;
     background: #6a53b8;
-    padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 3vw, 2rem);
     border: none;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 10px;
     color: #fff;
     font-size: clamp(0.875rem, 2vw, 1rem);
     cursor: pointer;
@@ -132,97 +292,199 @@ header div a svg {
     transition: ease-in-out 0.2s;
 }
 
-/* --- Novo CSS para o Menu Hambúrguer (BASE) --- */
-
-/* Esconde o checkbox que controla o menu */
+/* Menu Hambúrguer */
 #menu-toggle {
     display: none;
 }
 
-/* Estiliza e esconde o ícone de hambúrguer por padrão */
 .menu-icon {
-    display: none; 
+    display: none;
     cursor: pointer;
     position: relative;
-    z-index: 200; /* Garante que o ícone fique por cima do menu */
+    z-index: 200;
 }
 
-/* Estilo para o SVG de hambúrguer (se você estiver usando um SVG) */
 .menu-icon svg rect {
     fill: white;
 }
 
-/* --- Media Query para Telas Pequenas (max-width: 480px) --- */
-@media (max-width: 480px) {
-
-    /* --- AJUSTES NO HEADER PARA MENU HAMBÚRGUER --- */
-
-    /* 1. Altera o flexbox do Header */
+/* Responsivo Tablet */
+@media (max-width: 768px) {
     header {
-        /* Permite que o logo/perfil e o ícone fiquem na mesma linha */
-        flex-direction: row; 
-        /* Distribui o espaço entre os elementos principais */
-        justify-content: space-between; 
-        padding: 1rem 5%;
+        max-width: 95%;
+        padding: 1rem 3%;
+        border-radius: 2rem;
+    }
+
+    .search-container {
+        width: 50%;
+    }
+
+    .search-input {
+        font-size: 0.8rem;
+        padding: 0.6rem 2.5rem;
+    }
+
+    .grid-series {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .card-serie img {
+        height: 300px;
+    }
+}
+
+/* Responsivo Mobile */
+@media (max-width: 480px) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0.8rem 4%;
         border-radius: 1.5rem;
         flex-wrap: nowrap;
         margin: 1rem auto;
         max-width: 95%;
     }
 
-    /* 2. Mostra o ícone de hambúrguer */
+    /* Mostra o ícone hambúrguer */
     .menu-icon {
-        display: block; 
-        order: 3; /* Coloca o ícone na ponta direita */
-        margin-left: 1rem; 
+        display: block;
+        order: 3;
+        margin-left: 1rem;
     }
-    
-    /* Reposiciona o botão de perfil/login */
+
+    /* Reposiciona botão de perfil */
     .header-perfil {
         margin-left: 0;
-        order: 2; /* Fica entre o logo (1) e o ícone (3) */
+        order: 2;
     }
-    
-    /* 3. Oculta e Posiciona o Menu de Navegação */
+
+    .header-perfil a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    .header-perfil a svg {
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+
+    /* Menu de navegação retrátil */
     header ul {
-        /* Transforma a lista em um menu vertical, fora da tela */
         display: flex;
         flex-direction: column;
-        position: absolute; 
-        top: 5rem; /* Posição ajustada abaixo do header */
+        position: absolute;
+        top: 4.5rem;
         right: 0;
         width: 100%;
-        max-width: 200px; /* Largura do menu retrátil */
+        max-width: 220px;
         padding: 1rem;
-        background: #6A53B8; /* Cor de fundo do menu */
-        border-radius: 0 0 0 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        
-        /* Inicialmente move o menu para fora da tela (direita) */
-        transform: translateX(100%); 
+        background: linear-gradient(135deg, #6A53B8 0%, #8B7AC7 100%);
+        border-radius: 0 0 0 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
         z-index: 100;
         align-items: flex-start;
         gap: 0;
     }
 
-    /* Oculta o item do logo/imagem dentro da lista, pois ele já está visível na linha principal */
+    /* Oculta o logo dentro da lista */
     header ul li:first-child {
         display: none;
     }
-    
-    /* Ajusta a aparência dos links no menu móvel */
+
     header ul li {
         width: 100%;
         margin: 0.5rem 0;
-    }
-    header ul li a {
-        padding: 0.5rem;
-        font-size: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* 4. A mágica: Se o checkbox estiver marcado (clicado), o menu entra na tela */
-    #menu-toggle:checked ~ ul {
+    header ul li:last-child {
+        border-bottom: none;
+    }
+
+    header ul li a {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.95rem;
+        display: block;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    header ul li a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 1;
+        padding-left: 1rem;
+    }
+
+    /* Menu ativo */
+    #menu-toggle:checked~ul {
         transform: translateX(0);
+    }
+
+    /* Search Container Mobile */
+    .search-container {
+        width: 100%;
+        order: 4;
+        margin-top: 1rem;
+        flex-basis: 100%;
+    }
+
+    .search-input {
+        font-size: 0.85rem;
+        padding: 0.7rem 2.5rem;
+    }
+
+    .search-results {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .search-result-item {
+        padding: 10px 12px;
+    }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+
+    .user-name {
+        font-size: 13px;
+    }
+
+    .user-email {
+        font-size: 11px;
+    }
+
+    /* Grid de séries */
+    .grid-series {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+        padding: 0 0.5rem;
+    }
+
+    .card-serie {
+        padding: 10px;
+    }
+
+    .card-serie img {
+        height: 220px;
+    }
+
+    .card-serie h3 {
+        font-size: 16px;
+    }
+
+    .card-serie p {
+        font-size: 12px;
+    }
+
+    .botao-buscar {
+        min-width: 8rem;
+        padding: 0.6rem 1.5rem;
     }
 }

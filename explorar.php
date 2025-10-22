@@ -59,10 +59,33 @@ if ($temFiltro) {
 
         <!-- Navegação principal -->
         <ul>
-            <li><a href="/explorar.php"><img src="/src/assets/img/logo-text.png" style="width: 25%" alt="LOGO"></a></li>
+             <!-- Busca de Usuários -->
+            <div class="search-container">
+                <div class="search-box">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="8" stroke="#6A53B8" stroke-width="2" />
+                        <path d="M21 21L16.65 16.65" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Buscar usuários..."
+                        id="searchUsers"
+                        autocomplete="off">
+                    <button class="clear-search" id="clearSearch">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
+           
         </ul>
+
+
 
         <!-- Perfil do usuário -->
         <div class="header-perfil">
@@ -97,8 +120,8 @@ if ($temFiltro) {
     <!-- Barra de busca de séries -->
     <section style="padding: 20px; max-width: 90%; margin: 0 auto;">
         <!-- Formulário de Busca em Linha -->
-        <form method="GET" action="explorar.php" style="margin-bottom: 30px;">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: stretch;">
+        <form method="GET" action="explorar.php" style="margin: 0 auto 30px; width: 100%;">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center;">
                 <input
                     type="text"
                     name="buscar"
@@ -371,6 +394,7 @@ if ($temFiltro) {
                 document.getElementById('modal').style.display = 'block';
             });
         }
+
 
         // Sistema de notificações popup
         function mostrarNotificacao(tipo, titulo, mensagem) {
@@ -689,6 +713,91 @@ if ($temFiltro) {
             if (event.target === modalNovaAvaliacao) {
                 modalNovaAvaliacao.style.display = 'none';
             }
+        });
+        // Busca de usuários
+        const searchInput = document.getElementById('searchUsers');
+        const searchResults = document.getElementById('searchResults');
+        const clearSearch = document.getElementById('clearSearch');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function() {
+            const termo = this.value.trim();
+
+            // Mostra/esconde botão de limpar
+            if (termo.length > 0) {
+                clearSearch.classList.add('show');
+            } else {
+                clearSearch.classList.remove('show');
+                searchResults.classList.remove('show');
+                return;
+            }
+
+            // Aguarda 300ms antes de buscar (debounce)
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                buscarUsuarios(termo);
+            }, 300);
+        });
+
+        // Limpar busca
+        clearSearch.addEventListener('click', function() {
+            searchInput.value = '';
+            searchResults.classList.remove('show');
+            clearSearch.classList.remove('show');
+            searchInput.focus();
+        });
+
+        // Função para buscar usuários
+        async function buscarUsuarios(termo) {
+            if (termo.length < 2) {
+                searchResults.classList.remove('show');
+                return;
+            }
+
+            // Mostra loading
+            searchResults.innerHTML = '<div class="search-loading">Buscando...</div>';
+            searchResults.classList.add('show');
+
+            try {
+                const response = await fetch(`buscar_usuarios.php?termo=${encodeURIComponent(termo)}`);
+                const usuarios = await response.json();
+
+                if (usuarios.length === 0) {
+                    searchResults.innerHTML = '<div class="search-empty">Nenhum usuário encontrado</div>';
+                } else {
+                    let html = '';
+                    usuarios.forEach(usuario => {
+                        const avatarHtml = usuario.foto_perfil && usuario.foto_perfil !== '' ?
+                            `<img src="uploads/perfil/${usuario.foto_perfil}" alt="${usuario.nome_completo}">` :
+                            usuario.iniciais;
+
+                        html += `
+                    <a href="perfil.php?id=${usuario.id}" class="search-result-item">
+                        <div class="user-avatar">${avatarHtml}</div>
+                        <div class="user-info">
+                            <div class="user-name">${usuario.nome_completo}</div>
+                            <div class="user-email">${usuario.email}</div>
+                        </div>
+                    </a>
+                `;
+                    });
+                    searchResults.innerHTML = html;
+                }
+            } catch (error) {
+                searchResults.innerHTML = '<div class="search-empty">Erro ao buscar usuários</div>';
+            }
+        }
+
+        // Fecha os resultados ao clicar fora
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.search-container')) {
+                searchResults.classList.remove('show');
+            }
+        });
+
+        // Previne fechar ao clicar dentro dos resultados
+        searchResults.addEventListener('click', function(event) {
+            event.stopPropagation();
         });
     </script>
 

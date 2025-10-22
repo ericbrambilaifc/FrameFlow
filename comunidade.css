@@ -6,9 +6,10 @@ body {
     padding: 20px;
 }
 
-.container-comunidade {
-    max-width: 1200px;
+.container-comunidade{
+    max-width: 90%;
     margin: 0 auto;
+    padding: 20px;
 }
 
 /* Header */
@@ -136,7 +137,7 @@ body {
 
 .posicao-2 {
     order: 1;
-    background: linear-gradient(135deg, #E8E8E8 0%, #C0C0C0 100%);
+    background: linear-gradient(135deg, #E8E8E8 0%, rgb(179, 174, 174) 100%);
 }
 
 .posicao-3 {
@@ -217,7 +218,7 @@ body {
 
 .total-avaliacoes {
     font-size: 14px;
-    color: #666;
+    color: #fff2f2;
     font-weight: 500;
 }
 
@@ -228,6 +229,8 @@ body {
 
 /* Lista demais colocados */
 .lista-demais {
+    max-width: 80%;
+    margin: auto;
     background: white;
     border-radius: 16px;
     padding: 25px;

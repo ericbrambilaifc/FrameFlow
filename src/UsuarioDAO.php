@@ -3,6 +3,9 @@ require_once "ConexaoBD.php";
 
 class UsuarioDAO
 {
+
+
+
     // Cadastrar novo usuário
     public static function inserir($dados)
     {
@@ -35,6 +38,26 @@ class UsuarioDAO
         }
 
         return false;
+    }
+
+    // Buscar usuários por nome ou email
+    public static function buscarUsuarios($termo)
+    {
+        $conexao = ConexaoBD::conectar();
+
+        $sql = "SELECT id, nome_completo, email, foto_perfil, is_admin
+            FROM usuarios
+            WHERE is_admin = 0 
+            AND (nome_completo LIKE :termo OR email LIKE :termo)
+            ORDER BY nome_completo ASC
+            LIMIT 10";
+
+        $stmt = $conexao->prepare($sql);
+        $termoBusca = '%' . $termo . '%';
+        $stmt->bindParam(':termo', $termoBusca);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Buscar usuário por ID
