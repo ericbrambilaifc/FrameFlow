@@ -84,12 +84,15 @@ class SeguidorDAO
     /**
      * Listar seguidores de um usuário
      */
+    /**
+     * Listar seguidores de um usuário (COM FOTO DE PERFIL)
+     */
     public static function listarSeguidores($usuario_id)
     {
         try {
             $conexao = ConexaoBD::conectar();
 
-            $sql = "SELECT u.id, u.nome_completo, u.email, s.data_seguimento
+            $sql = "SELECT u.id, u.nome_completo, u.email, u.foto_perfil, s.data_seguimento
                     FROM seguidores s
                     INNER JOIN usuarios u ON s.seguidor_id = u.id
                     WHERE s.seguindo_id = :usuario_id
@@ -107,14 +110,14 @@ class SeguidorDAO
     }
 
     /**
-     * Listar usuários que o usuário está seguindo
+     * Listar usuários que o usuário está seguindo (COM FOTO DE PERFIL)
      */
     public static function listarSeguindo($usuario_id)
     {
         try {
             $conexao = ConexaoBD::conectar();
 
-            $sql = "SELECT u.id, u.nome_completo, u.email, s.data_seguimento
+            $sql = "SELECT u.id, u.nome_completo, u.email, u.foto_perfil, s.data_seguimento
                     FROM seguidores s
                     INNER JOIN usuarios u ON s.seguindo_id = u.id
                     WHERE s.seguidor_id = :usuario_id

@@ -54,6 +54,8 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
 <body>
 
+
+
     <div class="container-perfil">
         <!-- Botão Voltar -->
         <a href="javascript:history.back()" class="btn-voltar">
@@ -145,7 +147,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
                             // Preview da imagem
                             const reader = new FileReader();
-                            reader.onload = function(e) {
+                            reader.onload = function (e) {
                                 const avatarDiv = document.querySelector('.avatar-editavel');
                                 const svg = document.getElementById('avatar-svg');
 
@@ -178,7 +180,14 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     <?php if (!$eh_admin): ?>
                         <div class="perfil-status">
                             <span><strong><?php echo $usuario['total_avaliacoes']; ?></strong> avaliações</span>
-                            <span><strong><?php echo $usuario['total_seguidores']; ?></strong> seguidores</span>
+                            <span class="stat-clicavel" onclick="abrirModalSeguidores('seguidores')"
+                                style="cursor: pointer;">
+                                <strong id="contador-seguidores"><?php echo $usuario['total_seguidores']; ?></strong>
+                                seguidores
+                            </span>
+                            <span class="stat-clicavel" onclick="abrirModalSeguidores('seguindo')" style="cursor: pointer;">
+                                <strong id="contador-seguindo"><?php echo $usuario['total_seguindo']; ?></strong> seguindo
+                            </span>
                             <div class="perfil-acoes">
                                 <?php if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])): ?>
                                     <!-- Botão de Seguir (apenas quando está visitando perfil de outra pessoa) -->
@@ -224,7 +233,9 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                 <div class="avaliacao-header">
                                     <div>
                                         <h3 class="serie-titulo"><?php echo htmlspecialchars($avaliacao['titulo']); ?></h3>
-                                        <p class="avaliacao-comentario"><?php echo nl2br(htmlspecialchars($avaliacao['comentario'])); ?></p>
+                                        <p class="avaliacao-comentario">
+                                            <?php echo nl2br(htmlspecialchars($avaliacao['comentario'])); ?>
+                                        </p>
 
                                     </div>
                                     <div class="estrelas">
@@ -232,7 +243,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                         for ($i = 1; $i <= 5; $i++):
                                             $preenchida = $i <= $avaliacao['nota'];
                                             $corPreenchimento = $preenchida ? '#FFF600' : 'none';
-                                        ?>
+                                            ?>
                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -355,6 +366,63 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         </div>
     <?php endif; ?>
 
+    <!-- Modal de Seguidores/Seguindo -->
+    <div id="modalSeguidores" class="modal">
+        <div class="modal-login"
+            style="max-width: 500px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;">
+            <button class="close" onclick="fecharModal('modalSeguidores')">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z"
+                        stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <!-- Abas -->
+            <div class="seguidores-tabs">
+                <button class="tab-btn active" onclick="trocarAba('seguidores')" id="tab-seguidores">
+                    Seguidores
+                </button>
+                <button class="tab-btn" onclick="trocarAba('seguindo')" id="tab-seguindo">
+                    Seguindo
+                </button>
+            </div>
+
+            <h2 class="titulo" id="titulo-modal">Seguidores</h2>
+
+            <!-- Loading -->
+            <div id="loading-seguidores" class="loading-container"
+                style="display: none; text-align: center; padding: 40px;">
+                <div class="spinner"></div>
+                <p>Carregando...</p>
+            </div>
+
+            <!-- Lista de usuários -->
+            <div id="lista-seguidores" class="lista-seguidores-container"
+                style="flex: 1; overflow-y: auto; padding: 20px;">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+
+            <!-- Mensagem quando não há seguidores -->
+            <div id="sem-seguidores" style="display: none; text-align: center; padding: 40px; color: #666;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="margin-bottom: 16px; opacity: 0.3;">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p id="mensagem-vazia">Nenhum seguidor ainda</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Função para seguir/deixar de seguir
         async function toggleSeguir(usuarioId) {
@@ -432,14 +500,14 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        window.addEventListener('click', function(event) {
+        window.addEventListener('click', function (event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
         });
 
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 const modais = document.querySelectorAll('.modal');
                 modais.forEach(modal => {
@@ -453,7 +521,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
         const formSenha = document.getElementById('formSenha');
         if (formSenha) {
-            formSenha.addEventListener('submit', function(event) {
+            formSenha.addEventListener('submit', function (event) {
                 const novaSenha = document.getElementById('nova_senha').value;
                 const confirmarSenha = document.getElementById('confirmar_nova_senha').value;
 
@@ -469,6 +537,75 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     return false;
                 }
             });
+        }
+
+        // Funções do modal de seguidores/seguindo
+        function abrirModalSeguidores(usuarioTipo) {
+            const modal = document.getElementById('modalSeguidores');
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                // Atualiza título da aba
+                document.getElementById('titulo-modal').textContent = usuarioTipo === 'seguidores' ? 'Seguidores' : 'Seguindo';
+                // Mostra loading
+                document.getElementById('loading-seguidores').style.display = 'flex';
+                document.getElementById('lista-seguidores').innerHTML = '';
+                // Após um delay simulado (substitua pela requisição real)
+                setTimeout(() => {
+                    carregarDadosSeguidores(usuarioTipo);
+                }, 500);
+            }
+        }
+
+        function fecharModalSeguidores() {
+            const modal = document.getElementById('modalSeguidores');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function trocarAba(idAba) {
+            const tabBtns = document.querySelectorAll('.seguidores-tabs .tab-btn');
+            const listaSeguidores = document.getElementById('lista-seguidores');
+            const loading = document.getElementById('loading-seguidores');
+
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(idAba + 'Btn').classList.add('active');
+            document.getElementById('titulo-modal').textContent = idAba === 'seguidores' ? 'Seguidores' : 'Seguindo';
+
+            loading.style.display = 'flex';
+            listaSeguidores.innerHTML = '';
+
+            // Após um delay simulado (substitua pela requisição real)
+            setTimeout(() => {
+                carregarDadosSeguidores(idAba);
+            }, 500);
+        }
+
+        // Função para carregar dados de seguidores/seguindo (substitua pelo endpoint real)
+        function carregarDadosSeguidores(tipo) {
+            const data = [
+                // Exemplo de dados simulados
+                { nome: 'João Almeida', avatar: 'usuario1.jpg' },
+                { nome: 'Maria Silva', avatar: 'usuario2.jpg' }
+            ];
+
+            const lista = document.getElementById('lista-seguidores');
+            const loading = document.getElementById('loading-seguidores');
+            loading.style.display = 'none';
+
+            if (data.length === 0) {
+                document.getElementById('sem-seguidores').style.display = 'block';
+                return;
+            }
+
+            lista.innerHTML = data.map(usuario => `
+        <div class="usuario-item">
+            <img src="uploads/perfil/${usuario.avatar}" alt="${usuario.nome}">
+            <span>${usuario.nome}</span>
+        </div>
+    `).join('');
         }
 
         function mostrarNotificacao(tipo, titulo, mensagem) {
@@ -509,7 +646,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             <?php if (isset($_SESSION['sucesso'])): ?>
                 mostrarNotificacao('sucesso', 'Sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');
                 <?php unset($_SESSION['sucesso']); ?>
