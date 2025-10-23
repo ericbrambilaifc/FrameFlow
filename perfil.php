@@ -382,16 +382,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 </svg>
             </button>
 
-            <!-- Abas -->
-            <div class="seguidores-tabs">
-                <button class="tab-btn active" onclick="trocarAba('seguidores')" id="tab-seguidores">
-                    Seguidores
-                </button>
-                <button class="tab-btn" onclick="trocarAba('seguindo')" id="tab-seguindo">
-                    Seguindo
-                </button>
-            </div>
-
             <h2 class="titulo" id="titulo-modal">Seguidores</h2>
 
             <!-- Loading -->
@@ -564,25 +554,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 document.body.style.overflow = 'auto';
             }
         }
-
-        function trocarAba(idAba) {
-            const tabBtns = document.querySelectorAll('.seguidores-tabs .tab-btn');
-            const listaSeguidores = document.getElementById('lista-seguidores');
-            const loading = document.getElementById('loading-seguidores');
-
-            tabBtns.forEach(btn => btn.classList.remove('active'));
-            document.getElementById(idAba + 'Btn').classList.add('active');
-            document.getElementById('titulo-modal').textContent = idAba === 'seguidores' ? 'Seguidores' : 'Seguindo';
-
-            loading.style.display = 'flex';
-            listaSeguidores.innerHTML = '';
-
-            // Após um delay simulado (substitua pela requisição real)
-            setTimeout(() => {
-                carregarDadosSeguidores(idAba);
-            }, 500);
-        }
-
         // Função para carregar dados de seguidores/seguindo (substitua pelo endpoint real)
         function carregarDadosSeguidores(tipo) {
             const data = [
