@@ -790,9 +790,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        /**
-         * Atualiza o estado visual do botão de seguir
-         */
         function atualizarBotaoSeguir(btn, estaSeguindo) {
             if (estaSeguindo) {
                 btn.classList.remove('seguindo');
@@ -803,9 +800,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        /**
-         * Mostra feedback visual após ação de seguir/deixar de seguir
-         */
         function mostrarFeedbackVisual(btn, estaSeguindo) {
             // Animação de sucesso
             btn.style.transform = 'scale(1.05)';
@@ -814,9 +808,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }, 200);
         }
 
-        /**
-         * Atualiza os contadores de seguidores e seguindo
-         */
         async function atualizarContadores() {
             const usuarioId = <?php echo $usuario_id; ?>;
 
@@ -840,10 +831,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 console.error('Erro ao atualizar contadores:', error);
             }
         }
-
-        /**
-         * Fecha o modal de seguidores
-         */
+        
         function fecharModalSeguidores() {
             const modal = document.getElementById('modalSeguidores');
             if (modal) {
@@ -852,9 +840,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        /**
-         * Escapa caracteres HTML para prevenir XSS
-         */
+      
         function escapeHtml(text) {
             if (!text) return '';
 
