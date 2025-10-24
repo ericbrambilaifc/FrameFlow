@@ -29,6 +29,17 @@
     margin-bottom: 40px;
 }
 
+.btn-seguir-modal.seguindo {
+    background-color: #cc2b0f;  /* Cor verde para indicar que está seguindo */
+    color: white;
+}
+
+.btn-seguir-modal {
+    background-color: #6dce12;  /* Cor padrão do botão */
+    color: white;
+}
+
+
 .perfil-info {
     display: flex;
     align-items: center;
