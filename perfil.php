@@ -147,7 +147,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
                             // Preview da imagem
                             const reader = new FileReader();
-                            reader.onload = function (e) {
+                            reader.onload = function(e) {
                                 const avatarDiv = document.querySelector('.avatar-editavel');
                                 const svg = document.getElementById('avatar-svg');
 
@@ -243,7 +243,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                         for ($i = 1; $i <= 5; $i++):
                                             $preenchida = $i <= $avaliacao['nota'];
                                             $corPreenchimento = $preenchida ? '#FFF600' : 'none';
-                                            ?>
+                                        ?>
                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -490,14 +490,14 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        window.addEventListener('click', function (event) {
+        window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
         });
 
-        document.addEventListener('keydown', function (event) {
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const modais = document.querySelectorAll('.modal');
                 modais.forEach(modal => {
@@ -511,7 +511,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
         const formSenha = document.getElementById('formSenha');
         if (formSenha) {
-            formSenha.addEventListener('submit', function (event) {
+            formSenha.addEventListener('submit', function(event) {
                 const novaSenha = document.getElementById('nova_senha').value;
                 const confirmarSenha = document.getElementById('confirmar_nova_senha').value;
 
@@ -529,106 +529,160 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             });
         }
 
-        // Funções do modal de seguidores/seguindo
-        // Função para abrir o modal de seguidores ou seguindo
+        // ========================================
+        // MODAL DE SEGUIDORES/SEGUINDO
+        // ========================================
+
+        /**
+         * Abre o modal e carrega a lista de seguidores ou seguindo
+         * @param {string} tipo - 'seguidores' ou 'seguindo'
+         */
         async function abrirModalSeguidores(tipo) {
             const modal = document.getElementById('modalSeguidores');
             const usuarioId = <?php echo $usuario_id; ?>;
 
-            if (modal) {
-                // Exibe o modal
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
+            if (!modal) {
+                console.error('Modal de seguidores não encontrado');
+                return;
+            }
 
-                // Atualiza título do modal
-                document.getElementById('titulo-modal').textContent =
-                    tipo === 'seguidores' ? 'Seguidores' : 'Seguindo';
+            // Exibe o modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
 
-                // Esconde mensagem de "sem seguidores" e limpa a lista
-                document.getElementById('sem-seguidores').style.display = 'none';
-                document.getElementById('lista-seguidores').innerHTML = '';
+            // Atualiza elementos do modal
+            atualizarElementosModal(tipo);
 
-                // Exibe loading
-                document.getElementById('loading-seguidores').style.display = 'flex';
+            // Exibe loading
+            const loadingSeguidores = document.getElementById('loading-seguidores');
+            if (loadingSeguidores) loadingSeguidores.style.display = 'flex';
 
-                try {
-                    // Faz a requisição para buscar seguidores ou seguindo
-                    const response = await fetch(`buscar_seguidores.php?usuario_id=${usuarioId}&tipo=${tipo}`);
-                    const data = await response.json();
+            try {
+                const response = await fetch(`buscar_seguidores.php?usuario_id=${usuarioId}&tipo=${tipo}`);
 
-                    // Esconde o loading após a resposta
-                    document.getElementById('loading-seguidores').style.display = 'none';
-
-                    if (data.sucesso) {
-                        if (data.lista.length === 0) {
-                            // Exibe mensagem vazia se não houver seguidores
-                            document.getElementById('sem-seguidores').style.display = 'block';
-                            document.getElementById('mensagem-vazia').textContent =
-                                tipo === 'seguidores' ? 'Nenhum seguidor ainda' : 'Não está seguindo ninguém ainda';
-                        } else {
-                            // Renderiza a lista de seguidores
-                            renderizarListaSeguidores(data.lista, tipo);
-                        }
-                    } else {
-                        // Exibe notificação de erro caso falhe
-                        mostrarNotificacao('erro', 'Erro', data.erro || 'Erro ao carregar dados');
-                    }
-                } catch (error) {
-                    // Esconde o loading em caso de erro
-                    document.getElementById('loading-seguidores').style.display = 'none';
-                    mostrarNotificacao('erro', 'Erro', 'Erro ao buscar dados dos seguidores');
-                    console.error(error);
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
                 }
+
+                const data = await response.json();
+
+                // Esconde o loading
+                if (loadingSeguidores) loadingSeguidores.style.display = 'none';
+
+                if (data.sucesso) {
+                    processarListaSeguidores(data.lista, tipo);
+                } else {
+                    mostrarNotificacao('erro', 'Erro', data.erro || 'Erro ao carregar dados');
+                }
+            } catch (error) {
+                if (loadingSeguidores) loadingSeguidores.style.display = 'none';
+                mostrarNotificacao('erro', 'Erro', 'Erro ao buscar dados dos seguidores');
+                console.error('Erro ao buscar seguidores:', error);
             }
         }
 
-        // Função para renderizar a lista de seguidores ou seguindo
-        function renderizarListaSeguidores(lista, tipo) {
-            const container = document.getElementById('lista-seguidores');
-            const usuarioLogadoId = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
+        /**
+         * Atualiza o título e limpa o conteúdo do modal
+         */
+        function atualizarElementosModal(tipo) {
+            const tituloModal = document.getElementById('titulo-modal');
+            const semSeguidores = document.getElementById('sem-seguidores');
+            const listaSeguidores = document.getElementById('lista-seguidores');
 
-            container.innerHTML = lista.map(usuario => {
-                const ehProprioUsuario = usuarioLogadoId === usuario.id;
+            if (tituloModal) {
+                tituloModal.textContent = tipo === 'seguidores' ? 'Seguidores' : 'Seguindo';
+            }
 
-                // Verifica se existe foto de perfil
-                let avatarHtml;
-                if (usuario.foto_perfil && usuario.foto_perfil.trim() !== '') {
-                    const fotoUrl = `uploads/perfil/${usuario.foto_perfil}`;
-
-                    if (fotoUrl) {
-                        avatarHtml = `<img src="${fotoUrl}" alt="${usuario.nome_completo}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                    } else {
-                        avatarHtml = gerarAvatarFallback(usuario);
-                    }
-                } else {
-                    avatarHtml = gerarAvatarFallback(usuario);
-                }
-
-
-                return `
-            <div class="usuario-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 12px;">
-                <a href="perfil.php?id=${usuario.id}" style="display: flex; align-items: center; gap: 12px; flex: 1; text-decoration: none; color: inherit;">
-                    <div class="usuario-avatar" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
-                        ${avatarHtml}
-                    </div>
-                    <span style="font-weight: 500;">${usuario.nome_completo}</span>
-                </a>
-                ${!ehProprioUsuario && usuarioLogadoId ? `
-                    <button 
-                        class="btn-seguir-modal ${usuario.esta_seguindo ? 'seguindo' : ''}" 
-                        onclick="toggleSeguirModal(${usuario.id}, this)"
-                        style="padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s;">
-                        ${usuario.esta_seguindo ? 'Seguindo' : 'Seguir'}
-                    </button>
-                ` : ''}
-            </div>
-        `;
-            }).join('');
+            if (semSeguidores) semSeguidores.style.display = 'none';
+            if (listaSeguidores) listaSeguidores.innerHTML = '';
         }
 
-        // Função de fallback para avatar
+        /**
+         * Processa e exibe a lista de seguidores
+         */
+        function processarListaSeguidores(lista, tipo) {
+            if (!lista || lista.length === 0) {
+                exibirMensagemVazia(tipo);
+            } else {
+                renderizarListaSeguidores(lista, tipo);
+            }
+        }
+
+        /**
+         * Exibe mensagem quando não há seguidores
+         */
+        function exibirMensagemVazia(tipo) {
+            const semSeguidores = document.getElementById('sem-seguidores');
+            const mensagemVazia = document.getElementById('mensagem-vazia');
+
+            if (semSeguidores) semSeguidores.style.display = 'block';
+
+            if (mensagemVazia) {
+                mensagemVazia.textContent = tipo === 'seguidores' ?
+                    'Nenhum seguidor ainda' :
+                    'Não está seguindo ninguém ainda';
+            }
+        }
+
+        /**
+         * Renderiza a lista de seguidores no DOM
+         */
+        function renderizarListaSeguidores(lista, tipo) {
+            const container = document.getElementById('lista-seguidores');
+            if (!container) return;
+
+            const usuarioLogadoId = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
+
+            container.innerHTML = lista.map(usuario =>
+                criarItemUsuario(usuario, usuarioLogadoId)
+            ).join('');
+        }
+
+        /**
+         * Cria o HTML de um item de usuário
+         */
+        function criarItemUsuario(usuario, usuarioLogadoId) {
+            const ehProprioUsuario = usuarioLogadoId === usuario.id;
+            const avatarHtml = gerarAvatarHtml(usuario);
+            const nomeEscapado = escapeHtml(usuario.nome_completo);
+
+            return `
+        <div class="usuario-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 12px;">
+            <a href="perfil.php?id=${usuario.id}" style="display: flex; align-items: center; gap: 12px; flex: 1; text-decoration: none; color: inherit;">
+                <div class="usuario-avatar" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
+                    ${avatarHtml}
+                </div>
+                <span style="font-weight: 500;">${nomeEscapado}</span>
+            </a>
+            ${renderizarBotaoSeguir(usuario, ehProprioUsuario, usuarioLogadoId)}
+        </div>
+    `;
+        }
+
+        /**
+         * Gera o HTML do avatar do usuário
+         */
+        function gerarAvatarHtml(usuario) {
+            if (usuario.foto_perfil && usuario.foto_perfil.trim() !== '') {
+                const fotoUrl = `uploads/perfil/${usuario.foto_perfil}`;
+                const nomeEscapado = escapeHtml(usuario.nome_completo);
+
+                return `<img 
+            src="${fotoUrl}" 
+            alt="${nomeEscapado}" 
+            style="width: 100%; height: 100%; object-fit: cover;"
+            onerror="this.parentElement.innerHTML = '${gerarAvatarFallback(usuario).replace(/'/g, "\\'")}'">`;
+            }
+
+            return gerarAvatarFallback(usuario);
+        }
+
+        /**
+         * Gera avatar SVG de fallback
+         */
         function gerarAvatarFallback(usuario) {
             const corAvatar = usuario.is_admin ? '#070706ff' : '#6A53B8';
+
             return `
         <svg width="40" height="40" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="138" cy="137.5" r="137.5" fill="${corAvatar}"/>
@@ -638,13 +692,49 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     `;
         }
 
-        // Função para processar ação de seguir ou deixar de seguir
+        /**
+         * Renderiza o botão de seguir/seguindo com estilos apropriados
+         */
+        function renderizarBotaoSeguir(usuario, ehProprioUsuario, usuarioLogadoId) {
+            if (ehProprioUsuario || !usuarioLogadoId) {
+                return '';
+            }
+
+            const estaSeguindo = usuario.esta_seguindo;
+            const classeSeguindo = estaSeguindo ? 'seguindo' : '';
+            const textoBtn = estaSeguindo ? 'Deixar de Seguir' : 'Seguir';
+
+            return `
+        <button 
+            class="btn-seguir-modal ${classeSeguindo}" 
+            onclick="toggleSeguirModal(${usuario.id}, this)"
+            style="
+                padding: 6px 16px; 
+                border-radius: 6px; 
+                border: none; 
+                cursor: pointer; 
+                font-size: 14px; 
+                font-weight: 500; 
+                transition: all 0.3s;
+            ">
+            ${textoBtn}
+        </button>
+    `;
+        }
+
+        /**
+         * Toggle de seguir/deixar de seguir em tempo real
+         */
         async function toggleSeguirModal(usuarioId, btn) {
             const estaSeguindo = btn.classList.contains('seguindo');
-            btn.disabled = true;  // Desativa o botão durante o processo
+            const textoOriginal = btn.textContent;
+
+            // Desabilita o botão e mostra loading
+            btn.disabled = true;
+            btn.textContent = '...';
+            btn.style.opacity = '0.6';
 
             try {
-                // Realiza a requisição para seguir/deixar de seguir
                 const response = await fetch('seguir_usuario.php', {
                     method: 'POST',
                     headers: {
@@ -656,50 +746,152 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
                 const data = await response.json();
 
-                // Se a operação foi bem-sucedida
                 if (data.sucesso) {
-                    // Atualiza o botão
+                    // Atualiza o botão baseado no novo estado
                     if (estaSeguindo) {
+                        // Estava seguindo, agora deixou de seguir
                         btn.classList.remove('seguindo');
-                        btn.textContent = 'Seguir';  // Altera o texto para "Seguir"
+                        btn.textContent = 'Seguir';
+                        // Remove os estilos inline para usar o CSS
+                        btn.style.backgroundColor = '';
+                        btn.style.color = '';
                     } else {
+                        // Não estava seguindo, agora está seguindo
                         btn.classList.add('seguindo');
-                        btn.textContent = 'Deixar de Seguir';  // Altera o texto para "Deixar de Seguir"
+                        btn.textContent = 'Deixar de Seguir';
+                        // Remove os estilos inline para usar o CSS
+                        btn.style.backgroundColor = '';
+                        btn.style.color = '';
                     }
 
-                    // Atualiza os contadores de seguidores e seguidos
-                    atualizarContadores();
+                    // Atualiza contadores em tempo real
+                    await atualizarContadores();
+
+                    // Mostra feedback visual
+                    mostrarFeedbackVisual(btn, !estaSeguindo);
                 } else {
-                    mostrarNotificacao('erro', 'Erro', data.mensagem);  // Exibe erro se a operação falhar
+                    // Restaura o estado original em caso de erro
+                    btn.textContent = textoOriginal;
+                    mostrarNotificacao('erro', 'Erro', data.mensagem || 'Erro ao processar solicitação');
                 }
             } catch (error) {
+                console.error('Erro ao seguir/deixar de seguir:', error);
+                btn.textContent = textoOriginal;
                 mostrarNotificacao('erro', 'Erro', 'Erro ao processar solicitação');
             } finally {
-                btn.disabled = false;  // Reabilita o botão
+                btn.disabled = false;
+                btn.style.opacity = '1';
             }
         }
 
-        -
+        /**
+         * Atualiza o estado visual do botão de seguir
+         */
+        function atualizarBotaoSeguir(btn, estaSeguindo) {
+            if (estaSeguindo) {
+                btn.classList.remove('seguindo');
+                btn.textContent = 'Seguir';
+            } else {
+                btn.classList.add('seguindo');
+                btn.textContent = 'Deixar de Seguir';
+            }
+        }
 
-            // Função para atualizar contadores de seguidores e seguindo
-            async function atualizarContadores() {
-                const usuarioId = <?php echo $usuario_id; ?>;
+        /**
+         * Mostra feedback visual após ação de seguir/deixar de seguir
+         */
+        function mostrarFeedbackVisual(btn, estaSeguindo) {
+            // Animação de sucesso
+            btn.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 200);
+        }
 
-                try {
-                    const response = await fetch(`buscar_contadores.php?usuario_id=${usuarioId}`);
-                    const data = await response.json();
+        /**
+         * Atualiza os contadores de seguidores e seguindo
+         */
+        async function atualizarContadores() {
+            const usuarioId = <?php echo $usuario_id; ?>;
 
-                    if (data.sucesso) {
-                        document.getElementById('contador-seguidores').textContent = data.total_seguidores;
-                        document.getElementById('contador-seguindo').textContent = data.total_seguindo;
-                    }
-                } catch (error) {
-                    console.error('Erro ao atualizar contadores:', error);
+            try {
+                const response = await fetch(`buscar_contadores.php?usuario_id=${usuarioId}`);
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
                 }
+
+                const data = await response.json();
+
+                if (data.sucesso) {
+                    const contadorSeguidores = document.getElementById('contador-seguidores');
+                    const contadorSeguindo = document.getElementById('contador-seguindo');
+
+                    if (contadorSeguidores) contadorSeguidores.textContent = data.total_seguidores;
+                    if (contadorSeguindo) contadorSeguindo.textContent = data.total_seguindo;
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar contadores:', error);
+            }
+        }
+
+        /**
+         * Fecha o modal de seguidores
+         */
+        function fecharModalSeguidores() {
+            const modal = document.getElementById('modalSeguidores');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        /**
+         * Escapa caracteres HTML para prevenir XSS
+         */
+        function escapeHtml(text) {
+            if (!text) return '';
+
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modalSeguidores');
+
+            if (modal) {
+                // Fecha o modal ao clicar fora
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        fecharModalSeguidores();
+                    }
+                });
             }
 
+            // Fecha o modal com a tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    fecharModalSeguidores();
+                }
+            });
+        });
 
 
         function mostrarNotificacao(tipo, titulo, mensagem) {
@@ -740,7 +932,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             <?php if (isset($_SESSION['sucesso'])): ?>
                 mostrarNotificacao('sucesso', 'Sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');
                 <?php unset($_SESSION['sucesso']); ?>
