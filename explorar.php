@@ -109,7 +109,7 @@ if ($temFiltro) {
                             <path d="M137.799 271C211.529 271 271.299 211.23 271.299 137.5C271.299 63.77 211.529 4 137.799 4C64.0686 4 4.29858 63.77 4.29858 137.5C4.29858 211.23 64.0686 271 137.799 271Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </i>
-                    Seu Perfil
+                    Fazer Login
                 </a>
             <?php endif; ?>
         </div>

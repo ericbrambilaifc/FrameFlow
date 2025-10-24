@@ -159,6 +159,8 @@ class SeguidorDAO
         }
     }
 
+    
+
     /**
      * Contar total de usuários que está seguindo
      */

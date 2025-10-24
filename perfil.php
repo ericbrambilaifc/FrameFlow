@@ -530,53 +530,153 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         }
 
         // Funções do modal de seguidores/seguindo
-        function abrirModalSeguidores(usuarioTipo) {
+        async function abrirModalSeguidores(tipo) {
             const modal = document.getElementById('modalSeguidores');
+            const usuarioId = <?php echo $usuario_id; ?>;
+
             if (modal) {
                 modal.style.display = 'block';
                 document.body.style.overflow = 'hidden';
-                // Atualiza título da aba
-                document.getElementById('titulo-modal').textContent = usuarioTipo === 'seguidores' ? 'Seguidores' : 'Seguindo';
+
+                // Atualiza título
+                document.getElementById('titulo-modal').textContent =
+                    tipo === 'seguidores' ? 'Seguidores' : 'Seguindo';
+
+                // Esconde mensagem vazia e lista
+                document.getElementById('sem-seguidores').style.display = 'none';
+                document.getElementById('lista-seguidores').innerHTML = '';
+
                 // Mostra loading
                 document.getElementById('loading-seguidores').style.display = 'flex';
-                document.getElementById('lista-seguidores').innerHTML = '';
-                // Após um delay simulado (substitua pela requisição real)
-                setTimeout(() => {
-                    carregarDadosSeguidores(usuarioTipo);
-                }, 500);
+
+                try {
+                    const response = await fetch(`buscar_seguidores.php?usuario_id=${usuarioId}&tipo=${tipo}`);
+                    const data = await response.json();
+
+                    // Esconde loading
+                    document.getElementById('loading-seguidores').style.display = 'none';
+
+                    if (data.sucesso) {
+                        if (data.lista.length === 0) {
+                            // Mostra mensagem vazia
+                            document.getElementById('sem-seguidores').style.display = 'block';
+                            document.getElementById('mensagem-vazia').textContent =
+                                tipo === 'seguidores' ? 'Nenhum seguidor ainda' : 'Não está seguindo ninguém ainda';
+                        } else {
+                            // Renderiza a lista
+                            renderizarListaSeguidores(data.lista, tipo);
+                        }
+                    } else {
+                        mostrarNotificacao('erro', 'Erro', data.erro || 'Erro ao carregar dados');
+                    }
+                } catch (error) {
+                    document.getElementById('loading-seguidores').style.display = 'none';
+                    mostrarNotificacao('erro', 'Erro', 'Erro ao buscar dados dos seguidores');
+                    console.error(error);
+                }
             }
         }
 
-        function fecharModalSeguidores() {
-            const modal = document.getElementById('modalSeguidores');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+        function renderizarListaSeguidores(lista, tipo) {
+            const container = document.getElementById('lista-seguidores');
+            const usuarioLogadoId = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
+
+            container.innerHTML = lista.map(usuario => {
+                // Verifica se é o próprio usuário logado
+                const ehProprioUsuario = usuarioLogadoId === usuario.id;
+
+                // Define o avatar
+                let avatarHtml;
+                if (usuario.foto_perfil && usuario.foto_perfil.trim() !== '') {
+                    avatarHtml = `<img src="uploads/perfil/${usuario.foto_perfil}" alt="${usuario.nome_completo}">`;
+                } else {
+                    const corAvatar = usuario.is_admin ? '#070706ff' : '#6A53B8';
+                    avatarHtml = `
+                <svg width="40" height="40" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="138" cy="137.5" r="137.5" fill="${corAvatar}"/>
+                    <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" 
+                        stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" 
+                        stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            `;
+                }
+
+                return `
+            <div class="usuario-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 12px;">
+                <a href="perfil.php?id=${usuario.id}" style="display: flex; align-items: center; gap: 12px; flex: 1; text-decoration: none; color: inherit;">
+                    <div class="usuario-avatar" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
+                        ${avatarHtml}
+                    </div>
+                    <span style="font-weight: 500;">${usuario.nome_completo}</span>
+                </a>
+                ${!ehProprioUsuario && usuarioLogadoId ? `
+                    <button 
+                        class="btn-seguir-modal ${usuario.esta_seguindo ? 'seguindo' : ''}" 
+                        onclick="toggleSeguirModal(${usuario.id}, this)"
+                        style="padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s;">
+                        ${usuario.esta_seguindo ? 'Seguindo' : 'Seguir'}
+                    </button>
+                ` : ''}
+            </div>
+        `;
+            }).join('');
+        }
+
+        async function toggleSeguirModal(usuarioId, btn) {
+            const estaSeguindo = btn.classList.contains('seguindo');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('seguir_usuario.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        usuario_id: usuarioId,
+                        acao: estaSeguindo ? 'deixar_seguir' : 'seguir'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.sucesso) {
+                    // Atualiza o botão
+                    if (estaSeguindo) {
+                        btn.classList.remove('seguindo');
+                        btn.textContent = 'Seguir';
+                    } else {
+                        btn.classList.add('seguindo');
+                        btn.textContent = 'Seguindo';
+                    }
+
+                    // Atualiza contador de seguidores na página principal
+                    atualizarContadores();
+                } else {
+                    mostrarNotificacao('erro', 'Erro', data.mensagem);
+                }
+            } catch (error) {
+                mostrarNotificacao('erro', 'Erro', 'Erro ao processar solicitação');
+            } finally {
+                btn.disabled = false;
             }
         }
-        // Função para carregar dados de seguidores/seguindo (substitua pelo endpoint real)
-        function carregarDadosSeguidores(tipo) {
-            const data = [
-                // Exemplo de dados simulados
-                { nome: 'João Almeida', avatar: 'usuario1.jpg' },
-                { nome: 'Maria Silva', avatar: 'usuario2.jpg' }
-            ];
 
-            const lista = document.getElementById('lista-seguidores');
-            const loading = document.getElementById('loading-seguidores');
-            loading.style.display = 'none';
+        async function atualizarContadores() {
+            const usuarioId = <?php echo $usuario_id; ?>;
 
-            if (data.length === 0) {
-                document.getElementById('sem-seguidores').style.display = 'block';
-                return;
+            try {
+                const response = await fetch(`buscar_contadores.php?usuario_id=${usuarioId}`);
+                const data = await response.json();
+
+                if (data.sucesso) {
+                    document.getElementById('contador-seguidores').textContent = data.total_seguidores;
+                    document.getElementById('contador-seguindo').textContent = data.total_seguindo;
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar contadores:', error);
             }
-
-            lista.innerHTML = data.map(usuario => `
-        <div class="usuario-item">
-            <img src="uploads/perfil/${usuario.avatar}" alt="${usuario.nome}">
-            <span>${usuario.nome}</span>
-        </div>
-    `).join('');
         }
 
         function mostrarNotificacao(tipo, titulo, mensagem) {
