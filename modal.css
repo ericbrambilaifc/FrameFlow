@@ -84,6 +84,83 @@
   font-size: clamp(1.5rem, 4vw, 2rem);
 }
 
+.modal-jogos-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  width: min(90%, 40rem);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: clamp(1.5rem, 4vw, 2.5rem);
+  position: relative;
+}
+
+.modal-jogos-titulo {
+  color: #6a53b8;
+  text-align: center;
+  margin: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  font-weight: 700;
+}
+
+.jogos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.jogo-card {
+  background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
+  border-radius: 1.5rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 15px rgba(106, 83, 184, 0.3);
+  border: none;
+}
+
+.jogo-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(106, 83, 184, 0.5);
+}
+
+.jogo-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jogo-icon svg {
+  width: 35px;
+  height: 35px;
+  fill: white;
+}
+
+.jogo-nome {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.jogo-descricao {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.4;
+}
+
 .input-estilizado {
   width: 100%;
   max-width: 25rem;
@@ -311,6 +388,19 @@
     width: 100%;
   }
 
+  .modal-jogos-content {
+    margin: 10% auto;
+    width: 95%;
+  }
+
+  .modal-jogos-titulo {
+    margin: 1rem 0 1.5rem;
+  }
+
+  .jogos-grid {
+    gap: 1rem;
+  }
+
   .botao-nova-avaliacao {
     margin: 0 auto;
   }
@@ -327,6 +417,39 @@
 }
 
 @media (max-width: 480px) {
+
+  .modal-jogos-content {
+    margin: 5% auto;
+    padding: 1.5rem 1rem;
+    border-radius: 1.25rem;
+  }
+
+  .jogos-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .jogo-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .jogo-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .jogo-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .jogo-nome {
+    font-size: 1rem;
+  }
+
+  .jogo-descricao {
+    font-size: 0.8rem;
+  }
 
 
   .modal-login,

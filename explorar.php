@@ -59,7 +59,7 @@ if ($temFiltro) {
 
         <!-- Navegação principal -->
         <ul>
-             <!-- Busca de Usuários -->
+            <!-- Busca de Usuários -->
             <div class="search-container">
                 <div class="search-box">
                     <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +82,18 @@ if ($temFiltro) {
             </div>
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
-           
+            <li style="background-color: #fff; padding: 10px; border-radius: 20px;">
+                <a href="#" onclick="abrirModalJogos(); return false;">
+                    <svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.80005 8.2H10.6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M8.19995 5.79999V10.6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M16.6001 9.39999H16.6121" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M20.2 6.99999H20.212" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M19.384 1H6.616C5.42834 1.00028 4.28294 1.44085 3.40124 2.23656C2.51954 3.03226 1.96414 4.12659 1.8424 5.308C1.8352 5.3704 1.8304 5.4292 1.822 5.4904C1.7248 6.2992 1 12.3472 1 14.2C1 15.1548 1.37928 16.0705 2.05442 16.7456C2.72955 17.4207 3.64522 17.8 4.6 17.8C5.8 17.8 6.4 17.2 7 16.6L8.6968 14.9032C9.14678 14.4531 9.75713 14.2001 10.3936 14.2H15.6064C16.2429 14.2001 16.8532 14.4531 17.3032 14.9032L19 16.6C19.6 17.2 20.2 17.8 21.4 17.8C22.3548 17.8 23.2705 17.4207 23.9456 16.7456C24.6207 16.0705 25 15.1548 25 14.2C25 12.346 24.2752 6.2992 24.178 5.4904C24.1696 5.4304 24.1648 5.3704 24.1576 5.3092C24.0361 4.12757 23.4809 3.03295 22.5991 2.237C21.7174 1.44105 20.5719 1.00031 19.384 1Z" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </li>
+
         </ul>
 
 
@@ -192,6 +203,70 @@ if ($temFiltro) {
             <p style="text-align: center; color: #666;">Nenhuma série encontrada com os filtros selecionados.</p>
         <?php endif; ?>
     </section>
+
+    <!-- Modal de Jogos -->
+    <div id="modalJogos" class="modal">
+        <div class="modal-jogos-content">
+            <button class="close" onclick="fecharModal('modalJogos')">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <h2 class="modal-jogos-titulo">Escolha seu jogo</h2>
+
+            <div class="jogos-grid">
+                <!-- Quebra-Cabeça -->
+                <a href="quebra_cabeca.php" class="jogo-card">
+                    <div class="jogo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 14H7C7.55228 14 8 14.4477 8 15V19C8 19.5523 7.55228 20 7 20H4C3.44772 20 3 19.5523 3 19V15C3 14.4477 3.44772 14 4 14Z" fill="white" />
+                            <path d="M10 14H13C13.5523 14 14 14.4477 14 15V19C14 19.5523 13.5523 20 13 20H10C9.44772 20 9 19.5523 9 19V15C9 14.4477 9.44772 14 10 14Z" fill="white" />
+                            <path d="M16 14H19C19.5523 14 20 14.4477 20 15V19C20 19.5523 19.5523 20 19 20H16C15.4477 20 15 19.5523 15 19V15C15 14.4477 15.4477 14 16 14Z" fill="white" />
+                            <path d="M4 8H7C7.55228 8 8 8.44772 8 9V12C8 12.5523 7.55228 13 7 13H4C3.44772 13 3 12.5523 3 12V9C3 8.44772 3.44772 8 4 8Z" fill="white" />
+                            <path d="M10 4H13C13.5523 4 14 4.44772 14 5V8C14 8.55228 13.5523 9 13 9H10C9.44772 9 9 8.55228 9 8V5C9 4.44772 9.44772 4 10 4Z" fill="white" />
+                            <path d="M16 8H19C19.5523 8 20 8.44772 20 9V12C20 12.5523 19.5523 13 19 13H16C15.4477 13 15 12.5523 15 12V9C15 8.44772 15.4477 8 16 8Z" fill="white" />
+                        </svg>
+                    </div>
+                    <h3 class="jogo-nome">Quebra-Cabeça</h3>
+                    <p class="jogo-descricao">Monte a imagem do seu filme favorito</p>
+                </a>
+
+                <!-- Jogo da Memória -->
+                <a href="jogo_memoria.php" class="jogo-card">
+                    <div class="jogo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="white" />
+                            <path d="M12 8V16M8 12H16" stroke="#6a53b8" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="jogo-nome">Jogo da Memória</h3>
+                    <p class="jogo-descricao">Encontre os pares de filmes e séries</p>
+                </a>
+
+                <!-- Cruzadinha -->
+                <a href="cruzadinha.php" class="jogo-card">
+                    <div class="jogo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="5" height="5" fill="white" />
+                            <rect x="9" y="3" width="5" height="5" fill="white" />
+                            <rect x="15" y="3" width="5" height="5" fill="white" />
+                            <rect x="3" y="9" width="5" height="5" fill="white" />
+                            <rect x="9" y="9" width="5" height="5" fill="#6a53b8" />
+                            <rect x="15" y="9" width="5" height="5" fill="white" />
+                            <rect x="3" y="15" width="5" height="5" fill="white" />
+                            <rect x="9" y="15" width="5" height="5" fill="white" />
+                            <rect x="15" y="15" width="5" height="5" fill="white" />
+                        </svg>
+                    </div>
+                    <h3 class="jogo-nome">Cruzadinha</h3>
+                    <p class="jogo-descricao">Descubra o nome dos filmes e séries</p>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal fazer login -->
     <div id="modal" class="modal">
@@ -394,6 +469,43 @@ if ($temFiltro) {
                 document.getElementById('modal').style.display = 'block';
             });
         }
+
+        function abrirModalJogos() {
+            const modal = document.getElementById('modalJogos');
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function fecharModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modais = document.querySelectorAll('.modal');
+                modais.forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+        });
 
 
         // Sistema de notificações popup
