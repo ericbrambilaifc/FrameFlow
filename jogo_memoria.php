@@ -7,9 +7,10 @@ $nivel = isset($_GET['nivel']) ? $_GET['nivel'] : 'facil';
 $numeroPares = ($nivel === 'facil') ? 6 : (($nivel === 'medio') ? 8 : 10);
 
 // Buscar séries para o jogo
-function buscarSeriesJogo($limite) {
+function buscarSeriesJogo($limite)
+{
     $conexao = ConexaoBD::conectar();
-    
+
     $sql = "SELECT s.id, s.titulo, s.imagem_url, 
                    g.nome as genero, 
                    c.nome as classificacao
@@ -18,28 +19,29 @@ function buscarSeriesJogo($limite) {
             LEFT JOIN classificacoes c ON s.classificacao_id = c.id
             ORDER BY RAND()
             LIMIT :limite";
-    
+
     $stmt = $conexao->prepare($sql);
     $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
     $stmt->execute();
-    
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Buscar uma avaliação aleatória para dica difícil
-function buscarAvaliacaoDica($serieId) {
+function buscarAvaliacaoDica($serieId)
+{
     $conexao = ConexaoBD::conectar();
-    
+
     $sql = "SELECT comentario, nota 
             FROM avaliacoes 
             WHERE serie_id = :serie_id 
             ORDER BY RAND() 
             LIMIT 1";
-    
+
     $stmt = $conexao->prepare($sql);
     $stmt->bindValue(':serie_id', $serieId, PDO::PARAM_INT);
     $stmt->execute();
-    
+
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -50,7 +52,7 @@ $cartas = [];
 foreach ($series as $serie) {
     // Buscar avaliação para o nível difícil
     $avaliacao = buscarAvaliacaoDica($serie['id']);
-    
+
     // Criar duas cartas iguais (par)
     for ($i = 0; $i < 2; $i++) {
         $cartas[] = [
@@ -82,6 +84,7 @@ $config = [
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,14 +98,13 @@ $config = [
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #fff;
             min-height: 100vh;
             padding: 2rem;
         }
 
         .container-jogo {
-            max-width: 1400px;
+            max-width: 80%;
             margin: 0 auto;
         }
 
@@ -116,7 +118,7 @@ $config = [
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header-jogo h1 {
@@ -183,13 +185,13 @@ $config = [
         }
 
         .btn-reiniciar {
-            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-            color: white;
+            background: #f0f0f0;
+            color: #6a53b8;
         }
 
         .btn-reiniciar:hover {
+            background: #e0e0e0;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
         }
 
         .nivel-selector {
@@ -198,7 +200,7 @@ $config = [
             border-radius: 1.5rem;
             margin-bottom: 2rem;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .nivel-selector h3 {
@@ -263,8 +265,15 @@ $config = [
         }
 
         @keyframes matchPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .card-face {
@@ -276,7 +285,7 @@ $config = [
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .card-front {
@@ -304,7 +313,7 @@ $config = [
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
             color: white;
             padding: 0.5rem;
             font-size: 0.75rem;
@@ -339,7 +348,7 @@ $config = [
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -363,6 +372,7 @@ $config = [
                 transform: translateY(-100px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -438,12 +448,13 @@ $config = [
         }
     </style>
 </head>
+
 <body>
     <div class="container-jogo">
         <!-- Header -->
         <div class="header-jogo">
             <h1>🎮 Jogo da Memória</h1>
-            
+
             <div class="stats-container">
                 <div class="stat-box">
                     <span>Tentativas</span>
@@ -473,16 +484,16 @@ $config = [
         <div class="nivel-selector">
             <h3>Nível de Dificuldade</h3>
             <div class="nivel-btns">
-                <button class="nivel-btn <?php echo $nivel === 'facil' ? 'active' : ''; ?>" 
-                        onclick="mudarNivel('facil')">
+                <button class="nivel-btn <?php echo $nivel === 'facil' ? 'active' : ''; ?>"
+                    onclick="mudarNivel('facil')">
                     Fácil (6 pares)
                 </button>
-                <button class="nivel-btn <?php echo $nivel === 'medio' ? 'active' : ''; ?>" 
-                        onclick="mudarNivel('medio')">
+                <button class="nivel-btn <?php echo $nivel === 'medio' ? 'active' : ''; ?>"
+                    onclick="mudarNivel('medio')">
                     Médio (8 pares)
                 </button>
-                <button class="nivel-btn <?php echo $nivel === 'dificil' ? 'active' : ''; ?>" 
-                        onclick="mudarNivel('dificil')">
+                <button class="nivel-btn <?php echo $nivel === 'dificil' ? 'active' : ''; ?>"
+                    onclick="mudarNivel('dificil')">
                     Difícil (10 pares)
                 </button>
             </div>
@@ -491,22 +502,22 @@ $config = [
         <!-- Tabuleiro do Jogo -->
         <div class="game-board nivel-<?php echo $nivel; ?>" id="gameBoard">
             <?php foreach ($cartas as $index => $carta): ?>
-                <div class="card" 
-                     data-id="<?php echo $carta['id']; ?>" 
-                     data-unique="<?php echo $carta['uniqueId']; ?>"
-                     onclick="virarCarta(this)">
+                <div class="card"
+                    data-id="<?php echo $carta['id']; ?>"
+                    data-unique="<?php echo $carta['uniqueId']; ?>"
+                    onclick="virarCarta(this)">
                     <div class="card-face card-front">
                         🎬
                     </div>
-                    <div class="card-face card-back" 
-                         data-hint="<?php 
-                            if ($nivel === 'medio') {
-                                echo htmlspecialchars($carta['genero'] . ' | ' . $carta['classificacao']);
-                            } elseif ($nivel === 'dificil') {
-                            }
-                         ?>">
-                        <img src="<?php echo htmlspecialchars($carta['imagem']); ?>" 
-                             alt="<?php echo htmlspecialchars($carta['titulo']); ?>">
+                    <div class="card-face card-back"
+                        data-hint="<?php
+                                    if ($nivel === 'medio') {
+                                        echo htmlspecialchars($carta['genero'] . ' | ' . $carta['classificacao']);
+                                    } elseif ($nivel === 'dificil') {
+                                    }
+                                    ?>">
+                        <img src="<?php echo htmlspecialchars($carta['imagem']); ?>"
+                            alt="<?php echo htmlspecialchars($carta['titulo']); ?>">
                         <div class="card-info">
                             <?php echo htmlspecialchars($carta['titulo']); ?>
                         </div>
@@ -521,7 +532,7 @@ $config = [
         <div class="modal-content">
             <h2>🎉 Parabéns!</h2>
             <p style="color: #666; font-size: 1.1rem; margin: 1rem 0;">Você completou o jogo!</p>
-            
+
             <div class="resultado-stats">
                 <div class="resultado-item">
                     <span>Tentativas:</span>
@@ -565,7 +576,7 @@ $config = [
                 const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
                 const minutos = Math.floor(tempoDecorrido / 60);
                 const segundos = tempoDecorrido % 60;
-                document.getElementById('tempo').textContent = 
+                document.getElementById('tempo').textContent =
                     `${minutos}:${segundos.toString().padStart(2, '0')}`;
             }, 1000);
         }
@@ -601,7 +612,7 @@ $config = [
                 primeiraCarta.classList.add('matched');
                 segundaCarta.classList.add('matched');
                 paresEncontrados++;
-                document.getElementById('pares').textContent = 
+                document.getElementById('pares').textContent =
                     `${paresEncontrados} / ${config.pares}`;
 
                 resetarCartas();
@@ -631,13 +642,13 @@ $config = [
         // Finalizar jogo
         function finalizarJogo() {
             clearInterval(timerInterval);
-            
+
             const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
             const tempoRestante = Math.max(0, config.tempo_limite - tempoDecorrido);
             pontuacao += tempoRestante * config.bonus_tempo;
 
             document.getElementById('resultTentativas').textContent = tentativas;
-            document.getElementById('resultTempo').textContent = 
+            document.getElementById('resultTempo').textContent =
                 document.getElementById('tempo').textContent;
             document.getElementById('resultPontuacao').textContent = pontuacao;
 
@@ -660,6 +671,21 @@ $config = [
         window.onload = () => {
             iniciarTimer();
         };
+
+        function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
+            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+                return; // Não salva se não estiver logado
+            }
+
+            fetch('salvar_pontuacao.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
+            });
+        }
     </script>
 </body>
+
 </html>

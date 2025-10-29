@@ -1,32 +1,16 @@
 <?php
-// ===============================================
-// CONFIGURAÇÃO DO BANCO DE DADOS
-// ===============================================
-$host = '127.0.0.1';
-$db = 'frameflow';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false,
-];
+session_start();
+require_once 'src/ConexaoBD.php';
 
 $imagem_selecionada_url = '';
 $titulo_selecionado = 'Série';
 $erro = '';
 
-// ===============================================
-// CONEXÃO E BUSCA
-// ===============================================
 try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
+    $conexao = ConexaoBD::conectar();
 
     $sql = "SELECT titulo, imagem_url FROM series ORDER BY RAND() LIMIT 1";
-    $stmt = $pdo->query($sql);
+    $stmt = $conexao->query($sql);
     $serie_sorteada = $stmt->fetch();
 
     if (empty($serie_sorteada)) {
@@ -39,15 +23,14 @@ try {
     $erro = "Erro de conexão ou de banco de dados: " . $e->getMessage();
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quebra-Cabeça - <?= htmlspecialchars($titulo_selecionado) ?></title>
-
+    <link rel="stylesheet" href="global.css">
     <style>
         * {
             margin: 0;
@@ -55,100 +38,124 @@ try {
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #6A53B8;
-            --primary-dark: #5842a0;
-            --primary-light: #8b7cc8;
-            --secondary: #FF6B6B;
-            --success: #51cf66;
-            --background: #0f0f1e;
-            --surface: #1a1a2e;
-            --surface-light: #242438;
-            --text: #ffffff;
-            --text-secondary: #b0b0c8;
-            --border: #2d2d44;
-
-            --puzzle-size: 400px;
-            --grid-size: 3;
-            --peca-size: calc(var(--puzzle-size) / var(--grid-size));
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--background) 0%, #16162e 100%);
-            color: var(--text);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container-puzzle {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-puzzle {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
+        .header-puzzle h1 {
+            color: #6a53b8;
+            font-size: 2rem;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 30px;
-        }
-
-        .header {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .logo {
-            font-size: 2.5em;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: 1.8em;
-            color: var(--text);
-            margin-bottom: 8px;
+            gap: 0.5rem;
         }
 
         .serie-titulo {
-            font-size: 1.3em;
-            color: var(--primary-light);
+            color: #8b73d8;
+            font-size: 1.2rem;
             font-weight: 600;
         }
 
-        .game-area {
+        .stats-container {
             display: flex;
-            gap: 40px;
-            align-items: flex-start;
+            gap: 1.5rem;
             flex-wrap: wrap;
-            justify-content: center;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .stat-box span:first-child {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .stat-box span:last-child {
+            font-size: 1.3rem;
+        }
+
+        .btn-menu {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-voltar {
+            background: #f0f0f0;
+            color: #6a53b8;
+        }
+
+        .btn-voltar:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            align-items: start;
         }
 
         .preview-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .preview-container {
-            background: var(--surface);
-            padding: 20px;
-            border-radius: 16px;
-            border: 2px solid var(--border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        .preview-section h3 {
+            color: #6a53b8;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
         #preview {
-            max-width: 200px;
-            width: 200px;
-            height: auto;
-            border-radius: 12px;
-            border: 2px solid var(--primary);
+            width: 100%;
+            border-radius: 1rem;
+            border: 3px solid #6a53b8;
             display: none;
             transition: all 0.3s ease;
         }
@@ -157,38 +164,52 @@ try {
             display: block;
         }
 
-        .tabuleiro-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
+        .btn-preview {
+            width: 100%;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .tabuleiro-container {
-            background: var(--surface);
-            padding: 25px;
-            border-radius: 20px;
-            border: 3px solid var(--primary);
-            box-shadow: 0 12px 48px rgba(106, 83, 184, 0.3);
-            position: relative;
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(106, 83, 184, 0.4);
+        }
+
+        .puzzle-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .puzzle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
         }
 
         #tabuleiro {
             display: grid;
-            grid-template-columns: repeat(var(--grid-size), var(--peca-size));
-            grid-template-rows: repeat(var(--grid-size), var(--peca-size));
+            grid-template-columns: repeat(3, 150px);
+            grid-template-rows: repeat(3, 150px);
             gap: 0;
-            width: var(--puzzle-size);
-            height: var(--puzzle-size);
-            background: var(--surface-light);
-            border-radius: 12px;
+            border: 3px solid #6a53b8;
+            border-radius: 1rem;
             overflow: hidden;
+            box-shadow: 0 8px 30px rgba(106, 83, 184, 0.3);
         }
 
         .peca {
-            width: var(--peca-size);
-            height: var(--peca-size);
-            background-size: var(--puzzle-size) var(--puzzle-size);
+            width: 150px;
+            height: 150px;
+            background-size: 450px 450px;
             background-repeat: no-repeat;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -197,86 +218,80 @@ try {
         }
 
         .peca:hover:not(.peca-vazia) {
-            transform: scale(1.03);
-            border: 2px solid var(--primary);
+            transform: scale(1.05);
+            border: 2px solid #6a53b8;
             z-index: 10;
             box-shadow: 0 4px 16px rgba(106, 83, 184, 0.5);
         }
 
         .peca-vazia {
-            background: var(--surface-light) !important;
+            background: #f0f0f0 !important;
             cursor: default;
-            opacity: 0.3;
-            border: 1px dashed var(--border);
+            opacity: 0.5;
+            border: 2px dashed #6a53b8;
         }
 
         .controles {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
         }
 
-        button {
-            padding: 14px 28px;
-            font-size: 1em;
+        .btn-iniciar {
+            background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            border: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(106, 83, 184, 0.3);
         }
 
-        #iniciar-jogo {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-
-        #iniciar-jogo:hover {
+        .btn-iniciar:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(106, 83, 184, 0.5);
+            box-shadow: 0 6px 25px rgba(106, 83, 184, 0.5);
         }
 
-        #iniciar-jogo:active {
-            transform: translateY(0);
+        .btn-embaralhar {
+            background: #f0f0f0;
+            color: #6a53b8;
+            padding: 1rem 2rem;
+            border: 2px solid #6a53b8;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        #mostrar-original {
-            background: var(--surface);
-            color: var(--text);
-            border: 2px solid var(--primary);
-        }
-
-        #mostrar-original:hover {
-            background: var(--primary);
+        .btn-embaralhar:hover {
+            background: #6a53b8;
             color: white;
             transform: translateY(-2px);
         }
 
         .mensagem {
-            background: var(--surface);
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 500;
+            background: #f8f7fc;
+            padding: 1.5rem;
+            border-radius: 1rem;
             text-align: center;
-            border: 2px solid var(--border);
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            border: 2px solid #e0e0e0;
         }
 
         .mensagem.vitoria {
-            background: linear-gradient(135deg, var(--success) 0%, #40c057 100%);
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
             color: white;
-            border: 2px solid var(--success);
+            border: none;
             animation: pulse 1s ease-in-out infinite;
-            box-shadow: 0 8px 32px rgba(81, 207, 102, 0.4);
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
         }
 
         @keyframes pulse {
@@ -287,132 +302,153 @@ try {
             }
 
             50% {
-                transform: scale(1.03);
+                transform: scale(1.02);
             }
         }
 
         .erro-msg {
-            background: var(--surface);
-            padding: 24px;
-            border-radius: 12px;
-            color: var(--secondary);
-            border: 2px solid var(--secondary);
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
             text-align: center;
             max-width: 600px;
-            margin: 40px auto;
+            margin: 2rem auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .stats {
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .erro-msg h2 {
+            color: #f44336;
+            margin-bottom: 1rem;
         }
 
-        .stat-item {
-            background: var(--surface);
-            padding: 16px 24px;
-            border-radius: 12px;
-            border: 2px solid var(--border);
-            text-align: center;
-            min-width: 120px;
+        .erro-msg p {
+            color: #666;
         }
 
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9em;
-            margin-bottom: 4px;
-        }
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
 
-        .stat-value {
-            color: var(--primary-light);
-            font-size: 1.8em;
-            font-weight: bold;
+            .preview-section {
+                max-width: 300px;
+                margin: 0 auto;
+            }
         }
 
         @media (max-width: 768px) {
-            :root {
-                --puzzle-size: 300px;
+            body {
+                padding: 1rem;
             }
 
-            .game-area {
-                gap: 20px;
+            .header-puzzle {
+                flex-direction: column;
+                text-align: center;
             }
 
-            .logo {
-                font-size: 2em;
+            .header-puzzle h1 {
+                font-size: 1.5rem;
             }
 
-            h1 {
-                font-size: 1.4em;
+            .stats-container {
+                justify-content: center;
+            }
+
+            #tabuleiro {
+                grid-template-columns: repeat(3, 100px);
+                grid-template-rows: repeat(3, 100px);
+            }
+
+            .peca {
+                width: 100px;
+                height: 100px;
+                background-size: 300px 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #tabuleiro {
+                grid-template-columns: repeat(3, 90px);
+                grid-template-rows: repeat(3, 90px);
+            }
+
+            .peca {
+                width: 90px;
+                height: 90px;
+                background-size: 270px 270px;
+            }
+
+            .btn-iniciar {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <?php if ($erro) : ?>
+    <?php if ($erro): ?>
         <div class="erro-msg">
             <h2>⚠️ Erro</h2>
             <p><?= htmlspecialchars($erro) ?></p>
         </div>
-    <?php else : ?>
-
-        <div class="container">
-            <div class="header">
-                <div class="logo">🎬 FRAMEFLOW</div>
-                <h1>Quebra-Cabeça da Série</h1>
-                <div class="serie-titulo">"<?= htmlspecialchars($titulo_selecionado) ?>"</div>
-            </div>
-
-            <div class="game-area">
-                <div class="preview-section">
-                    <div class="preview-container">
-                        <img id="preview" src="<?= htmlspecialchars($imagem_selecionada_url) ?>" alt="Imagem original">
-                    </div>
-                    <button id="mostrar-original">👁️ Ver Original</button>
+    <?php else: ?>
+        <div class="container-puzzle">
+            <!-- Header -->
+            <div class="header-puzzle">
+                <div>
+                    <h1>🧩 Quebra-Cabeça</h1>
+                    <div class="serie-titulo"><?= htmlspecialchars($titulo_selecionado) ?></div>
                 </div>
 
-                <div class="tabuleiro-section">
-                    <div class="tabuleiro-container">
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <span>Movimentos</span>
+                        <span id="movimentos">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span>Tempo</span>
+                        <span id="tempo">0:00</span>
+                    </div>
+                </div>
+
+                <div class="btn-menu">
+                    <a href="explorar.php" class="btn btn-voltar">← Voltar</a>
+                </div>
+            </div>
+
+            <!-- Game Area -->
+            <div class="game-area">
+                <!-- Preview Section -->
+                <div class="preview-section">
+                    <h3>📷 Imagem Original</h3>
+                    <img id="preview" src="<?= htmlspecialchars($imagem_selecionada_url) ?>" alt="Imagem original">
+                    <button class="btn-preview" id="mostrar-original">👁️ Mostrar</button>
+                </div>
+
+                <!-- Puzzle Section -->
+                <div class="puzzle-section">
+                    <div class="puzzle-container">
                         <div id="tabuleiro"></div>
                     </div>
 
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-label">Movimentos</div>
-                            <div class="stat-value" id="movimentos">0</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Tempo</div>
-                            <div class="stat-value" id="tempo">0:00</div>
-                        </div>
+                    <div class="controles">
+                        <button class="btn-iniciar" id="iniciar-jogo">🎮 Iniciar Jogo</button>
+                        <button class="btn-embaralhar" id="embaralhar" style="display: none;">🔄 Embaralhar</button>
+                    </div>
+
+                    <div id="mensagem" class="mensagem">
+                        Clique em "Iniciar Jogo" para começar!
                     </div>
                 </div>
             </div>
-
-            <div class="controles">
-                <button id="iniciar-jogo">🎮 Iniciar Jogo</button>
-            </div>
-
-            <div id="mensagem" class="mensagem">Clique em "Iniciar Jogo" para começar!</div>
         </div>
-
     <?php endif; ?>
 
     <script>
-        // ==========================================================
-        // CONSTANTES E VARIÁVEIS GLOBAIS
-        // ==========================================================
         const IMAGEM_URL = "<?= addslashes($imagem_selecionada_url) ?>";
         const TAMANHO = 3;
         const NUM_PECAS = TAMANHO * TAMANHO;
-
-        // Lê o tamanho real do CSS
-        const computedStyle = getComputedStyle(document.documentElement);
-        const PUZZLE_SIZE_PX = parseFloat(computedStyle.getPropertyValue('--puzzle-size'));
-        const PECA_SIZE_PX = PUZZLE_SIZE_PX / TAMANHO;
 
         let tabuleiro = [];
         let jogando = false;
@@ -422,15 +458,17 @@ try {
 
         const tabuleiroEl = document.getElementById('tabuleiro');
         const iniciarBtn = document.getElementById('iniciar-jogo');
+        const embaralharBtn = document.getElementById('embaralhar');
         const mensagemEl = document.getElementById('mensagem');
         const previewEl = document.getElementById('preview');
         const mostrarOriginalBtn = document.getElementById('mostrar-original');
         const movimentosEl = document.getElementById('movimentos');
         const tempoEl = document.getElementById('tempo');
 
-        // ==========================================================
-        // FUNÇÕES DO JOGO
-        // ==========================================================
+        function getPecaSize() {
+            const firstPeca = document.querySelector('.peca');
+            return firstPeca ? firstPeca.offsetWidth : 150;
+        }
 
         function criarPecas() {
             tabuleiroEl.innerHTML = '';
@@ -443,18 +481,16 @@ try {
                 peca.className = 'peca';
                 peca.dataset.id = i;
 
-                // Calcula posição ORIGINAL desta peça na grade
                 const row = Math.floor(i / TAMANHO);
                 const col = i % TAMANHO;
 
-                // Calcula a posição em pixels usando o tamanho exato da peça
-                const bgPosX = -(col * PECA_SIZE_PX);
-                const bgPosY = -(row * PECA_SIZE_PX);
+                const pecaSize = getPecaSize();
+                const bgPosX = -(col * pecaSize);
+                const bgPosY = -(row * pecaSize);
 
                 peca.style.backgroundImage = `url('${IMAGEM_URL}')`;
                 peca.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
 
-                // A última peça é o espaço vazio
                 if (i === NUM_PECAS - 1) {
                     peca.classList.add('peca-vazia');
                     peca.style.backgroundImage = 'none';
@@ -531,11 +567,11 @@ try {
                 jogando = false;
                 clearInterval(intervaloTempo);
 
-                mensagemEl.textContent = `🎉 Parabéns! Você completou em ${movimentos} movimentos!`;
+                mensagemEl.textContent = `🎉 Parabéns! Você completou em ${movimentos} movimentos e ${tempoEl.textContent}!`;
                 mensagemEl.classList.add('vitoria');
                 iniciarBtn.textContent = '🔄 Jogar Novamente';
+                embaralharBtn.style.display = 'none';
 
-                // Mostra a última peça
                 const pecas = Array.from(tabuleiroEl.children);
                 const pecaVazia = pecas.find(p => parseInt(p.dataset.id) === NUM_PECAS - 1);
 
@@ -544,8 +580,9 @@ try {
                     const row = Math.floor(idPeca / TAMANHO);
                     const col = idPeca % TAMANHO;
 
-                    const bgPosX = -(col * PECA_SIZE_PX);
-                    const bgPosY = -(row * PECA_SIZE_PX);
+                    const pecaSize = getPecaSize();
+                    const bgPosX = -(col * pecaSize);
+                    const bgPosY = -(row * pecaSize);
 
                     pecaVazia.classList.remove('peca-vazia');
                     pecaVazia.style.backgroundImage = `url('${IMAGEM_URL}')`;
@@ -568,11 +605,12 @@ try {
             movimentosEl.textContent = '0';
             tempoEl.textContent = '0:00';
 
-            mensagemEl.textContent = 'Clique nas peças adjacentes ao espaço vazio!';
+            mensagemEl.textContent = 'Clique nas peças adjacentes ao espaço vazio para movê-las!';
             mensagemEl.classList.remove('vitoria');
-            iniciarBtn.textContent = '🔄 Embaralhar Novamente';
+            iniciarBtn.textContent = '🎮 Jogando...';
+            embaralharBtn.style.display = 'inline-flex';
             previewEl.classList.remove('show');
-            mostrarOriginalBtn.textContent = '👁️ Ver Original';
+            mostrarOriginalBtn.textContent = '👁️ Mostrar';
 
             clearInterval(intervaloTempo);
             intervaloTempo = setInterval(() => {
@@ -583,15 +621,20 @@ try {
             }, 1000);
         }
 
-        // ==========================================================
-        // EVENT LISTENERS E INICIALIZAÇÃO
-        // ==========================================================
-
         iniciarBtn.addEventListener('click', iniciarJogo);
+
+        embaralharBtn.addEventListener('click', () => {
+            if (jogando) {
+                embaralhar();
+                renderizar();
+                movimentos = 0;
+                movimentosEl.textContent = '0';
+            }
+        });
 
         mostrarOriginalBtn.addEventListener('click', () => {
             previewEl.classList.toggle('show');
-            mostrarOriginalBtn.textContent = previewEl.classList.contains('show') ? '🙈 Esconder' : '👁️ Ver Original';
+            mostrarOriginalBtn.textContent = previewEl.classList.contains('show') ? '🙈 Esconder' : '👁️ Mostrar';
         });
 
         window.onload = function() {
@@ -600,6 +643,20 @@ try {
                 renderizar();
             }
         };
+
+        function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
+    if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+        return; // Não salva se não estiver logado
+    }
+    
+    fetch('salvar_pontuacao.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
+    });
+}
     </script>
 </body>
 

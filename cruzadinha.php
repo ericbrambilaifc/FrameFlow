@@ -746,6 +746,20 @@ $gameData = [
         }
 
         window.onload = montarCruzadinha;
+
+        function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
+            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+                return; // Não salva se não estiver logado
+            }
+
+            fetch('salvar_pontuacao.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
+            });
+        }
     </script>
 </body>
 

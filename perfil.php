@@ -3,11 +3,10 @@ session_start();
 require_once('src/UsuarioDAO.php');
 require_once('src/AvaliacaoDAO.php');
 require_once('src/SeguidorDAO.php');
+require_once('src/FavoritoDAO.php');
 
-// Pega o ID do usuário da URL
 $usuario_id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
-// Se não tiver ID, redireciona
 if (!$usuario_id) {
     header('Location: explorar.php');
     exit;
@@ -17,23 +16,20 @@ if (!$usuario_id) {
 $usuario = UsuarioDAO::obterPerfil($usuario_id);
 $foto_perfil = $usuario['foto_perfil'] ?? null;
 
-// Se usuário não existe, redireciona
 if (!$usuario) {
     $_SESSION['erro'] = 'Usuário não encontrado.';
     header('Location: explorar.php');
     exit;
 }
 
-// Verifica se o usuário logado é admin
 $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
 
-// Busca as avaliações do usuário
 $avaliacoes = AvaliacaoDAO::listarPorUsuario($usuario_id);
+$favoritos = FavoritoDAO::listarPorUsuario($usuario_id);
+$total_favoritos = FavoritoDAO::contarPorUsuario($usuario_id);
 
-// Verifica se é o próprio perfil
 $eh_proprio_perfil = isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] == $usuario_id;
 
-// Verifica se está seguindo (apenas se não for o próprio perfil e estiver logado)
 $esta_seguindo = false;
 if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     $esta_seguindo = SeguidorDAO::estaSeguindo($_SESSION['usuario_id'], $usuario_id);
@@ -220,6 +216,54 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Seção de Favoritos -->
+        <div class="favoritos-secao">
+            <h2>
+                <svg width="30" height="25" viewBox="0 0 30 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 8.45598C1.00003 6.95185 1.45631 5.48311 2.30859 4.24374C3.16087 3.00438 4.36904 2.05269 5.77354 1.51438C7.17804 0.976067 8.7128 0.876455 10.1751 1.2287C11.6374 1.58094 12.9585 2.36847 13.9638 3.48727C14.0346 3.56298 14.1202 3.62334 14.2153 3.6646C14.3104 3.70587 14.413 3.72716 14.5166 3.72716C14.6203 3.72716 14.7228 3.70587 14.8179 3.6646C14.913 3.62334 14.9986 3.56298 15.0695 3.48727C16.0716 2.3612 17.393 1.56705 18.8577 1.21053C20.3223 0.854006 21.8609 0.952016 23.2685 1.49151C24.6761 2.03101 25.886 2.98641 26.7372 4.23055C27.5883 5.47468 28.0404 6.94855 28.0332 8.45598C28.0332 11.5513 26.0057 13.8626 23.9783 15.8901L16.5549 23.0715C16.3031 23.3608 15.9925 23.5931 15.644 23.7531C15.2954 23.9132 14.9168 23.9972 14.5332 23.9996C14.1497 24.002 13.77 23.9228 13.4195 23.7672C13.0689 23.6116 12.7554 23.3832 12.4999 23.0972L5.05499 15.8901C3.02749 13.8626 1 11.5648 1 8.45598Z" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+
+                Séries Favoritas (<?php echo $total_favoritos; ?>)
+            </h2>
+
+            <?php if (count($favoritos) > 0): ?>
+                <div class="favoritos-grid">
+                    <?php foreach ($favoritos as $favorito): ?>
+                        <div class="favorito-card" onclick="window.location.href='explorar.php'">
+                            <img src="<?php echo htmlspecialchars($favorito['imagem_url']); ?>"
+                                alt="<?php echo htmlspecialchars($favorito['titulo']); ?>">
+
+                            <?php if ($eh_proprio_perfil): ?>
+                                <button class="btn-remover-favorito"
+                                    onclick="event.stopPropagation(); removerFavorito(<?php echo $favorito['id']; ?>)">
+                                    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M12 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M17 5V19C17 19.5304 16.7893 20.0391 16.4142 20.4142C16.0391 20.7893 15.5304 21 15 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M1 5H19" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M6 5V3C6 2.46957 6.21071 1.96086 6.58579 1.58579C6.96086 1.21071 7.46957 1 8 1H12C12.5304 1 13.0391 1.21071 13.4142 1.58579C13.7893 1.96086 14 2.46957 14 3V5" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+
+                                </button>
+                            <?php endif; ?>
+
+                            <div class="favorito-titulo">
+                                <?php echo htmlspecialchars($favorito['titulo']); ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="sem-favoritos">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    <p>Nenhuma série favorita ainda.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
 
         <!-- Avaliações (apenas para não-admin) -->
         <?php if (!$eh_admin): ?>
@@ -790,6 +834,42 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
+        // Função para remover favorito
+        function removerFavorito(serieId) {
+            if (!confirm('Deseja remover esta série dos favoritos?')) {
+                return;
+            }
+
+            fetch('toggle_favorito.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `serie_id=${serieId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        mostrarNotificacao('sucesso', 'Sucesso', data.mensagem);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        mostrarNotificacao('erro', 'Erro', data.mensagem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    mostrarNotificacao('erro', 'Erro', 'Erro ao processar solicitação');
+                });
+        }
+
+        // Função mostrarNotificacao (se ainda não existir)
+        function mostrarNotificacao(tipo, titulo, mensagem) {
+            // Use a mesma função que você já tem no explorar.php
+            alert(`${titulo}: ${mensagem}`);
+        }
+
         function atualizarBotaoSeguir(btn, estaSeguindo) {
             if (estaSeguindo) {
                 btn.classList.remove('seguindo');
@@ -831,7 +911,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 console.error('Erro ao atualizar contadores:', error);
             }
         }
-        
+
         function fecharModalSeguidores() {
             const modal = document.getElementById('modalSeguidores');
             if (modal) {
@@ -840,7 +920,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-      
+
         function escapeHtml(text) {
             if (!text) return '';
 
