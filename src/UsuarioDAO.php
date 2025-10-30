@@ -4,6 +4,31 @@ require_once('ConexaoBD.php');
 class UsuarioDAO
 {
 
+    // Método para fazer login do usuário
+    public static function login($email, $senha)
+    {
+        try {
+            $conexao = ConexaoBD::conectar();
+            $sql = "SELECT * FROM usuarios WHERE email = :email LIMIT 1";
+            $stmt = $conexao->prepare($sql);
+            $stmt->bindValue(':email', $email);
+            $stmt->execute();
+
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Verifica se o usuário existe e se a senha está correta
+            if ($usuario && password_verify($senha, $usuario['senha'])) {
+                return $usuario;
+            }
+
+            return null;
+        } catch (PDOException $e) {
+            error_log("Erro ao fazer login: " . $e->getMessage());
+            return null;
+        }
+    }
+
+
     // Método para obter usuário por ID
     public static function obterPorId($id)
     {
