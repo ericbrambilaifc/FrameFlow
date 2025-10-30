@@ -78,6 +78,22 @@ class UsuarioDAO
         }
     }
 
+    public static function obterFotoPerfil($usuario_id)
+    {
+        try {
+            $conexao = ConexaoBD::conectar();
+            $sql = "SELECT foto_perfil FROM usuarios WHERE id = :id LIMIT 1";
+            $stmt = $conexao->prepare($sql);
+            $stmt->bindValue(':id', $usuario_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row ? ($row['foto_perfil'] ?? null) : null;
+        } catch (PDOException $e) {
+            error_log("Erro ao obter foto de perfil: " . $e->getMessage());
+            return null;
+        }
+    }
+
     // Método para obter ranking de avaliações
     public static function obterRankingAvaliacoes($limite = 50)
     {
