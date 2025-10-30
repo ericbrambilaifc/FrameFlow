@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dados = [
         'nome_completo' => $nome_completo,
         'email' => $email,
-        'senha' => $senha
+        'senha' => password_hash($senha, PASSWORD_DEFAULT)  // ✅ CORRETO: senha com hash
     ];
 
     try {
