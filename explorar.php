@@ -728,15 +728,15 @@ if (isset($_SESSION['usuario_id'])) {
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
+
             fetch(`buscar_avaliacoes.php?serie_id=${serieId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.avaliacoes && data.avaliacoes.length > 0) {
                         conteudo.innerHTML = data.avaliacoes.map(av => `
                     <div class="avaliacao-item">
-                        <!-- CABEÇALHO FLEX -->
+                        <!-- CABEÇALHO -->
                         <div class="avaliacao-header-flex">
-                            <!-- Lado Esquerdo: Usuário e Estrelas -->
                             <div class="avaliacao-usuario-info" onclick="window.location.href='perfil.php?id=${av.usuario_id}'" style="cursor: pointer;">
                                 <div class="avatar-usuario">
                                     ${av.foto_perfil && av.foto_perfil !== '' 
@@ -749,27 +749,6 @@ if (isset($_SESSION['usuario_id'])) {
                                     <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
                                 </div>
                             </div>
-                            
-                            <!-- Lado Direito: Botão de Curtida (CORRIGIDO) -->
-                            ${av.pode_curtir ? `
-                                <button class="btn-curtir ${av.ja_curtiu ? 'curtido' : ''}" 
-                                        data-avaliacao-id="${av.id}"
-                                        onclick="event.stopPropagation(); toggleCurtida(${av.id});"
-                                        title="${av.ja_curtiu ? 'Remover curtida' : 'Curtir avaliação'}">
-                                    
-                                    <!-- Ícone de Like (não curtido) -->
-                                    <svg class="svg-curtir" style="display: ${av.ja_curtiu ? 'none' : 'inline'};" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M26.6127 9.95402C25.9054 9.35023 25.0198 9.02246 24.1228 9.02246H23.2142H19.9422H18.0791V4.65793C18.0791 2.82357 17.5444 1.50099 16.4863 0.724687C14.8129 -0.50589 12.507 0.195654 12.4093 0.230156C12.1218 0.322162 11.9262 0.586679 11.9262 0.885698V5.76775C11.9262 7.3606 11.1672 8.71194 9.66636 9.78726C8.54504 10.5923 7.40071 10.9431 7.27996 10.9833L7.1132 11.0236C6.86593 10.6038 6.41165 10.322 5.88837 10.322H1.42034C0.63829 10.322 0 10.9603 0 11.7424V24.8762C0 25.6583 0.63829 26.2965 1.42034 26.2965H5.89987C6.3369 26.2965 6.73367 26.0953 6.99244 25.7848C7.71123 26.5496 8.72905 27.0268 9.83312 27.0268H13.6226H14.0136H21.7824C24.4218 27.0268 26.1066 25.6468 26.4057 23.2316L27.9525 13.6342C28.1653 12.2542 27.6535 10.8396 26.6127 9.95402ZM5.93437 24.8762C5.93437 24.8992 5.91712 24.9165 5.89412 24.9165H1.42034C1.39734 24.9165 1.38009 24.8992 1.38009 24.8762V11.7424C1.38009 11.7194 1.39734 11.7021 1.42034 11.7021H5.89987C5.92287 11.7021 5.94012 11.7194 5.94012 11.7424V24.8762H5.93437ZM26.5782 13.4157L25.0371 23.0303C25.0371 23.0361 25.0371 23.0476 25.0313 23.0591C24.8186 24.7784 23.726 25.6525 21.7766 25.6525H14.0079H13.6169H9.82737C8.60254 25.6525 7.53872 24.7382 7.34896 23.5306C7.34321 23.4904 7.33171 23.4501 7.32021 23.4099V12.3922L7.61923 12.3232C7.63073 12.3232 7.63648 12.3174 7.64798 12.3174C7.70548 12.3002 9.06832 11.9149 10.4427 10.9373C12.323 9.60324 13.3121 7.81488 13.3121 5.76775V1.43773C13.9101 1.33998 14.9337 1.28822 15.6755 1.84026C16.354 2.34054 16.699 3.28935 16.699 4.65793V9.70675C16.699 10.0863 17.0096 10.3968 17.3891 10.3968H19.9422H23.2142H24.1228C24.692 10.3968 25.2613 10.6096 25.7156 11.0006C26.3942 11.5814 26.7277 12.5072 26.5782 13.4157Z" fill="#6A53B8"/>
-                                    </svg>
-                                    
-                                    <!-- Ícone de Dislike (curtido) -->
-                                    <svg class="svg-descurtir" style="display: ${av.ja_curtiu ? 'inline' : 'none'};" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1.38733 17.0728C2.09463 17.6766 2.98018 18.0044 3.87724 18.0044L4.7858 18.0044L8.05775 18.0044L9.92087 18.0044L9.92087 22.3689C9.92087 24.2033 10.4557 25.5259 11.5137 26.3022C13.1871 27.5327 15.493 26.8312 15.5907 26.7967C15.8782 26.7047 16.0738 26.4402 16.0738 26.1411L16.0738 21.2591C16.0738 19.6662 16.8328 18.3149 18.3336 17.2396C19.455 16.4345 20.5993 16.0838 20.72 16.0435L20.8868 16.0033C21.1341 16.423 21.5883 16.7048 22.1116 16.7048L26.5797 16.7048C27.3617 16.7048 28 16.0665 28 15.2845L28 2.15064C28 1.36859 27.3617 0.730298 26.5797 0.730298L22.1001 0.730297C21.6631 0.730297 21.2663 0.93156 21.0076 1.24208C20.2888 0.477281 19.271 2.49447e-06 18.1669 2.39795e-06L14.3774 2.06667e-06L13.9864 2.03248e-06L6.21764 1.35332e-06C3.57822 1.12257e-06 1.89337 1.38009 1.59435 3.79524L0.0474992 13.3926C-0.165264 14.7727 0.346519 16.1873 1.38733 17.0728ZM22.0656 2.15064C22.0656 2.12764 22.0829 2.11038 22.1059 2.11038L26.5797 2.11038C26.6027 2.11038 26.6199 2.12764 26.6199 2.15064L26.6199 15.2845C26.6199 15.3075 26.6027 15.3247 26.5797 15.3247L22.1001 15.3247C22.0771 15.3247 22.0599 15.3075 22.0599 15.2845L22.0599 2.15064L22.0656 2.15064ZM1.42183 13.6111L2.96293 3.9965C2.96293 3.99075 2.96293 3.97925 2.96868 3.96775C3.18145 2.24839 4.27401 1.37434 6.22339 1.37434L13.9921 1.37434L14.3831 1.37434L18.1726 1.37434C19.3975 1.37434 20.4613 2.28865 20.651 3.49622C20.6568 3.53647 20.6683 3.57673 20.6798 3.61698L20.6798 14.6347L20.3808 14.7037C20.3693 14.7037 20.3635 14.7094 20.352 14.7094C20.2945 14.7267 18.9317 15.112 17.5573 16.0895C15.677 17.4236 14.6879 19.212 14.6879 21.2591L14.6879 25.5891C14.0899 25.6869 13.0663 25.7386 12.3245 25.1866C11.646 24.6863 11.301 23.7375 11.301 22.3689L11.301 17.3201C11.301 16.9406 10.9904 16.63 10.6109 16.63L8.05775 16.63L4.7858 16.63L3.87724 16.63C3.30795 16.63 2.73867 16.4173 2.28439 16.0263C1.60585 15.4455 1.27233 14.5197 1.42183 13.6111Z" fill="#FFFFFF"/>
-                                    </svg>
-
-                                    <span class="contador-curtidas">${av.total_curtidas || 0}</span>
-                                </button>
-                            ` : ''}
                         </div>
                         
                         <!-- COMENTÁRIO -->
@@ -777,9 +756,33 @@ if (isset($_SESSION['usuario_id'])) {
                             <p class="avaliacao-comentario">${av.comentario}</p>
                         </div>
                         
-                        <!-- DATA -->
-                        <div class="avaliacao-footer-data">
+                        <!-- DATA E BOTÕES -->
+                        <div class="avaliacao-footer-data" style="display: flex; justify-content: space-between; align-items: center;">
                             <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
+                            
+                            ${av.pode_curtir ? `
+                                <div class="votacao-container" style="display: flex; gap: 15px;">
+                                    <!-- Botão LIKE -->
+                                    <button class="btn-voto btn-like ${av.usuario_voto === 1 ? 'ativo' : ''}" 
+                                            data-avaliacao-id="${av.id}"
+                                            data-tipo="like"
+                                            onclick="event.stopPropagation(); processarVoto(${av.id}, 1);"
+                                            title="Gostei desta avaliação"
+                                            style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${av.usuario_voto === 1 ? '#6A53B8' : 'transparent'}; color: ${av.usuario_voto === 1 ? 'white' : '#6A53B8'}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                        👍 <span class="contador-votos">${av.total_likes || 0}</span>
+                                    </button>
+                                    
+                                    <!-- Botão DISLIKE -->
+                                    <button class="btn-voto btn-dislike ${av.usuario_voto === -1 ? 'ativo' : ''}" 
+                                            data-avaliacao-id="${av.id}"
+                                            data-tipo="dislike"
+                                            onclick="event.stopPropagation(); processarVoto(${av.id}, -1);"
+                                            title="Não gostei desta avaliação"
+                                            style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${av.usuario_voto === -1 ? '#6A53B8' : 'transparent'}; color: ${av.usuario_voto === -1 ? 'white' : '#6A53B8'}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                        👎 <span class="contador-votos">${av.total_dislikes || 0}</span>
+                                    </button>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -792,76 +795,85 @@ if (isset($_SESSION['usuario_id'])) {
                     conteudo.innerHTML = '<p class="erro-avaliacoes">Erro ao carregar avaliações. Tente novamente.</p>';
                 });
         }
-        // Função para curtir/descurtir avaliação
-        function toggleCurtida(avaliacaoId) {
+
+        // ============================================
+        // FUNÇÃO PARA PROCESSAR VOTOS (LIKE/DISLIKE)
+        // ============================================
+
+        function processarVoto(avaliacaoId, tipoVoto) {
+            // Verifica se o usuário está logado (adicione esta linha no seu PHP)
             <?php if (!isset($_SESSION['usuario_id'])): ?>
-                mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para curtir avaliações!');
+                mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para votar em avaliações!');
                 setTimeout(() => {
                     document.getElementById('modal').style.display = 'block';
                 }, 500);
                 return;
             <?php endif; ?>
 
-            const btnCurtir = document.querySelector(`[data-avaliacao-id="${avaliacaoId}"]`);
+            const btnLike = document.querySelector(`[data-avaliacao-id="${avaliacaoId}"][data-tipo="like"]`);
+            const btnDislike = document.querySelector(`[data-avaliacao-id="${avaliacaoId}"][data-tipo="dislike"]`);
 
-            if (!btnCurtir) return;
+            if (!btnLike || !btnDislike) return;
 
-            // Desabilita o botão temporariamente
-            btnCurtir.disabled = true;
-            btnCurtir.style.opacity = '0.6';
+            // Desabilita ambos os botões temporariamente
+            btnLike.disabled = true;
+            btnDislike.disabled = true;
+            btnLike.style.opacity = '0.6';
+            btnDislike.style.opacity = '0.6';
 
-            fetch('processar_curtida.php', {
+            fetch('processar_voto.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `avaliacao_id=${avaliacaoId}`
+                    body: `avaliacao_id=${avaliacaoId}&tipo_voto=${tipoVoto}`
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
-                        // Atualiza o ícone
-                        const svgCurtir = btnCurtir.querySelector('.svg-curtir');
-                        const svgDescurtir = btnCurtir.querySelector('.svg-descurtir');
-                        const contador = btnCurtir.querySelector('.contador-curtidas');
+                        // Atualiza os contadores
+                        const contadorLikes = btnLike.querySelector('.contador-votos');
+                        const contadorDislikes = btnDislike.querySelector('.contador-votos');
 
-                        if (data.acao === 'curtiu') {
-                            svgCurtir.style.display = 'none';
-                            svgDescurtir.style.display = 'inline';
-                            btnCurtir.classList.add('curtido');
-                        } else {
-                            svgCurtir.style.display = 'inline';
-                            svgDescurtir.style.display = 'none';
-                            btnCurtir.classList.remove('curtido');
+                        contadorLikes.textContent = data.total_likes;
+                        contadorDislikes.textContent = data.total_dislikes;
+
+                        // Remove classes ativas e reseta estilos
+                        btnLike.classList.remove('ativo');
+                        btnDislike.classList.remove('ativo');
+                        btnLike.style.background = 'transparent';
+                        btnLike.style.color = '#6A53B8';
+                        btnDislike.style.background = 'transparent';
+                        btnDislike.style.color = '#6A53B8';
+
+                        // Adiciona classe ativa no botão correspondente (se houver voto)
+                        if (data.voto_atual === 1) {
+                            btnLike.classList.add('ativo');
+                            btnLike.style.background = '#6A53B8';
+                            btnLike.style.color = 'white';
+                        } else if (data.voto_atual === -1) {
+                            btnDislike.classList.add('ativo');
+                            btnDislike.style.background = '#6A53B8';
+                            btnDislike.style.color = 'white';
                         }
-
-                        // Atualiza contador
-                        contador.textContent = data.total_curtidas;
 
                         mostrarNotificacao('sucesso', 'Sucesso', data.mensagem);
                     } else {
-                        mostrarNotificacao('erro', 'Erro', data.mensagem || 'Erro ao processar curtida');
+                        mostrarNotificacao('erro', 'Erro', data.mensagem || 'Erro ao processar voto');
                     }
                 })
                 .catch(error => {
                     console.error('Erro:', error);
-                    mostrarNotificacao('erro', 'Erro', 'Erro ao processar curtida');
+                    mostrarNotificacao('erro', 'Erro', 'Erro ao processar voto');
                 })
                 .finally(() => {
-                    // Reabilita o botão
-                    btnCurtir.disabled = false;
-                    btnCurtir.style.opacity = '1';
+                    // Reabilita ambos os botões
+                    btnLike.disabled = false;
+                    btnDislike.disabled = false;
+                    btnLike.style.opacity = '1';
+                    btnDislike.style.opacity = '1';
                 });
         }
-
-        // Event listener para botões de curtida (delegação de evento)
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.btn-curtir')) {
-                const btn = e.target.closest('.btn-curtir');
-                const avaliacaoId = btn.getAttribute('data-avaliacao-id');
-                toggleCurtida(avaliacaoId);
-            }
-        });
 
         function gerarEstrelas(nota) {
             let estrelas = '';
