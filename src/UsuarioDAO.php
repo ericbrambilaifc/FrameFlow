@@ -202,6 +202,62 @@ class UsuarioDAO
         }
     }
 
+    public static function buscarUsuarios($termo, $limite = 10)
+    {
+        try {
+            $conexao = ConexaoBD::conectar();
+
+            // SQL para buscar por nome completo ou email
+            $sql = "SELECT 
+                    id, 
+                    nome_completo, 
+                    email, 
+                    foto_perfil,
+                    is_admin
+                FROM usuarios 
+                WHERE (nome_completo LIKE :termo OR email LIKE :termo)
+                AND is_admin = 0
+                ORDER BY nome_completo ASC
+                LIMIT :limite";
+
+            $stmt = $conexao->prepare($sql);
+            $termo_busca = '%' . $termo . '%';
+            $stmt->bindValue(':termo', $termo_busca, PDO::PARAM_STR);
+            $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Adiciona as iniciais para cada usuário
+            foreach ($usuarios as &$usuario) {
+                $nomes = explode(' ', $usuario['nome_completo']);
+                $iniciais = '';
+
+                // Pega as primeiras letras dos dois primeiros nomes
+                $contador = 0;
+                foreach ($nomes as $nome) {
+                    if (!empty($nome) && $contador < 2) {
+                        $iniciais .= strtoupper(substr($nome, 0, 1));
+                        $contador++;
+                    }
+                }
+
+                // Se conseguiu apenas uma inicial, pega a segunda letra do primeiro nome
+                if (strlen($iniciais) < 2 && !empty($nomes[0])) {
+                    $iniciais = strtoupper(substr($nomes[0], 0, 2));
+                }
+
+                $usuario['iniciais'] = $iniciais;
+            }
+
+            return $usuarios;
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar usuários: " . $e->getMessage());
+            return [];
+        }
+    }
+
+
     // Método para listar todos os usuários
     public static function listar()
     {
