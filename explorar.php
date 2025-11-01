@@ -97,7 +97,6 @@ if (isset($_SESSION['usuario_id'])) {
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
         </ul>
-
         <!-- Perfil do usuário -->
         <div class="header-perfil">
             <?php if (isset($_SESSION['usuario_id'])): ?>
@@ -183,7 +182,6 @@ if (isset($_SESSION['usuario_id'])) {
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                         </button>
-
                         <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
                         <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
                         <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
@@ -260,7 +258,6 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </div>
-
     <!-- Modal fazer login -->
     <div id="modal" class="modal">
         <div class="modal-login">
@@ -485,7 +482,6 @@ if (isset($_SESSION['usuario_id'])) {
             <path d="M20 6L9 17L4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
-
             const iconeErro = `
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 6L6 18M6 6L18 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -606,7 +602,6 @@ if (isset($_SESSION['usuario_id'])) {
                 <?php unset($_SESSION['erro']); ?>
             <?php endif; ?>
 
-
             // Abrir modais
             const openModalBtn = document.getElementById('openModal');
             if (openModalBtn) {
@@ -726,39 +721,68 @@ if (isset($_SESSION['usuario_id'])) {
             document.getElementById('modalAvaliacoes').dataset.serieId = serieId;
         }
 
-        // Carregar avaliações
+        // ============================================
+        // FUNÇÃO carregarAvaliacoes ATUALIZADA
+        // ============================================
+
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
-
             fetch(`buscar_avaliacoes.php?serie_id=${serieId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.avaliacoes && data.avaliacoes.length > 0) {
                         conteudo.innerHTML = data.avaliacoes.map(av => `
-                    <div class="avaliacao-item" data-usuario-id="${av.usuario_id}" style="cursor: pointer;">
-                        <div class="avaliacao-header">
-                            <div class="avaliacao-usuario">
-                            <div class="avatar-usuario">
-                            ${av.foto_perfil && av.foto_perfil !== '' 
-                             ? `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
-                            : av.usuario_nome.charAt(0).toUpperCase()
-                                 }
-                            </div>                                
-                            <span class="usuario-nome">${av.usuario_nome}</span>
-                                <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
+                    <div class="avaliacao-item">
+                        <!-- CABEÇALHO FLEX -->
+                        <div class="avaliacao-header-flex">
+                            <!-- Lado Esquerdo: Usuário e Estrelas -->
+                            <div class="avaliacao-usuario-info" onclick="window.location.href='perfil.php?id=${av.usuario_id}'" style="cursor: pointer;">
+                                <div class="avatar-usuario">
+                                    ${av.foto_perfil && av.foto_perfil !== '' 
+                                        ? `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
+                                        : av.usuario_nome.charAt(0).toUpperCase()
+                                    }
+                                </div>
+                                <div class="usuario-detalhes">
+                                    <span class="usuario-nome">${av.usuario_nome}</span>
+                                    <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
+                                </div>
                             </div>
+                            
+                            <!-- Lado Direito: Botão de Curtida (CORRIGIDO) -->
+                            ${av.pode_curtir ? `
+                                <button class="btn-curtir ${av.ja_curtiu ? 'curtido' : ''}" 
+                                        data-avaliacao-id="${av.id}"
+                                        onclick="event.stopPropagation(); toggleCurtida(${av.id});"
+                                        title="${av.ja_curtiu ? 'Remover curtida' : 'Curtir avaliação'}">
+                                    
+                                    <!-- Ícone de Like (não curtido) -->
+                                    <svg class="svg-curtir" style="display: ${av.ja_curtiu ? 'none' : 'inline'};" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M26.6127 9.95402C25.9054 9.35023 25.0198 9.02246 24.1228 9.02246H23.2142H19.9422H18.0791V4.65793C18.0791 2.82357 17.5444 1.50099 16.4863 0.724687C14.8129 -0.50589 12.507 0.195654 12.4093 0.230156C12.1218 0.322162 11.9262 0.586679 11.9262 0.885698V5.76775C11.9262 7.3606 11.1672 8.71194 9.66636 9.78726C8.54504 10.5923 7.40071 10.9431 7.27996 10.9833L7.1132 11.0236C6.86593 10.6038 6.41165 10.322 5.88837 10.322H1.42034C0.63829 10.322 0 10.9603 0 11.7424V24.8762C0 25.6583 0.63829 26.2965 1.42034 26.2965H5.89987C6.3369 26.2965 6.73367 26.0953 6.99244 25.7848C7.71123 26.5496 8.72905 27.0268 9.83312 27.0268H13.6226H14.0136H21.7824C24.4218 27.0268 26.1066 25.6468 26.4057 23.2316L27.9525 13.6342C28.1653 12.2542 27.6535 10.8396 26.6127 9.95402ZM5.93437 24.8762C5.93437 24.8992 5.91712 24.9165 5.89412 24.9165H1.42034C1.39734 24.9165 1.38009 24.8992 1.38009 24.8762V11.7424C1.38009 11.7194 1.39734 11.7021 1.42034 11.7021H5.89987C5.92287 11.7021 5.94012 11.7194 5.94012 11.7424V24.8762H5.93437ZM26.5782 13.4157L25.0371 23.0303C25.0371 23.0361 25.0371 23.0476 25.0313 23.0591C24.8186 24.7784 23.726 25.6525 21.7766 25.6525H14.0079H13.6169H9.82737C8.60254 25.6525 7.53872 24.7382 7.34896 23.5306C7.34321 23.4904 7.33171 23.4501 7.32021 23.4099V12.3922L7.61923 12.3232C7.63073 12.3232 7.63648 12.3174 7.64798 12.3174C7.70548 12.3002 9.06832 11.9149 10.4427 10.9373C12.323 9.60324 13.3121 7.81488 13.3121 5.76775V1.43773C13.9101 1.33998 14.9337 1.28822 15.6755 1.84026C16.354 2.34054 16.699 3.28935 16.699 4.65793V9.70675C16.699 10.0863 17.0096 10.3968 17.3891 10.3968H19.9422H23.2142H24.1228C24.692 10.3968 25.2613 10.6096 25.7156 11.0006C26.3942 11.5814 26.7277 12.5072 26.5782 13.4157Z" fill="#6A53B8"/>
+                                    </svg>
+                                    
+                                    <!-- Ícone de Dislike (curtido) -->
+                                    <svg class="svg-descurtir" style="display: ${av.ja_curtiu ? 'inline' : 'none'};" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.38733 17.0728C2.09463 17.6766 2.98018 18.0044 3.87724 18.0044L4.7858 18.0044L8.05775 18.0044L9.92087 18.0044L9.92087 22.3689C9.92087 24.2033 10.4557 25.5259 11.5137 26.3022C13.1871 27.5327 15.493 26.8312 15.5907 26.7967C15.8782 26.7047 16.0738 26.4402 16.0738 26.1411L16.0738 21.2591C16.0738 19.6662 16.8328 18.3149 18.3336 17.2396C19.455 16.4345 20.5993 16.0838 20.72 16.0435L20.8868 16.0033C21.1341 16.423 21.5883 16.7048 22.1116 16.7048L26.5797 16.7048C27.3617 16.7048 28 16.0665 28 15.2845L28 2.15064C28 1.36859 27.3617 0.730298 26.5797 0.730298L22.1001 0.730297C21.6631 0.730297 21.2663 0.93156 21.0076 1.24208C20.2888 0.477281 19.271 2.49447e-06 18.1669 2.39795e-06L14.3774 2.06667e-06L13.9864 2.03248e-06L6.21764 1.35332e-06C3.57822 1.12257e-06 1.89337 1.38009 1.59435 3.79524L0.0474992 13.3926C-0.165264 14.7727 0.346519 16.1873 1.38733 17.0728ZM22.0656 2.15064C22.0656 2.12764 22.0829 2.11038 22.1059 2.11038L26.5797 2.11038C26.6027 2.11038 26.6199 2.12764 26.6199 2.15064L26.6199 15.2845C26.6199 15.3075 26.6027 15.3247 26.5797 15.3247L22.1001 15.3247C22.0771 15.3247 22.0599 15.3075 22.0599 15.2845L22.0599 2.15064L22.0656 2.15064ZM1.42183 13.6111L2.96293 3.9965C2.96293 3.99075 2.96293 3.97925 2.96868 3.96775C3.18145 2.24839 4.27401 1.37434 6.22339 1.37434L13.9921 1.37434L14.3831 1.37434L18.1726 1.37434C19.3975 1.37434 20.4613 2.28865 20.651 3.49622C20.6568 3.53647 20.6683 3.57673 20.6798 3.61698L20.6798 14.6347L20.3808 14.7037C20.3693 14.7037 20.3635 14.7094 20.352 14.7094C20.2945 14.7267 18.9317 15.112 17.5573 16.0895C15.677 17.4236 14.6879 19.212 14.6879 21.2591L14.6879 25.5891C14.0899 25.6869 13.0663 25.7386 12.3245 25.1866C11.646 24.6863 11.301 23.7375 11.301 22.3689L11.301 17.3201C11.301 16.9406 10.9904 16.63 10.6109 16.63L8.05775 16.63L4.7858 16.63L3.87724 16.63C3.30795 16.63 2.73867 16.4173 2.28439 16.0263C1.60585 15.4455 1.27233 14.5197 1.42183 13.6111Z" fill="#FFFFFF"/>
+                                    </svg>
+
+                                    <span class="contador-curtidas">${av.total_curtidas || 0}</span>
+                                </button>
+                            ` : ''}
                         </div>
-                        <p class="avaliacao-comentario">${av.comentario}</p>
-                        <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
+                        
+                        <!-- COMENTÁRIO -->
+                        <div class="avaliacao-conteudo">
+                            <p class="avaliacao-comentario">${av.comentario}</p>
+                        </div>
+                        
+                        <!-- DATA -->
+                        <div class="avaliacao-footer-data">
+                            <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
+                        </div>
                     </div>
                 `).join('');
-
-                        document.querySelectorAll('.avaliacao-item').forEach(item => {
-                            item.addEventListener('click', function() {
-                                window.location.href = `perfil.php?id=${this.dataset.usuarioId}`;
-                            });
-                        });
                     } else {
                         conteudo.innerHTML = '<p class="sem-avaliacoes">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>';
                     }
@@ -768,6 +792,76 @@ if (isset($_SESSION['usuario_id'])) {
                     conteudo.innerHTML = '<p class="erro-avaliacoes">Erro ao carregar avaliações. Tente novamente.</p>';
                 });
         }
+        // Função para curtir/descurtir avaliação
+        function toggleCurtida(avaliacaoId) {
+            <?php if (!isset($_SESSION['usuario_id'])): ?>
+                mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para curtir avaliações!');
+                setTimeout(() => {
+                    document.getElementById('modal').style.display = 'block';
+                }, 500);
+                return;
+            <?php endif; ?>
+
+            const btnCurtir = document.querySelector(`[data-avaliacao-id="${avaliacaoId}"]`);
+
+            if (!btnCurtir) return;
+
+            // Desabilita o botão temporariamente
+            btnCurtir.disabled = true;
+            btnCurtir.style.opacity = '0.6';
+
+            fetch('processar_curtida.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `avaliacao_id=${avaliacaoId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        // Atualiza o ícone
+                        const svgCurtir = btnCurtir.querySelector('.svg-curtir');
+                        const svgDescurtir = btnCurtir.querySelector('.svg-descurtir');
+                        const contador = btnCurtir.querySelector('.contador-curtidas');
+
+                        if (data.acao === 'curtiu') {
+                            svgCurtir.style.display = 'none';
+                            svgDescurtir.style.display = 'inline';
+                            btnCurtir.classList.add('curtido');
+                        } else {
+                            svgCurtir.style.display = 'inline';
+                            svgDescurtir.style.display = 'none';
+                            btnCurtir.classList.remove('curtido');
+                        }
+
+                        // Atualiza contador
+                        contador.textContent = data.total_curtidas;
+
+                        mostrarNotificacao('sucesso', 'Sucesso', data.mensagem);
+                    } else {
+                        mostrarNotificacao('erro', 'Erro', data.mensagem || 'Erro ao processar curtida');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    mostrarNotificacao('erro', 'Erro', 'Erro ao processar curtida');
+                })
+                .finally(() => {
+                    // Reabilita o botão
+                    btnCurtir.disabled = false;
+                    btnCurtir.style.opacity = '1';
+                });
+        }
+
+        // Event listener para botões de curtida (delegação de evento)
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-curtir')) {
+                const btn = e.target.closest('.btn-curtir');
+                const avaliacaoId = btn.getAttribute('data-avaliacao-id');
+                toggleCurtida(avaliacaoId);
+            }
+        });
 
         function gerarEstrelas(nota) {
             let estrelas = '';
@@ -782,7 +876,6 @@ if (isset($_SESSION['usuario_id'])) {
                 stroke-linejoin="round" />
         </svg>
     `;
-
             const estrelaVazia = `
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.5288 1.29489C10.5726 1.20635 10.6403 1.13183 10.7242 1.07972C10.8081 1.02761 10.905 1 11.0038 1C11.1025 1 11.1994 1.02761 11.2833 1.07972C11.3672 1.13183 11.4349 1.20635 11.4788 1.29489L13.7888 5.97389C13.9409 6.28186 14.1656 6.5483 14.4434 6.75035C14.7212 6.95239 15.0439 7.08401 15.3838 7.13389L20.5498 7.88989C20.6476 7.90408 20.7396 7.94537 20.8152 8.00909C20.8909 8.07282 20.9472 8.15644 20.9778 8.2505C21.0084 8.34456 21.012 8.4453 20.9883 8.54133C20.9647 8.63736 20.9146 8.72485 20.8438 8.79389L17.1078 12.4319C16.8614 12.672 16.677 12.9684 16.5706 13.2955C16.4642 13.6227 16.4388 13.9708 16.4968 14.3099L17.3788 19.4499C17.396 19.5477 17.3855 19.6485 17.3483 19.7406C17.311 19.8327 17.2487 19.9125 17.1683 19.9709C17.0879 20.0293 16.9927 20.0639 16.8936 20.0708C16.7945 20.0777 16.6955 20.0566 16.6078 20.0099L11.9898 17.5819C11.6855 17.4221 11.3469 17.3386 11.0033 17.3386C10.6596 17.3386 10.321 17.4221 10.0168 17.5819L5.39975 20.0099C5.31208 20.0563 5.21315 20.0772 5.1142 20.0701C5.01526 20.0631 4.92027 20.0285 4.84005 19.9701C4.75982 19.9118 4.69759 19.8321 4.66041 19.7401C4.62323 19.6482 4.61261 19.5476 4.62975 19.4499L5.51075 14.3109C5.56895 13.9716 5.54374 13.6233 5.43729 13.2959C5.33084 12.9686 5.14636 12.672 4.89975 12.4319L1.16375 8.79489C1.09235 8.72593 1.04175 8.63829 1.01772 8.54197C0.993684 8.44565 0.99719 8.34451 1.02783 8.25008C1.05847 8.15566 1.11502 8.07174 1.19103 8.00788C1.26704 7.94402 1.35946 7.90279 1.45775 7.88889L6.62275 7.13389C6.96301 7.08439 7.28614 6.95295 7.56434 6.75088C7.84253 6.54881 8.06746 6.28216 8.21975 5.97389L10.5288 1.29489Z"

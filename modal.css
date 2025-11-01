@@ -356,6 +356,206 @@
   font-size: 1rem;
 }
 
+.btn-curtir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 2px solid #6A53B8;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6A53B8;
+}
+
+.btn-curtir:hover {
+  background: #6A53B8;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(106, 83, 184, 0.3);
+}
+
+.btn-curtir:hover svg path {
+  fill: white;
+  stroke: white;
+}
+
+.btn-curtir.curtido {
+  background: #6A53B8;
+  color: white;
+}
+
+.btn-curtir.curtido svg path {
+  fill: white;
+  stroke: white;
+}
+
+.btn-curtir:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.contador-curtidas {
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+.avaliacao-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.avaliacao-data {
+  color: #999;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Botão de curtir */
+.btn-curtir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 2px solid #6A53B8;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6A53B8;
+}
+
+.btn-curtir:hover {
+  background: #6A53B8;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(106, 83, 184, 0.3);
+}
+
+/* Quando hover, muda cor dos SVGs */
+.btn-curtir:hover svg path {
+  fill: white;
+  stroke: white;
+}
+
+/* Estado quando já curtiu */
+.btn-curtir.curtido {
+  background: #6A53B8;
+  color: white;
+}
+
+.btn-curtir.curtido svg path {
+  fill: white;
+  stroke: white;
+}
+
+/* Estado desabilitado */
+.btn-curtir:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Contador de curtidas */
+.contador-curtidas {
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* SVGs dos botões */
+.btn-curtir svg {
+  flex-shrink: 0;
+}
+
+.svg-curtir,
+.svg-descurtir {
+  transition: all 0.3s ease;
+}
+
+/* Animação ao clicar no botão */
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.btn-curtir:active {
+  animation: pulse 0.3s ease;
+}
+
+/* Responsivo para mobile */
+@media (max-width: 768px) {
+  .avaliacao-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .btn-curtir {
+    align-self: flex-start;
+  }
+}
+
+/* Estilo para o conteúdo da avaliação (se ainda não tiver) */
+.avaliacao-conteudo {
+  margin: 15px 0;
+}
+
+.avaliacao-comentario {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Footer da avaliação */
+.avaliacao-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.avaliacao-data {
+  color: #999;
+  font-size: 14px;
+}
+
+/* Animação ao curtir */
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.btn-curtir:active {
+  animation: pulse 0.3s ease;
+}
+
 /* Media Queries para responsividade extra */
 @media (max-width: 768px) {
 
