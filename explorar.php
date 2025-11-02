@@ -725,76 +725,103 @@ if (isset($_SESSION['usuario_id'])) {
         // FUNÇÃO carregarAvaliacoes ATUALIZADA
         // ============================================
 
+        // Substitua a função carregarAvaliacoes completa no explorar.php por esta versão corrigida:
+
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
 
             fetch(`buscar_avaliacoes.php?serie_id=${serieId}`)
-                .then(response => response.json())
+                .then(response => {
+                    // Verifica se a resposta HTTP foi bem-sucedida (status 200-299)
+                    if (!response.ok) {
+                        // Se não foi, lê a resposta como texto para ver a mensagem de erro do PHP
+                        return response.text().then(text => {
+                            throw new Error(`Erro do Servidor (HTTP ${response.status}): ${text}`);
+                        });
+                    }
+
+                    // Verifica se o servidor realmente enviou JSON
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new TypeError("Oops, não recebemos JSON! A resposta foi: " + response.statusText);
+                    }
+
+                    // Se tudo estiver OK, processa o JSON
+                    return response.json();
+                })
                 .then(data => {
                     if (data.avaliacoes && data.avaliacoes.length > 0) {
-                        conteudo.innerHTML = data.avaliacoes.map(av => `
-                    <div class="avaliacao-item">
-                        <!-- CABEÇALHO -->
-                        <div class="avaliacao-header-flex">
-                            <div class="avaliacao-usuario-info" onclick="window.location.href='perfil.php?id=${av.usuario_id}'" style="cursor: pointer;">
-                                <div class="avatar-usuario">
-                                    ${av.foto_perfil && av.foto_perfil !== '' 
-                                        ? `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` 
-                                        : av.usuario_nome.charAt(0).toUpperCase()
-                                    }
-                                </div>
-                                <div class="usuario-detalhes">
-                                    <span class="usuario-nome">${av.usuario_nome}</span>
-                                    <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
+                        conteudo.innerHTML = data.avaliacoes.map(av => {
+                            const avatarHtml = av.foto_perfil && av.foto_perfil !== '' ?
+                                `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` :
+                                av.usuario_nome.charAt(0).toUpperCase();
+
+                            let botoesVotacao = '';
+                            if (av.pode_curtir) {
+                                const likeAtivo = av.usuario_voto === 1 ? 'ativo' : '';
+                                const dislikeAtivo = av.usuario_voto === -1 ? 'ativo' : '';
+                                const likeBg = av.usuario_voto === 1 ? '#6A53B8' : 'transparent';
+                                const likeColor = av.usuario_voto === 1 ? 'white' : '#6A53B8';
+                                const dislikeBg = av.usuario_voto === -1 ? '#6A53B8' : 'transparent';
+                                const dislikeColor = av.usuario_voto === -1 ? 'white' : '#6A53B8';
+
+                                botoesVotacao = `
+                            <div class="votacao-container" style="display: flex; gap: 15px;">
+                                <button class="btn-voto btn-like ${likeAtivo}" 
+                                    data-avaliacao-id="${av.id}"
+                                    data-tipo="like"
+                                    onclick="event.stopPropagation(); processarVoto(${av.id}, 1);"
+                                    title="Gostei desta avaliação"
+                                    style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${likeBg}; color: ${likeColor}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                    👍 <span class="contador-votos">${av.total_likes || 0}</span>
+                                </button>
+                                <button class="btn-voto btn-dislike ${dislikeAtivo}" 
+                                    data-avaliacao-id="${av.id}"
+                                    data-tipo="dislike"
+                                    onclick="event.stopPropagation(); processarVoto(${av.id}, -1);"
+                                    title="Não gostei desta avaliação"
+                                    style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${dislikeBg}; color: ${dislikeColor}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                    👎 <span class="contador-votos">${av.total_dislikes || 0}</span>
+                                </button>
+                            </div>
+                        `;
+                            }
+
+                            return `
+                        <div class="avaliacao-item">
+                            <div class="avaliacao-header-flex">
+                                <div class="avaliacao-usuario-info" onclick="window.location.href='perfil.php?id=${av.usuario_id}'" style="cursor: pointer;">
+                                    <div class="avatar-usuario">
+                                        ${avatarHtml}
+                                    </div>
+                                    <div class="usuario-detalhes">
+                                        <span class="usuario-nome">${av.usuario_nome}</span>
+                                        <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="avaliacao-conteudo">
+                                <p class="avaliacao-comentario">${av.comentario}</p>
+                            </div>
+                            <div class="avaliacao-footer-data" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
+                                ${botoesVotacao}
+                            </div>
                         </div>
-                        
-                        <!-- COMENTÁRIO -->
-                        <div class="avaliacao-conteudo">
-                            <p class="avaliacao-comentario">${av.comentario}</p>
-                        </div>
-                        
-                        <!-- DATA E BOTÕES -->
-                        <div class="avaliacao-footer-data" style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="avaliacao-data">${formatarData(av.data_avaliacao)}</span>
-                            
-                            ${av.pode_curtir ? `
-                                <div class="votacao-container" style="display: flex; gap: 15px;">
-                                    <!-- Botão LIKE -->
-                                    <button class="btn-voto btn-like ${av.usuario_voto === 1 ? 'ativo' : ''}" 
-                                            data-avaliacao-id="${av.id}"
-                                            data-tipo="like"
-                                            onclick="event.stopPropagation(); processarVoto(${av.id}, 1);"
-                                            title="Gostei desta avaliação"
-                                            style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${av.usuario_voto === 1 ? '#6A53B8' : 'transparent'}; color: ${av.usuario_voto === 1 ? 'white' : '#6A53B8'}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
-                                        👍 <span class="contador-votos">${av.total_likes || 0}</span>
-                                    </button>
-                                    
-                                    <!-- Botão DISLIKE -->
-                                    <button class="btn-voto btn-dislike ${av.usuario_voto === -1 ? 'ativo' : ''}" 
-                                            data-avaliacao-id="${av.id}"
-                                            data-tipo="dislike"
-                                            onclick="event.stopPropagation(); processarVoto(${av.id}, -1);"
-                                            title="Não gostei desta avaliação"
-                                            style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${av.usuario_voto === -1 ? '#6A53B8' : 'transparent'}; color: ${av.usuario_voto === -1 ? 'white' : '#6A53B8'}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
-                                        👎 <span class="contador-votos">${av.total_dislikes || 0}</span>
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                        }).join('');
                     } else {
                         conteudo.innerHTML = '<p class="sem-avaliacoes">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>';
                     }
                 })
                 .catch(error => {
                     console.error('Erro ao carregar avaliações:', error);
-                    conteudo.innerHTML = '<p class="erro-avaliacoes">Erro ao carregar avaliações. Tente novamente.</p>';
+                    // Agora o erro exibido no console será muito mais informativo!
+                    conteudo.innerHTML = `<p class="erro-avaliacoes">Erro ao carregar avaliações. Verifique o console para mais detalhes.</p>`;
                 });
         }
+
 
         // ============================================
         // FUNÇÃO PARA PROCESSAR VOTOS (LIKE/DISLIKE)
