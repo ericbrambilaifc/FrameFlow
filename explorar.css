@@ -141,6 +141,29 @@ header div a svg {
     z-index: 1000;
 }
 
+.avaliacao-usuario-info {
+    display: flex;
+    align-items: center;
+    /* centraliza verticalmente o nome e a imagem */
+    gap: 10px;
+    /* espaço entre o avatar e o nome */
+}
+
+.avatar-usuario img {
+    width: 40px;
+    /* ajuste conforme o tamanho desejado */
+    height: 40px;
+    border-radius: 50%;
+    /* deixa redondo */
+    object-fit: cover;
+}
+
+.usuario-detalhes {
+    display: flex;
+    flex-direction: column;
+}
+
+
 .search-results.show {
     display: block;
     animation: slideDown 0.3s ease;

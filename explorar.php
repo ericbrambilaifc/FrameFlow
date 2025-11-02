@@ -721,33 +721,24 @@ if (isset($_SESSION['usuario_id'])) {
             document.getElementById('modalAvaliacoes').dataset.serieId = serieId;
         }
 
-        // ============================================
-        // FUNÇÃO carregarAvaliacoes ATUALIZADA
-        // ============================================
-
-        // Substitua a função carregarAvaliacoes completa no explorar.php por esta versão corrigida:
-
+        // Função para carregar avaliações
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
 
             fetch(`buscar_avaliacoes.php?serie_id=${serieId}`)
                 .then(response => {
-                    // Verifica se a resposta HTTP foi bem-sucedida (status 200-299)
                     if (!response.ok) {
-                        // Se não foi, lê a resposta como texto para ver a mensagem de erro do PHP
                         return response.text().then(text => {
                             throw new Error(`Erro do Servidor (HTTP ${response.status}): ${text}`);
                         });
                     }
 
-                    // Verifica se o servidor realmente enviou JSON
                     const contentType = response.headers.get('content-type');
                     if (!contentType || !contentType.includes('application/json')) {
                         throw new TypeError("Oops, não recebemos JSON! A resposta foi: " + response.statusText);
                     }
 
-                    // Se tudo estiver OK, processa o JSON
                     return response.json();
                 })
                 .then(data => {
@@ -757,36 +748,34 @@ if (isset($_SESSION['usuario_id'])) {
                                 `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` :
                                 av.usuario_nome.charAt(0).toUpperCase();
 
-                            let botoesVotacao = '';
-                            if (av.pode_curtir) {
-                                const likeAtivo = av.usuario_voto === 1 ? 'ativo' : '';
-                                const dislikeAtivo = av.usuario_voto === -1 ? 'ativo' : '';
-                                const likeBg = av.usuario_voto === 1 ? '#6A53B8' : 'transparent';
-                                const likeColor = av.usuario_voto === 1 ? 'white' : '#6A53B8';
-                                const dislikeBg = av.usuario_voto === -1 ? '#6A53B8' : 'transparent';
-                                const dislikeColor = av.usuario_voto === -1 ? 'white' : '#6A53B8';
+                            // MUDANÇA: Sempre mostra os botões, independente de estar logado
+                            const likeAtivo = av.usuario_voto === 1 ? 'ativo' : '';
+                            const dislikeAtivo = av.usuario_voto === -1 ? 'ativo' : '';
+                            const likeBg = av.usuario_voto === 1 ? '#6A53B8' : 'transparent';
+                            const likeColor = av.usuario_voto === 1 ? 'white' : '#6A53B8';
+                            const dislikeBg = av.usuario_voto === -1 ? '#6A53B8' : 'transparent';
+                            const dislikeColor = av.usuario_voto === -1 ? 'white' : '#6A53B8';
 
-                                botoesVotacao = `
-                            <div class="votacao-container" style="display: flex; gap: 15px;">
-                                <button class="btn-voto btn-like ${likeAtivo}" 
-                                    data-avaliacao-id="${av.id}"
-                                    data-tipo="like"
-                                    onclick="event.stopPropagation(); processarVoto(${av.id}, 1);"
-                                    title="Gostei desta avaliação"
-                                    style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${likeBg}; color: ${likeColor}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
-                                    👍 <span class="contador-votos">${av.total_likes || 0}</span>
-                                </button>
-                                <button class="btn-voto btn-dislike ${dislikeAtivo}" 
-                                    data-avaliacao-id="${av.id}"
-                                    data-tipo="dislike"
-                                    onclick="event.stopPropagation(); processarVoto(${av.id}, -1);"
-                                    title="Não gostei desta avaliação"
-                                    style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${dislikeBg}; color: ${dislikeColor}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
-                                    👎 <span class="contador-votos">${av.total_dislikes || 0}</span>
-                                </button>
-                            </div>
-                        `;
-                            }
+                            const botoesVotacao = `
+                        <div class="votacao-container" style="display: flex; gap: 15px;">
+                            <button class="btn-voto btn-like ${likeAtivo}" 
+                                data-avaliacao-id="${av.id}"
+                                data-tipo="like"
+                                onclick="event.stopPropagation(); processarVoto(${av.id}, 1);"
+                                title="Gostei desta avaliação"
+                                style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${likeBg}; color: ${likeColor}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                👍 <span class="contador-votos">${av.total_likes || 0}</span>
+                            </button>
+                            <button class="btn-voto btn-dislike ${dislikeAtivo}" 
+                                data-avaliacao-id="${av.id}"
+                                data-tipo="dislike"
+                                onclick="event.stopPropagation(); processarVoto(${av.id}, -1);"
+                                title="Não gostei desta avaliação"
+                                style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 2px solid #6A53B8; background: ${dislikeBg}; color: ${dislikeColor}; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                👎 <span class="contador-votos">${av.total_dislikes || 0}</span>
+                            </button>
+                        </div>
+                    `;
 
                             return `
                         <div class="avaliacao-item">
@@ -817,25 +806,23 @@ if (isset($_SESSION['usuario_id'])) {
                 })
                 .catch(error => {
                     console.error('Erro ao carregar avaliações:', error);
-                    // Agora o erro exibido no console será muito mais informativo!
                     conteudo.innerHTML = `<p class="erro-avaliacoes">Erro ao carregar avaliações. Verifique o console para mais detalhes.</p>`;
                 });
         }
 
-
-        // ============================================
-        // FUNÇÃO PARA PROCESSAR VOTOS (LIKE/DISLIKE)
-        // ============================================
-
+        // Função para processar votos (LIKE/DISLIKE)
         function processarVoto(avaliacaoId, tipoVoto) {
-            // Verifica se o usuário está logado (adicione esta linha no seu PHP)
-            <?php if (!isset($_SESSION['usuario_id'])): ?>
-                mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para votar em avaliações!');
+            // MUDANÇA: Verifica se o usuário está logado via JavaScript
+            const usuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+
+            if (!usuarioLogado) {
+                // Redireciona para a página de login
+                mostrarNotificacao('info', 'Login necessário', 'Você precisa estar logado para votar!');
                 setTimeout(() => {
-                    document.getElementById('modal').style.display = 'block';
-                }, 500);
+                    window.location.href = 'explorar.php?login=true';
+                }, 1000);
                 return;
-            <?php endif; ?>
+            }
 
             const btnLike = document.querySelector(`[data-avaliacao-id="${avaliacaoId}"][data-tipo="like"]`);
             const btnDislike = document.querySelector(`[data-avaliacao-id="${avaliacaoId}"][data-tipo="dislike"]`);
@@ -901,6 +888,7 @@ if (isset($_SESSION['usuario_id'])) {
                     btnDislike.style.opacity = '1';
                 });
         }
+
 
         function gerarEstrelas(nota) {
             let estrelas = '';

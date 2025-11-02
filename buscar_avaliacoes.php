@@ -6,7 +6,6 @@ require_once('src/AvaliacaoDAO.php');
 require_once('src/UsuarioDAO.php');
 require_once('src/VotoDAO.php');
 
-
 header('Content-Type: application/json');
 
 if (!isset($_GET['serie_id'])) {
@@ -63,7 +62,7 @@ try {
             'total_likes' => $totais['likes'],
             'total_dislikes' => $totais['dislikes'],
             'usuario_voto' => $voto_usuario, // 1, -1 ou null
-            'pode_curtir' => ($usuario_logado_id && !$eh_admin) // Permite votar mesmo sendo próprio comentário
+            'pode_curtir' => true // Sempre mostra os botões (verifica login no JavaScript)
         ];
     }
 
