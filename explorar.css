@@ -144,23 +144,31 @@ header div a svg {
 .avaliacao-usuario-info {
     display: flex;
     align-items: center;
-    /* centraliza verticalmente o nome e a imagem */
-    gap: 10px;
-    /* espaço entre o avatar e o nome */
+    gap: 10px; /* espaço entre o avatar e o texto */
 }
 
 .avatar-usuario img {
     width: 40px;
-    /* ajuste conforme o tamanho desejado */
     height: 40px;
     border-radius: 50%;
-    /* deixa redondo */
     object-fit: cover;
 }
 
 .usuario-detalhes {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 6px; /* espaço entre o nome e as estrelas */
+}
+
+.usuario-nome {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+}
+
+.avaliacao-nota {
+    display: flex;
+    align-items: center;
 }
 
 

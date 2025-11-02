@@ -781,14 +781,15 @@ if (isset($_SESSION['usuario_id'])) {
                         <div class="avaliacao-item">
                             <div class="avaliacao-header-flex">
                                 <div class="avaliacao-usuario-info" onclick="window.location.href='perfil.php?id=${av.usuario_id}'" style="cursor: pointer;">
-                                    <div class="avatar-usuario">
-                                        ${avatarHtml}
-                                    </div>
-                                    <div class="usuario-detalhes">
-                                        <span class="usuario-nome">${av.usuario_nome}</span>
-                                        <div class="avaliacao-nota">${gerarEstrelas(av.nota)}</div>
-                                    </div>
-                                </div>
+    <div class="avatar-usuario">
+        ${avatarHtml}
+    </div>
+    <div class="usuario-detalhes">
+        <span class="usuario-nome">${av.usuario_nome}</span>
+        <div class="avaliacao-nota" style="margin-left: 30px">${gerarEstrelas(av.nota)}</div>
+    </div>
+</div>
+
                             </div>
                             <div class="avaliacao-conteudo">
                                 <p class="avaliacao-comentario">${av.comentario}</p>
