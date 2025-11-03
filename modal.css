@@ -168,12 +168,13 @@
   margin-bottom: 0.9375rem;
   border: none;
   border-radius: 0.75rem;
-  background-color: #f1ebff;
+  background-color: #fcfaff;
   color: #4b3b7e;
   font-size: clamp(0.875rem, 2vw, 1rem);
   outline: none;
   box-sizing: border-box;
   transition: box-shadow 0.2s ease;
+  border: 2px solid  rgba(123, 104, 238, 0.3);
 }
 
 .input-estilizado::placeholder {

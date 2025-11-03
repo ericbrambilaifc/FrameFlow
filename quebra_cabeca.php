@@ -39,14 +39,13 @@ try {
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
             padding: 2rem;
         }
 
         .container-puzzle {
-            max-width: 1400px;
+            max-width: 90%;
             margin: 0 auto;
         }
 
@@ -60,7 +59,6 @@ try {
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header-puzzle h1 {
@@ -123,14 +121,20 @@ try {
         }
 
         .btn-voltar {
-            background: #f0f0f0;
-            color: #6a53b8;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6A53B8;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 30px;
+            transition: opacity 0.2s;
         }
 
         .btn-voltar:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
+            opacity: 0.7;
         }
+
 
         .game-area {
             display: grid;
@@ -240,9 +244,9 @@ try {
         }
 
         .btn-iniciar {
-            background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
+            background: #6a53b8;
             color: white;
-            padding: 1rem 3rem;
+            padding: 1rem 4rem;
             border: none;
             border-radius: 2rem;
             font-size: 1.1rem;
@@ -397,7 +401,7 @@ try {
             <!-- Header -->
             <div class="header-puzzle">
                 <div>
-                    <h1>🧩 Quebra-Cabeça</h1>
+                    <h1>Quebra-Cabeça</h1>
                     <div class="serie-titulo"><?= htmlspecialchars($titulo_selecionado) ?></div>
                 </div>
 
@@ -413,7 +417,17 @@ try {
                 </div>
 
                 <div class="btn-menu">
-                    <a href="explorar.php" class="btn btn-voltar">← Voltar</a>
+                    <a href="explorar.php" class="btn-voltar"><svg width="26" height="26" viewBox="0 0 26 26"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
+                                stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M17.45 12.6499L7.84995 12.6499" stroke="#6A53B8" stroke-width="1.3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12.6499 7.8501L7.8499 12.6501L12.6499 17.4501" stroke="#6A53B8" stroke-width="1.3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Voltar para explorar</a>
                 </div>
             </div>
 
@@ -421,9 +435,18 @@ try {
             <div class="game-area">
                 <!-- Preview Section -->
                 <div class="preview-section">
-                    <h3>📷 Imagem Original</h3>
+                    <h3>Imagem Original</h3>
                     <img id="preview" src="<?= htmlspecialchars($imagem_selecionada_url) ?>" alt="Imagem original">
-                    <button class="btn-preview" id="mostrar-original">👁️ Mostrar</button>
+                    <button class="btn-preview" id="mostrar-original"><svg width="22" height="16" viewBox="0 0 22 16"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M1.06251 8.34738C0.979165 8.12287 0.979165 7.8759 1.06251 7.65138C1.87421 5.68324 3.25202 4.00042 5.02128 2.81628C6.79053 1.63214 8.87155 1 11.0005 1C13.1295 1 15.2105 1.63214 16.9797 2.81628C18.749 4.00042 20.1268 5.68324 20.9385 7.65138C21.0218 7.8759 21.0218 8.12287 20.9385 8.34738C20.1268 10.3155 18.749 11.9983 16.9797 13.1825C15.2105 14.3666 13.1295 14.9988 11.0005 14.9988C8.87155 14.9988 6.79053 14.3666 5.02128 13.1825C3.25202 11.9983 1.87421 10.3155 1.06251 8.34738Z"
+                                stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M11.0005 10.9994C12.6573 10.9994 14.0005 9.65624 14.0005 7.99939C14.0005 6.34254 12.6573 4.99939 11.0005 4.99939C9.34363 4.99939 8.00049 6.34254 8.00049 7.99939C8.00049 9.65624 9.34363 10.9994 11.0005 10.9994Z"
+                                stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Mostrar</button>
                 </div>
 
                 <!-- Puzzle Section -->
@@ -433,8 +456,8 @@ try {
                     </div>
 
                     <div class="controles">
-                        <button class="btn-iniciar" id="iniciar-jogo">🎮 Iniciar Jogo</button>
-                        <button class="btn-embaralhar" id="embaralhar" style="display: none;">🔄 Embaralhar</button>
+                        <button class="btn-iniciar" id="iniciar-jogo">Iniciar Jogo</button>
+                        <button class="btn-embaralhar" id="embaralhar" style="display: none;">Embaralhar</button>
                     </div>
 
                     <div id="mensagem" class="mensagem">
@@ -610,7 +633,9 @@ try {
             iniciarBtn.textContent = '🎮 Jogando...';
             embaralharBtn.style.display = 'inline-flex';
             previewEl.classList.remove('show');
-            mostrarOriginalBtn.textContent = '👁️ Mostrar';
+
+            // Garante que o botão inicial seja "Mostrar" (Olho Aberto)
+            mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
 
             clearInterval(intervaloTempo);
             intervaloTempo = setInterval(() => {
@@ -632,31 +657,63 @@ try {
             }
         });
 
+        // --- DEFINIÇÃO DOS SVGs (CORRIGIDA) ---
+
+        // SVG para Mostrar (Olho Aberto)
+        const SVG_MOSTRAR = `
+<svg width="22" height="16" viewBox="0 0 22 16"
+fill="none" xmlns="http://www.w3.org/2000/svg">
+<path
+d="M1.06251 8.34738C0.979165 8.12287 0.979165 7.8759 1.06251 7.65138C1.87421 5.68324 3.25202 4.00042 5.02128 2.81628C6.79053 1.63214 8.87155 1 11.0005 1C13.1295 1 15.2105 1.63214 16.9797 2.81628C18.749 4.00042 20.1268 5.68324 20.9385 7.65138C21.0218 7.8759 21.0218 8.12287 20.9385 8.34738C20.1268 10.3155 18.749 11.9983 16.9797 13.1825C15.2105 14.3666 13.1295 14.9988 11.0005 14.9988C8.87155 14.9988 6.79053 14.3666 5.02128 13.1825C3.25202 11.9983 1.87421 10.3155 1.06251 8.34738Z"
+stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+<path
+d="M11.0005 10.9994C12.6573 10.9994 14.0005 9.65624 14.0005 7.99939C14.0005 6.34254 12.6573 4.99939 11.0005 4.99939C9.34363 4.99939 8.00049 6.34254 8.00049 7.99939C8.00049 9.65624 9.34363 10.9994 11.0005 10.9994Z"
+stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+`;
+
+        // SVG para Esconder (Olho Fechado/Piscando - O que você pediu primeiro)
+        const SVG_ESCONDER = `
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 22px; height: 16px;">
+<path d="M15 18L14.278 14.75" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2 8C2.74835 10.0508 4.10913 11.8219 5.8979 13.0733C7.68667 14.3247 9.81695 14.9959 12 14.9959C14.1831 14.9959 16.3133 14.3247 18.1021 13.0733C19.8909 11.8219 21.2516 10.0508 22 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 15L18.274 12.95" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 15L5.726 12.95" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 18L9.722 14.75" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
         mostrarOriginalBtn.addEventListener('click', () => {
             previewEl.classList.toggle('show');
-            mostrarOriginalBtn.textContent = previewEl.classList.contains('show') ? '🙈 Esconder' : '👁️ Mostrar';
+            // Lógica de troca de ícones
+            if (previewEl.classList.contains('show')) {
+                mostrarOriginalBtn.innerHTML = SVG_ESCONDER + ' Esconder';
+            } else {
+                mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
+            }
         });
 
-        window.onload = function() {
+        window.onload = function () {
             if (!document.querySelector('.erro-msg')) {
                 criarPecas();
                 renderizar();
+                mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
             }
         };
 
         function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
-    if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
-        return; // Não salva se não estiver logado
-    }
-    
-    fetch('salvar_pontuacao.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
-    });
-}
+            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+                return;
+            }
+
+            fetch('salvar_pontuacao.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
+            });
+        }
     </script>
 </body>
 

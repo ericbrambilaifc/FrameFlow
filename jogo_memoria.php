@@ -91,20 +91,20 @@ $config = [
     <title>Jogo da Memória - FrameFlow</title>
     <link rel="stylesheet" href="global.css">
     <style>
-        * {
+        <style>* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            background: #fff;
+            background: white;
             min-height: 100vh;
             padding: 2rem;
         }
 
-        .container-jogo {
-            max-width: 80%;
+        .container-puzzle {
+            max-width: 90%;
             margin: 0 auto;
         }
 
@@ -118,7 +118,6 @@ $config = [
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header-jogo h1 {
@@ -128,6 +127,7 @@ $config = [
             align-items: center;
             gap: 0.5rem;
         }
+
 
         .stats-container {
             display: flex;
@@ -175,23 +175,34 @@ $config = [
         }
 
         .btn-voltar {
-            background: #f0f0f0;
-            color: #6a53b8;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6A53B8;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 30px;
+            transition: opacity 0.2s;
         }
 
         .btn-voltar:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
+            opacity: 0.7;
         }
 
+
         .btn-reiniciar {
-            background: #f0f0f0;
-            color: #6a53b8;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6A53B8;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 30px;
+            transition: opacity 0.2s;
         }
 
         .btn-reiniciar:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
+            opacity: 0.7;
         }
 
         .nivel-selector {
@@ -453,7 +464,7 @@ $config = [
     <div class="container-jogo">
         <!-- Header -->
         <div class="header-jogo">
-            <h1>🎮 Jogo da Memória</h1>
+            <h1>Jogo da Memória</h1>
 
             <div class="stats-container">
                 <div class="stat-box">
@@ -475,8 +486,32 @@ $config = [
             </div>
 
             <div class="btn-menu">
-                <a href="explorar.php" class="btn btn-voltar">← Voltar</a>
-                <button class="btn btn-reiniciar" onclick="reiniciarJogo()">🔄 Reiniciar</button>
+
+                <button class="btn btn-reiniciar" onclick="reiniciarJogo()"><svg width="16" height="16"
+                        viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19 10C19 7.61305 18.0518 5.32387 16.364 3.63604C14.6761 1.94821 12.3869 1 10 1C7.48395 1.00947 5.06897 1.99122 3.26 3.74L1 6"
+                            stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M1 1V6H6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path
+                            d="M1 10C1 12.3869 1.94821 14.6761 3.63604 16.364C5.32387 18.0518 7.61305 19 10 19C12.516 18.9905 14.931 18.0088 16.74 16.26L19 14"
+                            stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 14H19V19" stroke="#6A53B8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Reiniciar</button>
+                <a href="explorar.php" class="btn-voltar"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
+                            stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17.45 12.6499L7.84995 12.6499" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12.6499 7.8501L7.8499 12.6501L12.6499 17.4501" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Voltar para explorar</a>
             </div>
         </div>
 
@@ -502,20 +537,29 @@ $config = [
         <!-- Tabuleiro do Jogo -->
         <div class="game-board nivel-<?php echo $nivel; ?>" id="gameBoard">
             <?php foreach ($cartas as $index => $carta): ?>
-                <div class="card"
-                    data-id="<?php echo $carta['id']; ?>"
-                    data-unique="<?php echo $carta['uniqueId']; ?>"
+                <div class="card" data-id="<?php echo $carta['id']; ?>" data-unique="<?php echo $carta['uniqueId']; ?>"
                     onclick="virarCarta(this)">
                     <div class="card-face card-front">
-                        🎬
+                        <svg width="28" height="28" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M19.1768 4.97676L1.97676 9.97676L1.07676 7.57676C0.77676 6.47676 1.37676 5.37676 2.37676 5.07676L15.8768 1.07676C16.9768 0.77676 18.0768 1.37676 18.3768 2.37676L19.1768 4.97676Z"
+                                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5.17676 4.27673L8.27676 8.17673" stroke="white" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M11.3768 2.37674L14.4768 6.37674" stroke="white" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M1.97675 9.97675H19.9767V17.9767C19.9767 18.5072 19.766 19.0159 19.391 19.391C19.0159 19.766 18.5072 19.9767 17.9767 19.9767H3.97675C3.44631 19.9767 2.9376 19.766 2.56253 19.391C2.18746 19.0159 1.97675 18.5072 1.97675 17.9767V9.97675Z"
+                                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
                     </div>
-                    <div class="card-face card-back"
-                        data-hint="<?php
-                                    if ($nivel === 'medio') {
-                                        echo htmlspecialchars($carta['genero'] . ' | ' . $carta['classificacao']);
-                                    } elseif ($nivel === 'dificil') {
-                                    }
-                                    ?>">
+                    <div class="card-face card-back" data-hint="<?php
+                    if ($nivel === 'medio') {
+                        echo htmlspecialchars($carta['genero'] . ' | ' . $carta['classificacao']);
+                    } elseif ($nivel === 'dificil') {
+                    }
+                    ?>">
                         <img src="<?php echo htmlspecialchars($carta['imagem']); ?>"
                             alt="<?php echo htmlspecialchars($carta['titulo']); ?>">
                         <div class="card-info">
@@ -550,10 +594,32 @@ $config = [
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button class="btn btn-reiniciar" style="flex: 1;" onclick="reiniciarJogo()">
-                    🔄 Jogar Novamente
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19 10C19 7.61305 18.0518 5.32387 16.364 3.63604C14.6761 1.94821 12.3869 1 10 1C7.48395 1.00947 5.06897 1.99122 3.26 3.74L1 6"
+                            stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M1 1V6H6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path
+                            d="M1 10C1 12.3869 1.94821 14.6761 3.63604 16.364C5.32387 18.0518 7.61305 19 10 19C12.516 18.9905 14.931 18.0088 16.74 16.26L19 14"
+                            stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 14H19V19" stroke="#6A53B8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Jogar Novamente
                 </button>
                 <a href="explorar.php" class="btn btn-voltar" style="flex: 1;">
-                    ← Menu Principal
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
+                            stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17.45 12.6499L7.84995 12.6499" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12.6499 7.8501L7.8499 12.6501L12.6499 17.4501" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+
+                    Menu Principal
                 </a>
             </div>
         </div>

@@ -40,7 +40,8 @@ if (isset($_SESSION['usuario_id'])) {
                                 alt="<?php echo htmlspecialchars($usuario_logado['nome_completo']); ?>">
                         <?php else: ?>
                             <svg viewBox="0 0 24 24" fill="#6A53B8">
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                <path
+                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
                         <?php endif; ?>
                     </div>
@@ -49,14 +50,24 @@ if (isset($_SESSION['usuario_id'])) {
             <?php endif; ?>
 
             <a href="explorar.php" class="btn-voltar">
-                ← Voltar para Explorar
+                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
+                        stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M17.45 12.6499L7.84995 12.6499" stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M12.6499 7.8501L7.8499 12.6501L12.6499 17.4501" stroke="#6A53B8" stroke-width="1.3"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Voltar para Explorar
             </a>
         </div>
 
         <!-- Título -->
         <div class="titulo-secao">
             <svg width="50" height="50" viewBox="0 0 24 24" fill="#6A53B8">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                <path
+                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
             </svg>
             <h1>Comunidade FrameFlow</h1>
         </div>
@@ -84,7 +95,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     alt="<?php echo htmlspecialchars($rankingAvaliacoes[1]['nome_completo']); ?>">
                             <?php else: ?>
                                 <svg viewBox="0 0 24 24" fill="#6A53B8">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -103,7 +115,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     alt="<?php echo htmlspecialchars($rankingAvaliacoes[0]['nome_completo']); ?>">
                             <?php else: ?>
                                 <svg viewBox="0 0 24 24" fill="white">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -122,7 +135,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     alt="<?php echo htmlspecialchars($rankingAvaliacoes[2]['nome_completo']); ?>">
                             <?php else: ?>
                                 <svg viewBox="0 0 24 24" fill="#6A53B8">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -166,7 +180,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     alt="<?php echo htmlspecialchars($rankingJogadores[1]['nome_completo']); ?>">
                             <?php else: ?>
                                 <svg viewBox="0 0 24 24" fill="#6A53B8">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -174,7 +189,8 @@ if (isset($_SESSION['usuario_id'])) {
                             <?php echo htmlspecialchars($rankingJogadores[1]['nome_completo']); ?>
                         </a>
                         <div class="badge-posicao segundo">🥈 2º Lugar</div>
-                        <p class="total-avaliacoes"><?php echo number_format($rankingJogadores[1]['total_pontos']); ?> pontos</p>
+                        <p class="total-avaliacoes"><?php echo number_format($rankingJogadores[1]['total_pontos']); ?>
+                            pontos</p>
                         <div class="stats-extras">
                             <span>🎮 <?php echo $rankingJogadores[1]['total_jogos']; ?> jogos</span>
                         </div>
@@ -188,7 +204,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     alt="<?php echo htmlspecialchars($rankingJogadores[0]['nome_completo']); ?>">
                             <?php else: ?>
                                 <svg viewBox="0 0 24 24" fill="white">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -196,7 +213,8 @@ if (isset($_SESSION['usuario_id'])) {
                             <?php echo htmlspecialchars($rankingJogadores[0]['nome_completo']); ?>
                         </a>
                         <div class="badge-posicao primeiro">👑 1º Lugar</div>
-                        <p class="total-avaliacoes"><?php echo number_format($rankingJogadores[0]['total_pontos']); ?> pontos</p>
+                        <p class="total-avaliacoes"><?php echo number_format($rankingJogadores[0]['total_pontos']); ?>
+                            pontos</p>
                         <div class="stats-extras">
                             <span>🎮 <?php echo $rankingJogadores[0]['total_jogos']; ?> jogos</span>
                         </div>
@@ -210,7 +228,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     alt="<?php echo htmlspecialchars($rankingJogadores[2]['nome_completo']); ?>">
                             <?php else: ?>
                                 <svg viewBox="0 0 24 24" fill="#6A53B8">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -218,7 +237,8 @@ if (isset($_SESSION['usuario_id'])) {
                             <?php echo htmlspecialchars($rankingJogadores[2]['nome_completo']); ?>
                         </a>
                         <div class="badge-posicao terceiro">🥉 3º Lugar</div>
-                        <p class="total-avaliacoes"><?php echo number_format($rankingJogadores[2]['total_pontos']); ?> pontos</p>
+                        <p class="total-avaliacoes"><?php echo number_format($rankingJogadores[2]['total_pontos']); ?>
+                            pontos</p>
                         <div class="stats-extras">
                             <span>🎮 <?php echo $rankingJogadores[2]['total_jogos']; ?> jogos</span>
                         </div>
@@ -240,7 +260,8 @@ if (isset($_SESSION['usuario_id'])) {
                                     </span>
                                     <div class="stats-extras" style="margin-top: 0.2rem;">
                                         <span>🎮 <?php echo $rankingJogadores[$i]['total_jogos']; ?> jogos</span>
-                                        <span>⭐ Melhor: <?php echo number_format($rankingJogadores[$i]['melhor_pontuacao']); ?></span>
+                                        <span>⭐ Melhor:
+                                            <?php echo number_format($rankingJogadores[$i]['melhor_pontuacao']); ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +271,8 @@ if (isset($_SESSION['usuario_id'])) {
             <?php else: ?>
                 <div class="sem-dados" style="text-align: center; padding: 3rem; color: #999;">
                     <svg width="80" height="80" viewBox="0 0 24 24" fill="#ddd" style="margin-bottom: 1rem;">
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                     </svg>
                     <p style="font-size: 1.2rem;">Nenhum jogador no ranking ainda.</p>
                     <p style="margin-top: 0.5rem;">Seja o primeiro a jogar e conquistar pontos!</p>
