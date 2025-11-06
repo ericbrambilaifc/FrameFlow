@@ -585,7 +585,7 @@ if (isset($_SESSION['usuario_id'])) {
         }
 
 
-        // Event Listeners dos Modais - CORRIGIDO
+        // Event Listeners dos Modais
         document.addEventListener('DOMContentLoaded', function() {
             <?php if (isset($_SESSION['sucesso'])): ?>
                 mostrarNotificacao('sucesso', 'Login efetuado com sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');
