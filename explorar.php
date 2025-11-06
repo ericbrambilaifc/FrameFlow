@@ -222,7 +222,7 @@ if (isset($_SESSION['usuario_id'])) {
                         </svg>
                     </div>
                     <h3 class="jogo-nome">Quebra-Cabeça</h3>
-                    <p class="jogo-descricao">Monte a imagem do seu filme favorito</p>
+                    <p class="jogo-descricao">Monte a imagem da sua série favorita</p>
                 </a>
 
                 <!-- Jogo da Memória -->
@@ -234,7 +234,7 @@ if (isset($_SESSION['usuario_id'])) {
                         </svg>
                     </div>
                     <h3 class="jogo-nome">Jogo da Memória</h3>
-                    <p class="jogo-descricao">Encontre os pares de filmes e séries</p>
+                    <p class="jogo-descricao">Encontre os pares das séries</p>
                 </a>
 
                 <!-- Cruzadinha -->
@@ -253,7 +253,7 @@ if (isset($_SESSION['usuario_id'])) {
                         </svg>
                     </div>
                     <h3 class="jogo-nome">Cruzadinha</h3>
-                    <p class="jogo-descricao">Descubra o nome dos filmes e séries</p>
+                    <p class="jogo-descricao">Descubra o nome das séries</p>
                 </a>
             </div>
         </div>
