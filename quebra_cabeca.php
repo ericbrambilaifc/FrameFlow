@@ -469,198 +469,246 @@ try {
     <?php endif; ?>
 
     <script>
-        const IMAGEM_URL = "<?= addslashes($imagem_selecionada_url) ?>";
-        const TAMANHO = 3;
-        const NUM_PECAS = TAMANHO * TAMANHO;
+    const IMAGEM_URL = "<?= addslashes($imagem_selecionada_url) ?>";
+    const TAMANHO = 3;
+    const NUM_PECAS = TAMANHO * TAMANHO;
 
-        let tabuleiro = [];
-        let jogando = false;
-        let movimentos = 0;
-        let segundos = 0;
-        let intervaloTempo = null;
+    let tabuleiro = [];
+    let jogando = false;
+    let movimentos = 0;
+    let segundos = 0;
+    let intervaloTempo = null;
 
-        const tabuleiroEl = document.getElementById('tabuleiro');
-        const iniciarBtn = document.getElementById('iniciar-jogo');
-        const embaralharBtn = document.getElementById('embaralhar');
-        const mensagemEl = document.getElementById('mensagem');
-        const previewEl = document.getElementById('preview');
-        const mostrarOriginalBtn = document.getElementById('mostrar-original');
-        const movimentosEl = document.getElementById('movimentos');
-        const tempoEl = document.getElementById('tempo');
+    const tabuleiroEl = document.getElementById('tabuleiro');
+    const iniciarBtn = document.getElementById('iniciar-jogo');
+    const embaralharBtn = document.getElementById('embaralhar');
+    const mensagemEl = document.getElementById('mensagem');
+    const previewEl = document.getElementById('preview');
+    const mostrarOriginalBtn = document.getElementById('mostrar-original');
+    const movimentosEl = document.getElementById('movimentos');
+    const tempoEl = document.getElementById('tempo');
 
-        function getPecaSize() {
-            const firstPeca = document.querySelector('.peca');
-            return firstPeca ? firstPeca.offsetWidth : 150;
+    function getPecaSize() {
+        const firstPeca = document.querySelector('.peca');
+        return firstPeca ? firstPeca.offsetWidth : 150;
+    }
+
+    function criarPecas() {
+        tabuleiroEl.innerHTML = '';
+        tabuleiro = [];
+
+        for (let i = 0; i < NUM_PECAS; i++) {
+            tabuleiro.push(i);
+
+            const peca = document.createElement('div');
+            peca.className = 'peca';
+            peca.dataset.id = i;
+
+            const row = Math.floor(i / TAMANHO);
+            const col = i % TAMANHO;
+
+            const pecaSize = getPecaSize();
+            const bgPosX = -(col * pecaSize);
+            const bgPosY = -(row * pecaSize);
+
+            peca.style.backgroundImage = `url('${IMAGEM_URL}')`;
+            peca.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+
+            if (i === NUM_PECAS - 1) {
+                peca.classList.add('peca-vazia');
+                peca.style.backgroundImage = 'none';
+            }
+
+            peca.addEventListener('click', () => moverPeca(i));
+            tabuleiroEl.appendChild(peca);
+        }
+    }
+
+    function renderizar() {
+        const pecas = Array.from(tabuleiroEl.children);
+        tabuleiroEl.innerHTML = '';
+
+        tabuleiro.forEach(idPeca => {
+            const peca = pecas.find(p => parseInt(p.dataset.id) === idPeca);
+            if (peca) {
+                tabuleiroEl.appendChild(peca);
+            }
+        });
+    }
+
+    function moverPeca(idPeca) {
+        if (!jogando) return;
+
+        const indiceAtual = tabuleiro.indexOf(idPeca);
+        const indiceVazio = tabuleiro.indexOf(NUM_PECAS - 1);
+
+        const linhaAtual = Math.floor(indiceAtual / TAMANHO);
+        const colunaAtual = indiceAtual % TAMANHO;
+        const linhaVazio = Math.floor(indiceVazio / TAMANHO);
+        const colunaVazio = indiceVazio % TAMANHO;
+
+        const adjacente = (Math.abs(linhaAtual - linhaVazio) === 1 && colunaAtual === colunaVazio) ||
+            (Math.abs(colunaAtual - colunaVazio) === 1 && linhaAtual === linhaVazio);
+
+        if (adjacente) {
+            [tabuleiro[indiceAtual], tabuleiro[indiceVazio]] = [tabuleiro[indiceVazio], tabuleiro[indiceAtual]];
+            renderizar();
+            movimentos++;
+            movimentosEl.textContent = movimentos;
+            verificarVitoria();
+        }
+    }
+
+    function embaralhar() {
+        do {
+            for (let i = tabuleiro.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [tabuleiro[i], tabuleiro[j]] = [tabuleiro[j], tabuleiro[i]];
+            }
+        } while (!eSolucionavel() || estaResolvido());
+    }
+
+    function eSolucionavel() {
+        let inversoes = 0;
+        const semVazio = tabuleiro.filter(v => v !== NUM_PECAS - 1);
+
+        for (let i = 0; i < semVazio.length; i++) {
+            for (let j = i + 1; j < semVazio.length; j++) {
+                if (semVazio[i] > semVazio[j]) inversoes++;
+            }
         }
 
-        function criarPecas() {
-            tabuleiroEl.innerHTML = '';
-            tabuleiro = [];
+        return inversoes % 2 === 0;
+    }
 
-            for (let i = 0; i < NUM_PECAS; i++) {
-                tabuleiro.push(i);
+    function estaResolvido() {
+        return tabuleiro.every((valor, index) => valor === index);
+    }
 
-                const peca = document.createElement('div');
-                peca.className = 'peca';
-                peca.dataset.id = i;
+    function verificarVitoria() {
+        if (estaResolvido()) {
+            jogando = false;
+            clearInterval(intervaloTempo);
 
-                const row = Math.floor(i / TAMANHO);
-                const col = i % TAMANHO;
+            mensagemEl.textContent = `🎉 Parabéns! Você completou em ${movimentos} movimentos e ${tempoEl.textContent}!`;
+            mensagemEl.classList.add('vitoria');
+            iniciarBtn.textContent = '🔄 Jogar Novamente';
+            embaralharBtn.style.display = 'none';
+
+            // ⭐ SALVAR PONTUAÇÃO - LINHA PRINCIPAL ADICIONADA!
+            const pontuacaoFinal = calcularPontuacao(movimentos, segundos);
+            salvarPontuacao('quebra_cabeca', pontuacaoFinal, segundos, movimentos, 'normal');
+
+            const pecas = Array.from(tabuleiroEl.children);
+            const pecaVazia = pecas.find(p => parseInt(p.dataset.id) === NUM_PECAS - 1);
+
+            if (pecaVazia) {
+                const idPeca = NUM_PECAS - 1;
+                const row = Math.floor(idPeca / TAMANHO);
+                const col = idPeca % TAMANHO;
 
                 const pecaSize = getPecaSize();
                 const bgPosX = -(col * pecaSize);
                 const bgPosY = -(row * pecaSize);
 
-                peca.style.backgroundImage = `url('${IMAGEM_URL}')`;
-                peca.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
-
-                if (i === NUM_PECAS - 1) {
-                    peca.classList.add('peca-vazia');
-                    peca.style.backgroundImage = 'none';
-                }
-
-                peca.addEventListener('click', () => moverPeca(i));
-                tabuleiroEl.appendChild(peca);
+                pecaVazia.classList.remove('peca-vazia');
+                pecaVazia.style.backgroundImage = `url('${IMAGEM_URL}')`;
+                pecaVazia.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+                pecaVazia.style.opacity = '1';
+                pecaVazia.style.border = '1px solid rgba(106, 83, 184, 0.2)';
             }
         }
+    }
 
-        function renderizar() {
-            const pecas = Array.from(tabuleiroEl.children);
-            tabuleiroEl.innerHTML = '';
+    // ⭐ NOVA FUNÇÃO: Calcular pontuação baseada em movimentos e tempo
+    function calcularPontuacao(movimentos, tempo) {
+        const pontuacaoBase = 10000;
+        const penalMovimento = 50;
+        const penalTempo = 10;
+        
+        const pontuacao = Math.max(0, pontuacaoBase - (movimentos * penalMovimento) - (tempo * penalTempo));
+        return Math.round(pontuacao);
+    }
 
-            tabuleiro.forEach(idPeca => {
-                const peca = pecas.find(p => parseInt(p.dataset.id) === idPeca);
-                if (peca) {
-                    tabuleiroEl.appendChild(peca);
-                }
-            });
+    // ⭐ FUNÇÃO CORRIGIDA: Salvar pontuação
+    function salvarPontuacao(jogo, pontuacaoFinal, tempo, movimentos, nivel) {
+        console.log('🧩 Salvando pontuação do quebra-cabeça...', {jogo, pontuacaoFinal, tempo, movimentos, nivel});
+        
+        if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+            console.warn('⚠️ Usuário não está logado');
+            return;
         }
 
-        function moverPeca(idPeca) {
-            if (!jogando) return;
+        const formData = new FormData();
+        formData.append('jogo', jogo);
+        formData.append('pontuacao', pontuacaoFinal);
+        formData.append('tempo', tempo);
+        formData.append('movimentos', movimentos);
+        formData.append('nivel', nivel);
 
-            const indiceAtual = tabuleiro.indexOf(idPeca);
-            const indiceVazio = tabuleiro.indexOf(NUM_PECAS - 1);
-
-            const linhaAtual = Math.floor(indiceAtual / TAMANHO);
-            const colunaAtual = indiceAtual % TAMANHO;
-            const linhaVazio = Math.floor(indiceVazio / TAMANHO);
-            const colunaVazio = indiceVazio % TAMANHO;
-
-            const adjacente = (Math.abs(linhaAtual - linhaVazio) === 1 && colunaAtual === colunaVazio) ||
-                (Math.abs(colunaAtual - colunaVazio) === 1 && linhaAtual === linhaVazio);
-
-            if (adjacente) {
-                [tabuleiro[indiceAtual], tabuleiro[indiceVazio]] = [tabuleiro[indiceVazio], tabuleiro[indiceAtual]];
-                renderizar();
-                movimentos++;
-                movimentosEl.textContent = movimentos;
-                verificarVitoria();
+        fetch('salvar_pontuacao.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(text => {
+            console.log('📥 Resposta:', text);
+            try {
+                const data = JSON.parse(text);
+                if(data.sucesso) {
+                    console.log('✅ Pontuação salva com sucesso!');
+                } else {
+                    console.error('❌ Erro:', data.erro);
+                }
+            } catch(e) {
+                console.error('❌ Erro ao parsear:', e, text);
             }
-        }
+        })
+        .catch(error => console.error('❌ Erro na requisição:', error));
+    }
 
-        function embaralhar() {
-            do {
-                for (let i = tabuleiro.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [tabuleiro[i], tabuleiro[j]] = [tabuleiro[j], tabuleiro[i]];
-                }
-            } while (!eSolucionavel() || estaResolvido());
-        }
+    function iniciarJogo() {
+        criarPecas();
+        embaralhar();
+        renderizar();
 
-        function eSolucionavel() {
-            let inversoes = 0;
-            const semVazio = tabuleiro.filter(v => v !== NUM_PECAS - 1);
+        jogando = true;
+        movimentos = 0;
+        segundos = 0;
 
-            for (let i = 0; i < semVazio.length; i++) {
-                for (let j = i + 1; j < semVazio.length; j++) {
-                    if (semVazio[i] > semVazio[j]) inversoes++;
-                }
-            }
+        movimentosEl.textContent = '0';
+        tempoEl.textContent = '0:00';
 
-            return inversoes % 2 === 0;
-        }
+        mensagemEl.textContent = 'Clique nas peças adjacentes ao espaço vazio para movê-las!';
+        mensagemEl.classList.remove('vitoria');
+        iniciarBtn.textContent = '🎮 Jogando...';
+        embaralharBtn.style.display = 'inline-flex';
+        previewEl.classList.remove('show');
 
-        function estaResolvido() {
-            return tabuleiro.every((valor, index) => valor === index);
-        }
+        mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
 
-        function verificarVitoria() {
-            if (estaResolvido()) {
-                jogando = false;
-                clearInterval(intervaloTempo);
+        clearInterval(intervaloTempo);
+        intervaloTempo = setInterval(() => {
+            segundos++;
+            const min = Math.floor(segundos / 60);
+            const seg = segundos % 60;
+            tempoEl.textContent = `${min}:${seg.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
 
-                mensagemEl.textContent = `🎉 Parabéns! Você completou em ${movimentos} movimentos e ${tempoEl.textContent}!`;
-                mensagemEl.classList.add('vitoria');
-                iniciarBtn.textContent = '🔄 Jogar Novamente';
-                embaralharBtn.style.display = 'none';
+    iniciarBtn.addEventListener('click', iniciarJogo);
 
-                const pecas = Array.from(tabuleiroEl.children);
-                const pecaVazia = pecas.find(p => parseInt(p.dataset.id) === NUM_PECAS - 1);
-
-                if (pecaVazia) {
-                    const idPeca = NUM_PECAS - 1;
-                    const row = Math.floor(idPeca / TAMANHO);
-                    const col = idPeca % TAMANHO;
-
-                    const pecaSize = getPecaSize();
-                    const bgPosX = -(col * pecaSize);
-                    const bgPosY = -(row * pecaSize);
-
-                    pecaVazia.classList.remove('peca-vazia');
-                    pecaVazia.style.backgroundImage = `url('${IMAGEM_URL}')`;
-                    pecaVazia.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
-                    pecaVazia.style.opacity = '1';
-                    pecaVazia.style.border = '1px solid rgba(106, 83, 184, 0.2)';
-                }
-            }
-        }
-
-        function iniciarJogo() {
-            criarPecas();
+    embaralharBtn.addEventListener('click', () => {
+        if (jogando) {
             embaralhar();
             renderizar();
-
-            jogando = true;
             movimentos = 0;
-            segundos = 0;
-
             movimentosEl.textContent = '0';
-            tempoEl.textContent = '0:00';
-
-            mensagemEl.textContent = 'Clique nas peças adjacentes ao espaço vazio para movê-las!';
-            mensagemEl.classList.remove('vitoria');
-            iniciarBtn.textContent = '🎮 Jogando...';
-            embaralharBtn.style.display = 'inline-flex';
-            previewEl.classList.remove('show');
-
-            // Garante que o botão inicial seja "Mostrar" (Olho Aberto)
-            mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
-
-            clearInterval(intervaloTempo);
-            intervaloTempo = setInterval(() => {
-                segundos++;
-                const min = Math.floor(segundos / 60);
-                const seg = segundos % 60;
-                tempoEl.textContent = `${min}:${seg.toString().padStart(2, '0')}`;
-            }, 1000);
         }
+    });
 
-        iniciarBtn.addEventListener('click', iniciarJogo);
-
-        embaralharBtn.addEventListener('click', () => {
-            if (jogando) {
-                embaralhar();
-                renderizar();
-                movimentos = 0;
-                movimentosEl.textContent = '0';
-            }
-        });
-
-        // --- DEFINIÇÃO DOS SVGs (CORRIGIDA) ---
-
-        // SVG para Mostrar (Olho Aberto)
-        const SVG_MOSTRAR = `
+    // SVG para Mostrar (Olho Aberto)
+    const SVG_MOSTRAR = `
 <svg width="22" height="16" viewBox="0 0 22 16"
 fill="none" xmlns="http://www.w3.org/2000/svg">
 <path
@@ -672,8 +720,8 @@ stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
 `;
 
-        // SVG para Esconder (Olho Fechado/Piscando - O que você pediu primeiro)
-        const SVG_ESCONDER = `
+    // SVG para Esconder (Olho Fechado)
+    const SVG_ESCONDER = `
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 22px; height: 16px;">
 <path d="M15 18L14.278 14.75" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M2 8C2.74835 10.0508 4.10913 11.8219 5.8979 13.0733C7.68667 14.3247 9.81695 14.9959 12 14.9959C14.1831 14.9959 16.3133 14.3247 18.1021 13.0733C19.8909 11.8219 21.2516 10.0508 22 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -683,38 +731,25 @@ stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
 `;
 
-        mostrarOriginalBtn.addEventListener('click', () => {
-            previewEl.classList.toggle('show');
-            // Lógica de troca de ícones
-            if (previewEl.classList.contains('show')) {
-                mostrarOriginalBtn.innerHTML = SVG_ESCONDER + ' Esconder';
-            } else {
-                mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
-            }
-        });
-
-        window.onload = function () {
-            if (!document.querySelector('.erro-msg')) {
-                criarPecas();
-                renderizar();
-                mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
-            }
-        };
-
-        function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
-            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
-                return;
-            }
-
-            fetch('salvar_pontuacao.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
-            });
+    mostrarOriginalBtn.addEventListener('click', () => {
+        previewEl.classList.toggle('show');
+        if (previewEl.classList.contains('show')) {
+            mostrarOriginalBtn.innerHTML = SVG_ESCONDER + ' Esconder';
+        } else {
+            mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
         }
-    </script>
+    });
+
+    window.onload = function () {
+        if (!document.querySelector('.erro-msg')) {
+            criarPecas();
+            renderizar();
+            mostrarOriginalBtn.innerHTML = SVG_MOSTRAR + ' Mostrar';
+        }
+        console.log('🧩 Quebra-cabeça carregado!');
+        console.log('Usuário logado:', <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>);
+    };
+</script>
 </body>
 
 </html>

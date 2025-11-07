@@ -91,7 +91,7 @@ $config = [
     <title>Jogo da Memória - FrameFlow</title>
     <link rel="stylesheet" href="global.css">
     <style>
-        <style>* {
+        style>* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -626,132 +626,164 @@ $config = [
     </div>
 
     <script>
-        const config = <?php echo json_encode($config); ?>;
-        let primeiraCarta = null;
-        let segundaCarta = null;
-        let bloqueado = false;
-        let paresEncontrados = 0;
-        let tentativas = 0;
-        let pontuacao = config.pontuacao_base;
-        let tempoInicio = Date.now();
-        let timerInterval;
+    const config = <?php echo json_encode($config); ?>;
+    let primeiraCarta = null;
+    let segundaCarta = null;
+    let bloqueado = false;
+    let paresEncontrados = 0;
+    let tentativas = 0;
+    let pontuacao = config.pontuacao_base;
+    let tempoInicio = Date.now();
+    let timerInterval;
 
-        // Iniciar timer
-        function iniciarTimer() {
-            timerInterval = setInterval(() => {
-                const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
-                const minutos = Math.floor(tempoDecorrido / 60);
-                const segundos = tempoDecorrido % 60;
-                document.getElementById('tempo').textContent =
-                    `${minutos}:${segundos.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
-
-        // Virar carta
-        function virarCarta(carta) {
-            if (bloqueado) return;
-            if (carta === primeiraCarta) return;
-            if (carta.classList.contains('matched')) return;
-
-            carta.classList.add('flipped');
-
-            if (!primeiraCarta) {
-                primeiraCarta = carta;
-                return;
-            }
-
-            segundaCarta = carta;
-            bloqueado = true;
-            tentativas++;
-            document.getElementById('tentativas').textContent = tentativas;
-
-            verificarPar();
-        }
-
-        // Verificar se as cartas formam um par
-        function verificarPar() {
-            const id1 = primeiraCarta.getAttribute('data-id');
-            const id2 = segundaCarta.getAttribute('data-id');
-
-            if (id1 === id2) {
-                // Par encontrado!
-                primeiraCarta.classList.add('matched');
-                segundaCarta.classList.add('matched');
-                paresEncontrados++;
-                document.getElementById('pares').textContent =
-                    `${paresEncontrados} / ${config.pares}`;
-
-                resetarCartas();
-
-                if (paresEncontrados === config.pares) {
-                    finalizarJogo();
-                }
-            } else {
-                // Par errado
-                pontuacao = Math.max(0, pontuacao - config.penalidade_erro);
-                document.getElementById('pontuacao').textContent = pontuacao;
-
-                setTimeout(() => {
-                    primeiraCarta.classList.remove('flipped');
-                    segundaCarta.classList.remove('flipped');
-                    resetarCartas();
-                }, 1000);
-            }
-        }
-
-        // Resetar seleção de cartas
-        function resetarCartas() {
-            [primeiraCarta, segundaCarta] = [null, null];
-            bloqueado = false;
-        }
-
-        // Finalizar jogo
-        function finalizarJogo() {
-            clearInterval(timerInterval);
-
+    // Iniciar timer
+    function iniciarTimer() {
+        timerInterval = setInterval(() => {
             const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
-            const tempoRestante = Math.max(0, config.tempo_limite - tempoDecorrido);
-            pontuacao += tempoRestante * config.bonus_tempo;
+            const minutos = Math.floor(tempoDecorrido / 60);
+            const segundos = tempoDecorrido % 60;
+            document.getElementById('tempo').textContent =
+                `${minutos}:${segundos.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
 
-            document.getElementById('resultTentativas').textContent = tentativas;
-            document.getElementById('resultTempo').textContent =
-                document.getElementById('tempo').textContent;
-            document.getElementById('resultPontuacao').textContent = pontuacao;
+    // Virar carta
+    function virarCarta(carta) {
+        if (bloqueado) return;
+        if (carta === primeiraCarta) return;
+        if (carta.classList.contains('matched')) return;
+
+        carta.classList.add('flipped');
+
+        if (!primeiraCarta) {
+            primeiraCarta = carta;
+            return;
+        }
+
+        segundaCarta = carta;
+        bloqueado = true;
+        tentativas++;
+        document.getElementById('tentativas').textContent = tentativas;
+
+        verificarPar();
+    }
+
+    // Verificar se as cartas formam um par
+    function verificarPar() {
+        const id1 = primeiraCarta.getAttribute('data-id');
+        const id2 = segundaCarta.getAttribute('data-id');
+
+        if (id1 === id2) {
+            // Par encontrado!
+            primeiraCarta.classList.add('matched');
+            segundaCarta.classList.add('matched');
+            paresEncontrados++;
+            document.getElementById('pares').textContent =
+                `${paresEncontrados} / ${config.pares}`;
+
+            resetarCartas();
+
+            if (paresEncontrados === config.pares) {
+                finalizarJogo();
+            }
+        } else {
+            // Par errado
+            pontuacao = Math.max(0, pontuacao - config.penalidade_erro);
+            document.getElementById('pontuacao').textContent = pontuacao;
 
             setTimeout(() => {
-                document.getElementById('modalResultado').classList.add('show');
-            }, 500);
+                primeiraCarta.classList.remove('flipped');
+                segundaCarta.classList.remove('flipped');
+                resetarCartas();
+            }, 1000);
+        }
+    }
+
+    // Resetar seleção de cartas
+    function resetarCartas() {
+        [primeiraCarta, segundaCarta] = [null, null];
+        bloqueado = false;
+    }
+
+    // Finalizar jogo
+    function finalizarJogo() {
+        clearInterval(timerInterval);
+
+        const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
+        const tempoRestante = Math.max(0, config.tempo_limite - tempoDecorrido);
+        pontuacao += tempoRestante * config.bonus_tempo;
+
+        document.getElementById('resultTentativas').textContent = tentativas;
+        document.getElementById('resultTempo').textContent =
+            document.getElementById('tempo').textContent;
+        document.getElementById('resultPontuacao').textContent = pontuacao;
+
+        // SALVAR PONTUAÇÃO NO BANCO DE DADOS
+        salvarPontuacao('memoria', pontuacao, tempoDecorrido, tentativas, config.nivel);
+
+        setTimeout(() => {
+            document.getElementById('modalResultado').classList.add('show');
+        }, 500);
+    }
+
+    // Salvar pontuação no banco de dados
+    function salvarPontuacao(jogo, pontuacaoFinal, tempo, movimentos, nivel) {
+        console.log('🎮 Salvando pontuação...', {jogo, pontuacaoFinal, tempo, movimentos, nivel});
+        
+        if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+            console.warn('⚠️ Usuário não está logado - pontuação não será salva');
+            return;
         }
 
-        // Reiniciar jogo
-        function reiniciarJogo() {
-            window.location.href = window.location.href;
-        }
+        const formData = new FormData();
+        formData.append('jogo', jogo);
+        formData.append('pontuacao', pontuacaoFinal);
+        formData.append('tempo', tempo);
+        formData.append('movimentos', movimentos);
+        formData.append('nivel', nivel);
 
-        // Mudar nível
-        function mudarNivel(nivel) {
-            window.location.href = `?nivel=${nivel}`;
-        }
-
-        // Iniciar timer ao carregar
-        window.onload = () => {
-            iniciarTimer();
-        };
-
-        function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
-            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
-                return; // Não salva se não estiver logado
+        fetch('salvar_pontuacao.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(text => {
+            console.log('📥 Resposta do servidor:', text);
+            try {
+                const data = JSON.parse(text);
+                console.log('✅ Dados parseados:', data);
+                if(data.sucesso) {
+                    console.log('🎉 Pontuação salva com sucesso no banco de dados!');
+                } else {
+                    console.error('❌ Erro ao salvar:', data.erro || 'Erro desconhecido');
+                }
+            } catch(e) {
+                console.error('❌ Erro ao parsear JSON:', e);
+                console.error('Resposta recebida:', text);
             }
+        })
+        .catch(error => {
+            console.error('❌ Erro na requisição AJAX:', error);
+        });
+    }
 
-            fetch('salvar_pontuacao.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
-            });
-        }
-    </script>
+    // Reiniciar jogo
+    function reiniciarJogo() {
+        window.location.href = window.location.href;
+    }
+
+    // Mudar nível
+    function mudarNivel(nivel) {
+        window.location.href = `?nivel=${nivel}`;
+    }
+
+    // Iniciar timer ao carregar
+    window.onload = () => {
+        iniciarTimer();
+        console.log('🎮 Jogo da Memória iniciado!');
+        console.log('Usuário logado:', <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>);
+    };
+</script>
 </body>
 
 </html>
