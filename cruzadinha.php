@@ -233,19 +233,19 @@ $gameData = [
     <link rel="stylesheet" href="global.css">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
             padding: 2rem;
         }
 
         .container-cruzadinha {
-            max-width: 1400px;
+            max-width: 90%;
             margin: 0 auto;
         }
 
         .header-cruzadinha {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem 2rem;
             border-radius: 1.5rem;
             margin-bottom: 2rem;
             display: flex;
@@ -258,8 +258,51 @@ $gameData = [
         .header-cruzadinha h1 {
             color: #6a53b8;
             font-size: 2rem;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6A53B8;
+            text-decoration: none;
+            font-size: 16px;
+            transition: opacity 0.2s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .btn-voltar:hover {
+            opacity: 0.7;
+        }
+
+        .btn-nova-cruzadinha {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6A53B8;
+            text-decoration: none;
+            font-size: 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            padding: 0;
+            background-color: #F0F0F0;
+            padding: 0.8rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+
+        .btn-nova-cruzadinha:hover {
+            opacity: 0.7;
+        }
+
 
         .pontuacao-box {
             background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
@@ -268,25 +311,6 @@ $gameData = [
             border-radius: 2rem;
             font-size: 1.5rem;
             font-weight: bold;
-        }
-
-        .btn-voltar,
-        .btn-nova-cruzadinha {
-            background: #f0f0f0;
-            color: #6a53b8;
-            padding: 0.8rem 1.5rem;
-            border-radius: 2rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-voltar:hover,
-        .btn-nova-cruzadinha:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
         }
 
         .game-area {
@@ -519,13 +543,35 @@ $gameData = [
 <body>
     <div class="container-cruzadinha">
         <div class="header-cruzadinha">
-            <h1>🎬 Cruzadinha FrameFlow</h1>
+            <h1>Cruzadinha FrameFlow</h1>
             <div class="pontuacao-box">
                 Pontuação: <span id="pontuacao"><?php echo $gameData['pontuacao_base']; ?></span>
             </div>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn-nova-cruzadinha" onclick="location.reload()">🔄 Nova Cruzadinha</button>
-                <a href="explorar.php" class="btn-voltar">← Voltar</a>
+                <button class="btn-nova-cruzadinha" onclick="location.reload()"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19 10C19 7.61305 18.0518 5.32387 16.364 3.63604C14.6761 1.94821 12.3869 1 10 1C7.48395 1.00947 5.06897 1.99122 3.26 3.74L1 6"
+                            stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M1 1V6H6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path
+                            d="M1 10C1 12.3869 1.94821 14.6761 3.63604 16.364C5.32387 18.0518 7.61305 19 10 19C12.516 18.9905 14.931 18.0088 16.74 16.26L19 14"
+                            stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 14H19V19" stroke="#6A53B8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg> Nova Cruzadinha</button>
+                <a href="explorar.php" class="btn-voltar">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
+                            stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17.45 12.6499L7.84995 12.6499" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12.6499 7.8501L7.8499 12.6501L12.6499 17.4501" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Voltar para o explorar</a>
             </div>
         </div>
 

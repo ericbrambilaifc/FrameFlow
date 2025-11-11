@@ -501,7 +501,8 @@ $config = [
                             stroke-linejoin="round" />
                     </svg>
                     Reiniciar</button>
-                <a href="explorar.php" class="btn-voltar"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+                <a href="explorar.php" class="btn-voltar">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
@@ -555,11 +556,11 @@ $config = [
 
                     </div>
                     <div class="card-face card-back" data-hint="<?php
-                    if ($nivel === 'medio') {
-                        echo htmlspecialchars($carta['genero'] . ' | ' . $carta['classificacao']);
-                    } elseif ($nivel === 'dificil') {
-                    }
-                    ?>">
+                                                                if ($nivel === 'medio') {
+                                                                    echo htmlspecialchars($carta['genero'] . ' | ' . $carta['classificacao']);
+                                                                } elseif ($nivel === 'dificil') {
+                                                                }
+                                                                ?>">
                         <img src="<?php echo htmlspecialchars($carta['imagem']); ?>"
                             alt="<?php echo htmlspecialchars($carta['titulo']); ?>">
                         <div class="card-info">
@@ -626,164 +627,170 @@ $config = [
     </div>
 
     <script>
-    const config = <?php echo json_encode($config); ?>;
-    let primeiraCarta = null;
-    let segundaCarta = null;
-    let bloqueado = false;
-    let paresEncontrados = 0;
-    let tentativas = 0;
-    let pontuacao = config.pontuacao_base;
-    let tempoInicio = Date.now();
-    let timerInterval;
+        const config = <?php echo json_encode($config); ?>;
+        let primeiraCarta = null;
+        let segundaCarta = null;
+        let bloqueado = false;
+        let paresEncontrados = 0;
+        let tentativas = 0;
+        let pontuacao = config.pontuacao_base;
+        let tempoInicio = Date.now();
+        let timerInterval;
 
-    // Iniciar timer
-    function iniciarTimer() {
-        timerInterval = setInterval(() => {
-            const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
-            const minutos = Math.floor(tempoDecorrido / 60);
-            const segundos = tempoDecorrido % 60;
-            document.getElementById('tempo').textContent =
-                `${minutos}:${segundos.toString().padStart(2, '0')}`;
-        }, 1000);
-    }
-
-    // Virar carta
-    function virarCarta(carta) {
-        if (bloqueado) return;
-        if (carta === primeiraCarta) return;
-        if (carta.classList.contains('matched')) return;
-
-        carta.classList.add('flipped');
-
-        if (!primeiraCarta) {
-            primeiraCarta = carta;
-            return;
-        }
-
-        segundaCarta = carta;
-        bloqueado = true;
-        tentativas++;
-        document.getElementById('tentativas').textContent = tentativas;
-
-        verificarPar();
-    }
-
-    // Verificar se as cartas formam um par
-    function verificarPar() {
-        const id1 = primeiraCarta.getAttribute('data-id');
-        const id2 = segundaCarta.getAttribute('data-id');
-
-        if (id1 === id2) {
-            // Par encontrado!
-            primeiraCarta.classList.add('matched');
-            segundaCarta.classList.add('matched');
-            paresEncontrados++;
-            document.getElementById('pares').textContent =
-                `${paresEncontrados} / ${config.pares}`;
-
-            resetarCartas();
-
-            if (paresEncontrados === config.pares) {
-                finalizarJogo();
-            }
-        } else {
-            // Par errado
-            pontuacao = Math.max(0, pontuacao - config.penalidade_erro);
-            document.getElementById('pontuacao').textContent = pontuacao;
-
-            setTimeout(() => {
-                primeiraCarta.classList.remove('flipped');
-                segundaCarta.classList.remove('flipped');
-                resetarCartas();
+        // Iniciar timer
+        function iniciarTimer() {
+            timerInterval = setInterval(() => {
+                const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
+                const minutos = Math.floor(tempoDecorrido / 60);
+                const segundos = tempoDecorrido % 60;
+                document.getElementById('tempo').textContent =
+                    `${minutos}:${segundos.toString().padStart(2, '0')}`;
             }, 1000);
         }
-    }
 
-    // Resetar seleção de cartas
-    function resetarCartas() {
-        [primeiraCarta, segundaCarta] = [null, null];
-        bloqueado = false;
-    }
+        // Virar carta
+        function virarCarta(carta) {
+            if (bloqueado) return;
+            if (carta === primeiraCarta) return;
+            if (carta.classList.contains('matched')) return;
 
-    // Finalizar jogo
-    function finalizarJogo() {
-        clearInterval(timerInterval);
+            carta.classList.add('flipped');
 
-        const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
-        const tempoRestante = Math.max(0, config.tempo_limite - tempoDecorrido);
-        pontuacao += tempoRestante * config.bonus_tempo;
+            if (!primeiraCarta) {
+                primeiraCarta = carta;
+                return;
+            }
 
-        document.getElementById('resultTentativas').textContent = tentativas;
-        document.getElementById('resultTempo').textContent =
-            document.getElementById('tempo').textContent;
-        document.getElementById('resultPontuacao').textContent = pontuacao;
+            segundaCarta = carta;
+            bloqueado = true;
+            tentativas++;
+            document.getElementById('tentativas').textContent = tentativas;
 
-        // SALVAR PONTUAÇÃO NO BANCO DE DADOS
-        salvarPontuacao('memoria', pontuacao, tempoDecorrido, tentativas, config.nivel);
-
-        setTimeout(() => {
-            document.getElementById('modalResultado').classList.add('show');
-        }, 500);
-    }
-
-    // Salvar pontuação no banco de dados
-    function salvarPontuacao(jogo, pontuacaoFinal, tempo, movimentos, nivel) {
-        console.log('🎮 Salvando pontuação...', {jogo, pontuacaoFinal, tempo, movimentos, nivel});
-        
-        if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
-            console.warn('⚠️ Usuário não está logado - pontuação não será salva');
-            return;
+            verificarPar();
         }
 
-        const formData = new FormData();
-        formData.append('jogo', jogo);
-        formData.append('pontuacao', pontuacaoFinal);
-        formData.append('tempo', tempo);
-        formData.append('movimentos', movimentos);
-        formData.append('nivel', nivel);
+        // Verificar se as cartas formam um par
+        function verificarPar() {
+            const id1 = primeiraCarta.getAttribute('data-id');
+            const id2 = segundaCarta.getAttribute('data-id');
 
-        fetch('salvar_pontuacao.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(text => {
-            console.log('📥 Resposta do servidor:', text);
-            try {
-                const data = JSON.parse(text);
-                console.log('✅ Dados parseados:', data);
-                if(data.sucesso) {
-                    console.log('🎉 Pontuação salva com sucesso no banco de dados!');
-                } else {
-                    console.error('❌ Erro ao salvar:', data.erro || 'Erro desconhecido');
+            if (id1 === id2) {
+                // Par encontrado!
+                primeiraCarta.classList.add('matched');
+                segundaCarta.classList.add('matched');
+                paresEncontrados++;
+                document.getElementById('pares').textContent =
+                    `${paresEncontrados} / ${config.pares}`;
+
+                resetarCartas();
+
+                if (paresEncontrados === config.pares) {
+                    finalizarJogo();
                 }
-            } catch(e) {
-                console.error('❌ Erro ao parsear JSON:', e);
-                console.error('Resposta recebida:', text);
+            } else {
+                // Par errado
+                pontuacao = Math.max(0, pontuacao - config.penalidade_erro);
+                document.getElementById('pontuacao').textContent = pontuacao;
+
+                setTimeout(() => {
+                    primeiraCarta.classList.remove('flipped');
+                    segundaCarta.classList.remove('flipped');
+                    resetarCartas();
+                }, 1000);
             }
-        })
-        .catch(error => {
-            console.error('❌ Erro na requisição AJAX:', error);
-        });
-    }
+        }
 
-    // Reiniciar jogo
-    function reiniciarJogo() {
-        window.location.href = window.location.href;
-    }
+        // Resetar seleção de cartas
+        function resetarCartas() {
+            [primeiraCarta, segundaCarta] = [null, null];
+            bloqueado = false;
+        }
 
-    // Mudar nível
-    function mudarNivel(nivel) {
-        window.location.href = `?nivel=${nivel}`;
-    }
+        // Finalizar jogo
+        function finalizarJogo() {
+            clearInterval(timerInterval);
 
-    // Iniciar timer ao carregar
-    window.onload = () => {
-        iniciarTimer();
-        console.log('🎮 Jogo da Memória iniciado!');
-        console.log('Usuário logado:', <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>);
-    };
-</script>
+            const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
+            const tempoRestante = Math.max(0, config.tempo_limite - tempoDecorrido);
+            pontuacao += tempoRestante * config.bonus_tempo;
+
+            document.getElementById('resultTentativas').textContent = tentativas;
+            document.getElementById('resultTempo').textContent =
+                document.getElementById('tempo').textContent;
+            document.getElementById('resultPontuacao').textContent = pontuacao;
+
+            // SALVAR PONTUAÇÃO NO BANCO DE DADOS
+            salvarPontuacao('memoria', pontuacao, tempoDecorrido, tentativas, config.nivel);
+
+            setTimeout(() => {
+                document.getElementById('modalResultado').classList.add('show');
+            }, 500);
+        }
+
+        // Salvar pontuação no banco de dados
+        function salvarPontuacao(jogo, pontuacaoFinal, tempo, movimentos, nivel) {
+            console.log('🎮 Salvando pontuação...', {
+                jogo,
+                pontuacaoFinal,
+                tempo,
+                movimentos,
+                nivel
+            });
+
+            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+                console.warn('⚠️ Usuário não está logado - pontuação não será salva');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('jogo', jogo);
+            formData.append('pontuacao', pontuacaoFinal);
+            formData.append('tempo', tempo);
+            formData.append('movimentos', movimentos);
+            formData.append('nivel', nivel);
+
+            fetch('salvar_pontuacao.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log('📥 Resposta do servidor:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('✅ Dados parseados:', data);
+                        if (data.sucesso) {
+                            console.log('🎉 Pontuação salva com sucesso no banco de dados!');
+                        } else {
+                            console.error('❌ Erro ao salvar:', data.erro || 'Erro desconhecido');
+                        }
+                    } catch (e) {
+                        console.error('❌ Erro ao parsear JSON:', e);
+                        console.error('Resposta recebida:', text);
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Erro na requisição AJAX:', error);
+                });
+        }
+
+        // Reiniciar jogo
+        function reiniciarJogo() {
+            window.location.href = window.location.href;
+        }
+
+        // Mudar nível
+        function mudarNivel(nivel) {
+            window.location.href = `?nivel=${nivel}`;
+        }
+
+        // Iniciar timer ao carregar
+        window.onload = () => {
+            iniciarTimer();
+            console.log('🎮 Jogo da Memória iniciado!');
+            console.log('Usuário logado:', <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>);
+        };
+    </script>
 </body>
 
 </html>
