@@ -793,18 +793,58 @@ $gameData = [
 
         window.onload = montarCruzadinha;
 
-        function salvarPontuacao(jogo, pontuacao, tempo, movimentos, nivel) {
-            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
-                return; // Não salva se não estiver logado
+        function salvarPontuacaoCruzadinha() {
+            const usuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+
+            if (!usuarioLogado) {
+                console.warn('⚠️ Usuário não está logado');
+                return;
             }
 
-            fetch('salvar_pontuacao.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `jogo=${jogo}&pontuacao=${pontuacao}&tempo=${tempo}&movimentos=${movimentos}&nivel=${nivel}`
+            // Calcular tempo total
+            const tempoTotal = Math.floor((Date.now() - tempoInicio) / 1000);
+
+            console.log('📝 Salvando pontuação da cruzadinha...', {
+                jogo: 'cruzadinha',
+                pontuacao: pontuacaoAtual,
+                tempo: tempoTotal,
+                nivel: 'normal'
             });
+
+            const formData = new FormData();
+            formData.append('jogo', 'cruzadinha');
+            formData.append('pontuacao', pontuacaoAtual);
+            formData.append('tempo', tempoTotal);
+            formData.append('movimentos', null); // Cruzadinha não usa movimentos
+            formData.append('nivel', 'normal');
+
+            fetch('salvar_pontuacao.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log('📥 Resposta:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.sucesso) {
+                            console.log('✅ Pontuação da cruzadinha salva!');
+                        } else {
+                            console.error('❌ Erro:', data.erro);
+                        }
+                    } catch (e) {
+                        console.error('❌ Erro ao parsear:', e, text);
+                    }
+                })
+                .catch(error => console.error('❌ Erro na requisição:', error));
+        }
+
+        // Na função verificarPalavraCompleta, quando todas as palavras forem completadas, adicione:
+        if (palavrasCompletas.size === gameData.palavras.length) {
+            setTimeout(() => {
+                salvarPontuacaoCruzadinha(); // ⭐ ADICIONE ESTA LINHA
+                alert(`🏆 VOCÊ VENCEU!\n\nPontuação final: ${pontuacaoAtual}\n\nParabéns por completar toda a cruzadinha!`);
+            }, 1000);
         }
     </script>
 </body>

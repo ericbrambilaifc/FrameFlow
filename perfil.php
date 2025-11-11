@@ -55,10 +55,17 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     <div class="container-perfil">
         <!-- Botão Voltar -->
         <a href="javascript:history.back()" class="btn-voltar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M19 12H5M12 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            Voltar
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
+                            stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17.45 12.6499L7.84995 12.6499" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12.6499 7.8501L7.8499 12.6501L12.6499 17.4501" stroke="#6A53B8" stroke-width="1.3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+            Voltar para o explorar
         </a>
 
         <!-- Cabeçalho do Perfil -->

@@ -727,9 +727,8 @@ $config = [
             }, 500);
         }
 
-        // Salvar pontuação no banco de dados
         function salvarPontuacao(jogo, pontuacaoFinal, tempo, movimentos, nivel) {
-            console.log('🎮 Salvando pontuação...', {
+            console.log('🎮 Salvando pontuação da memória...', {
                 jogo,
                 pontuacaoFinal,
                 tempo,
@@ -737,7 +736,9 @@ $config = [
                 nivel
             });
 
-            if (!<?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>) {
+            const usuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+
+            if (!usuarioLogado) {
                 console.warn('⚠️ Usuário não está logado - pontuação não será salva');
                 return;
             }
@@ -759,6 +760,7 @@ $config = [
                     try {
                         const data = JSON.parse(text);
                         console.log('✅ Dados parseados:', data);
+
                         if (data.sucesso) {
                             console.log('🎉 Pontuação salva com sucesso no banco de dados!');
                         } else {

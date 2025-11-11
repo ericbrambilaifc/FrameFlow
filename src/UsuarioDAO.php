@@ -148,7 +148,6 @@ class UsuarioDAO
                     LEFT JOIN pontuacoes_jogos pj ON u.id = pj.usuario_id
                     WHERE u.is_admin = 0
                     GROUP BY u.id, u.nome_completo, u.foto_perfil
-                    HAVING total_pontos > 0
                     ORDER BY total_pontos DESC, u.nome_completo ASC
                     LIMIT :limite";
 

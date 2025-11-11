@@ -185,7 +185,15 @@ if (isset($_SESSION['usuario_id'])) {
                         <img src="<?php echo htmlspecialchars($serie['imagem_url']); ?>" alt="<?php echo htmlspecialchars($serie['titulo']); ?>">
                         <h3><?php echo htmlspecialchars($serie['titulo']); ?></h3>
                         <p>Avaliações: <?php echo $serie['total_avaliacoes']; ?></p>
-                        <p>Nota média: <?php echo number_format(($serie['media_nota'] * 2), 1); ?>/10</p>
+                        <?php
+                        $mediaConvertida = $serie['media_nota'] * 2;
+                        $mediaFinal = min($mediaConvertida, 10);
+
+                        $mediaFormatada = fmod($mediaFinal, 1) == 0
+                            ? number_format($mediaFinal, 0, ',', '.')
+                            : number_format($mediaFinal, 1, ',', '.');
+                        ?>
+                        <p>Nota média: <?= $mediaFormatada ?>/10</p>
                     </div>
                 <?php endforeach; ?>
             </div>
