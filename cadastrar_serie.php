@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Verificar se usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     $_SESSION['erro'] = "Você precisa estar logado para cadastrar séries!";
     header("Location: explorar.php");
@@ -46,7 +45,7 @@ $generos = GeneroDAO::listar();
 
             <div class="form-group">
                 <label for="imagem_url">URL da Imagem <span class="campo-obrigatorio">*</span></label>
-                <input type="url" id="imagem_url" name="imagem_url" placeholder="https://exemplo.com/imagem.jpg" required>
+                <input type="url" id="imagem_url" name="imagem_url" placeholder="https:
                 <small class="texto-ajuda">
                     Cole o link direto da imagem (termina com .jpg, .png, etc)
                 </small>
@@ -89,7 +88,7 @@ $generos = GeneroDAO::listar();
     </div>
 
     <script>
-        // Preview da imagem
+        
         document.getElementById('imagem_url').addEventListener('input', function() {
             const url = this.value;
             const previewContainer = document.getElementById('previewContainer');
@@ -99,7 +98,6 @@ $generos = GeneroDAO::listar();
                 previewImg.src = url;
                 previewContainer.style.display = 'block';
 
-                // Esconder se a imagem não carregar
                 previewImg.onerror = function() {
                     previewContainer.style.display = 'none';
                 };
@@ -108,7 +106,6 @@ $generos = GeneroDAO::listar();
             }
         });
 
-        // Validação do formulário
         document.getElementById('formCadastroSerie').addEventListener('submit', function(e) {
             const titulo = document.getElementById('titulo').value.trim();
             const imagemUrl = document.getElementById('imagem_url').value.trim();
@@ -123,7 +120,7 @@ $generos = GeneroDAO::listar();
 
             if (!imagemUrl.startsWith('http')) {
                 e.preventDefault();
-                alert('A URL da imagem deve começar com http:// ou https://');
+                alert('A URL da imagem deve começar com http:
                 return false;
             }
         });

@@ -12,7 +12,6 @@ if (!$usuario_id) {
     exit;
 }
 
-// Busca dados do usuário com estatísticas
 $usuario = UsuarioDAO::obterPerfil($usuario_id);
 $foto_perfil = $usuario['foto_perfil'] ?? null;
 
@@ -50,13 +49,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
 <body>
 
-
-
     <div class="container-perfil">
-        <!-- Botão Voltar -->
+        
         <a href="javascript:history.back()" class="btn-voltar">
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
+                        xmlns="http:
                         <path
                             d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
                             stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -68,12 +65,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             Voltar para o explorar
         </a>
 
-        <!-- Cabeçalho do Perfil -->
         <div class="perfil-header">
             <div class="perfil-info">
                 <div class="avatar-container">
                     <?php if ($eh_proprio_perfil): ?>
-                        <!-- Form de upload apenas para o próprio perfil -->
+                        
                         <form id="form-foto-perfil" action="atualizar_foto_perfil.php" method="POST"
                             enctype="multipart/form-data">
                             <div class="avatar" style="cursor: pointer;"
@@ -83,7 +79,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                         id="avatar-preview">
                                 <?php else: ?>
                                     <svg width="80" height="80" viewBox="0 0 276 275" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" id="avatar-svg">
+                                        xmlns="http:
                                         <circle cx="138" cy="137.5" r="137.5"
                                             fill="<?php echo $eh_admin ? '#070706ff' : '#6A53B8'; ?>" />
                                         <path
@@ -96,7 +92,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                 <?php endif; ?>
 
                                 <div class="avatar-upload-overlay">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <svg xmlns="http:
                                         <path
                                             d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9v3H8v2h3v3h2v-3h3v-2h-3V9h-2z" />
                                     </svg>
@@ -107,13 +103,13 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                 accept="image/jpeg,image/png,image/jpg,image/gif" onchange="previewAndSubmit(this)">
                         </form>
                     <?php else: ?>
-                        <!-- Avatar apenas visualização para outros perfis -->
+                        
                         <div class="avatar">
                             <?php if ($foto_perfil && file_exists('uploads/perfil/' . $foto_perfil)): ?>
                                 <img src="uploads/perfil/<?php echo htmlspecialchars($foto_perfil); ?>" alt="Foto de perfil">
                             <?php else: ?>
                                 <svg width="80" height="80" viewBox="0 0 276 275" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
+                                    xmlns="http:
                                     <circle cx="138" cy="137.5" r="137.5"
                                         fill="<?php echo $eh_admin ? '#070706ff' : '#6A53B8'; ?>" />
                                     <path
@@ -133,14 +129,12 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                         if (input.files && input.files[0]) {
                             const file = input.files[0];
 
-                            // Validar tamanho (5MB)
                             if (file.size > 5 * 1024 * 1024) {
                                 alert('A imagem deve ter no máximo 5MB');
                                 input.value = '';
                                 return;
                             }
 
-                            // Validar tipo
                             const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
                             if (!tiposPermitidos.includes(file.type)) {
                                 alert('Formato não permitido. Use JPG, PNG ou GIF');
@@ -148,7 +142,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                 return;
                             }
 
-                            // Preview da imagem
                             const reader = new FileReader();
                             reader.onload = function(e) {
                                 const avatarDiv = document.querySelector('.avatar-editavel');
@@ -169,7 +162,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                             };
                             reader.readAsDataURL(file);
 
-                            // Submeter o formulário automaticamente
                             document.getElementById('form-foto-perfil').submit();
                         }
                     }
@@ -193,10 +185,10 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                             </span>
                             <div class="perfil-acoes">
                                 <?php if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])): ?>
-                                    <!-- Botão de Seguir (apenas quando está visitando perfil de outra pessoa) -->
+                                    
                                     <button class="btn-seguir <?php echo $esta_seguindo ? 'seguindo' : ''; ?>"
                                         onclick="toggleSeguir(<?php echo $usuario_id; ?>)" id="btnSeguir">
-                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http:
                                             <?php if ($esta_seguindo): ?>
                                                 <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round" />
@@ -224,10 +216,9 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             </div>
         </div>
 
-        <!-- Seção de Favoritos -->
         <div class="favoritos-secao">
             <h2>
-                <svg width="30" height="25" viewBox="0 0 30 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="30" height="25" viewBox="0 0 30 25" fill="none" xmlns="http:
                     <path d="M1 8.45598C1.00003 6.95185 1.45631 5.48311 2.30859 4.24374C3.16087 3.00438 4.36904 2.05269 5.77354 1.51438C7.17804 0.976067 8.7128 0.876455 10.1751 1.2287C11.6374 1.58094 12.9585 2.36847 13.9638 3.48727C14.0346 3.56298 14.1202 3.62334 14.2153 3.6646C14.3104 3.70587 14.413 3.72716 14.5166 3.72716C14.6203 3.72716 14.7228 3.70587 14.8179 3.6646C14.913 3.62334 14.9986 3.56298 15.0695 3.48727C16.0716 2.3612 17.393 1.56705 18.8577 1.21053C20.3223 0.854006 21.8609 0.952016 23.2685 1.49151C24.6761 2.03101 25.886 2.98641 26.7372 4.23055C27.5883 5.47468 28.0404 6.94855 28.0332 8.45598C28.0332 11.5513 26.0057 13.8626 23.9783 15.8901L16.5549 23.0715C16.3031 23.3608 15.9925 23.5931 15.644 23.7531C15.2954 23.9132 14.9168 23.9972 14.5332 23.9996C14.1497 24.002 13.77 23.9228 13.4195 23.7672C13.0689 23.6116 12.7554 23.3832 12.4999 23.0972L5.05499 15.8901C3.02749 13.8626 1 11.5648 1 8.45598Z" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
 
@@ -244,7 +235,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                             <?php if ($eh_proprio_perfil): ?>
                                 <button class="btn-remover-favorito"
                                     onclick="event.stopPropagation(); removerFavorito(<?php echo $favorito['id']; ?>)">
-                                    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http:
                                         <path d="M8 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M12 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M17 5V19C17 19.5304 16.7893 20.0391 16.4142 20.4142C16.0391 20.7893 15.5304 21 15 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5" stroke="black" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -263,7 +254,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 </div>
             <?php else: ?>
                 <div class="sem-favoritos">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 24 24" xmlns="http:
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                     <p>Nenhuma série favorita ainda.</p>
@@ -271,8 +262,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             <?php endif; ?>
         </div>
 
-
-        <!-- Avaliações (apenas para não-admin) -->
         <?php if (!$eh_admin): ?>
             <div class="avaliacoes-secao">
                 <h2>Suas últimas avaliações</h2>
@@ -296,7 +285,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                             $corPreenchimento = $preenchida ? '#FFF600' : 'none';
                                         ?>
                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
+                                                xmlns="http:
                                                 <path
                                                     d="M10.5268 1.29489C10.5706 1.20635 10.6383 1.13183 10.7223 1.07972C10.8062 1.02761 10.903 1 11.0018 1C11.1006 1 11.1974 1.02761 11.2813 1.07972C11.3653 1.13183 11.433 1.20635 11.4768 1.29489L13.7868 5.97389C13.939 6.28186 14.1636 6.5483 14.4414 6.75035C14.7192 6.95239 15.0419 7.08401 15.3818 7.13389L20.5478 7.88989C20.6457 7.90408 20.7376 7.94537 20.8133 8.00909C20.8889 8.07282 20.9452 8.15644 20.9758 8.2505C21.0064 8.34456 21.0101 8.4453 20.9864 8.54133C20.9627 8.63736 20.9126 8.72485 20.8418 8.79389L17.1058 12.4319C16.8594 12.672 16.6751 12.9684 16.5686 13.2955C16.4622 13.6227 16.4369 13.9708 16.4948 14.3099L17.3768 19.4499C17.3941 19.5477 17.3835 19.6485 17.3463 19.7406C17.3091 19.8327 17.2467 19.9125 17.1663 19.9709C17.086 20.0293 16.9908 20.0639 16.8917 20.0708C16.7926 20.0777 16.6935 20.0566 16.6058 20.0099L11.9878 17.5819C11.6835 17.4221 11.345 17.3386 11.0013 17.3386C10.6576 17.3386 10.3191 17.4221 10.0148 17.5819L5.3978 20.0099C5.31013 20.0563 5.2112 20.0772 5.11225 20.0701C5.0133 20.0631 4.91832 20.0285 4.83809 19.9701C4.75787 19.9118 4.69563 19.8321 4.65846 19.7401C4.62128 19.6482 4.61066 19.5476 4.6278 19.4499L5.5088 14.3109C5.567 13.9716 5.54178 13.6233 5.43534 13.2959C5.32889 12.9686 5.14441 12.672 4.8978 12.4319L1.1618 8.79489C1.09039 8.72593 1.03979 8.63829 1.01576 8.54197C0.991731 8.44565 0.995237 8.34451 1.02588 8.25008C1.05652 8.15566 1.11307 8.07174 1.18908 8.00788C1.26509 7.94402 1.3575 7.90279 1.4558 7.88889L6.6208 7.13389C6.96106 7.08439 7.28419 6.95295 7.56238 6.75088C7.84058 6.54881 8.0655 6.28216 8.2178 5.97389L10.5268 1.29489Z"
                                                     fill="<?php echo $corPreenchimento; ?>" stroke="black" stroke-opacity="0.6"
@@ -307,7 +296,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                                         <?php if ($eh_proprio_perfil): ?>
                                             <div>
                                                 <svg width="20" height="22" viewBox="0 0 20 22" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns="http:
                                                     onclick="excluirAvaliacao(<?php echo $avaliacao['id']; ?>, this)">
                                                     <path d="M8 10V16" stroke="black" stroke-opacity="0.8" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round" />
@@ -337,7 +326,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 <?php endif; ?>
             </div>
         <?php else: ?>
-            <!-- Mensagem para Admin -->
+            
             <div class="admin-info"
                 style="text-align: center; padding: 40px; background: linear-gradient(135deg, #070706ff 0%, #2b2828ff 100%); border-radius: 15px; margin-top: 30px;">
                 <h2 style="color: #fff; margin: 15px 0;">Painel do Administrador</h2>
@@ -351,12 +340,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         <?php endif; ?>
     </div>
 
-    <!-- Modal Editar Usuário -->
     <?php if ($eh_proprio_perfil && !$eh_admin): ?>
         <div id="modalEditarUsuario" class="modal">
             <div class="modal-login">
                 <button class="close" onclick="fecharModal('modalEditarUsuario')">
-                    <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                         <path
                             d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z"
                             stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -383,12 +371,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         </div>
     <?php endif; ?>
 
-    <!-- Modal Editar Senha -->
     <?php if ($eh_proprio_perfil): ?>
         <div id="modalEditarSenha" class="modal">
             <div class="modal-login">
                 <button class="close" onclick="fecharModal('modalEditarSenha')">
-                    <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                         <path
                             d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z"
                             stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -417,12 +404,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         </div>
     <?php endif; ?>
 
-    <!-- Modal de Seguidores/Seguindo -->
     <div id="modalSeguidores" class="modal">
         <div class="modal-login"
             style="max-width: 500px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;">
             <button class="close" onclick="fecharModal('modalSeguidores')">
-                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                     <path
                         d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z"
                         stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -435,22 +421,19 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
             <h2 class="titulo" id="titulo-modal">Seguidores</h2>
 
-            <!-- Loading -->
             <div id="loading-seguidores" class="loading-container"
                 style="display: none; text-align: center; padding: 40px;">
                 <div class="spinner"></div>
                 <p>Carregando...</p>
             </div>
 
-            <!-- Lista de usuários -->
             <div id="lista-seguidores" class="lista-seguidores-container"
                 style="flex: 1; overflow-y: auto; padding: 20px;">
-                <!-- Será preenchido via JavaScript -->
+                
             </div>
 
-            <!-- Mensagem quando não há seguidores -->
             <div id="sem-seguidores" style="display: none; text-align: center; padding: 40px; color: #666;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http:
                     style="margin-bottom: 16px; opacity: 0.3;">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" />
@@ -465,12 +448,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     </div>
 
     <script>
-        // Função para seguir/deixar de seguir
+        
         async function toggleSeguir(usuarioId) {
             const btn = document.getElementById('btnSeguir');
             const estaSeguindo = btn.classList.contains('seguindo');
 
-            // Adiciona classe de loading
             btn.classList.add('loading');
 
             try {
@@ -488,7 +470,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 const data = await response.json();
 
                 if (data.sucesso) {
-                    // Atualiza o botão
+                    
                     if (estaSeguindo) {
                         btn.classList.remove('seguindo');
                         btn.querySelector('span').textContent = 'Seguir';
@@ -499,7 +481,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                         btn.querySelector('svg').innerHTML = '<path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
                     }
 
-                    // Atualiza contador de seguidores
                     const seguidoresElement = document.querySelector('.perfil-status span:last-child strong');
                     if (seguidoresElement) {
                         const novoTotal = parseInt(seguidoresElement.textContent) + (estaSeguindo ? -1 : 1);
@@ -580,14 +561,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             });
         }
 
-        // ========================================
-        // MODAL DE SEGUIDORES/SEGUINDO
-        // ========================================
-
-        /**
-         * Abre o modal e carrega a lista de seguidores ou seguindo
-         * @param {string} tipo - 'seguidores' ou 'seguindo'
-         */
         async function abrirModalSeguidores(tipo) {
             const modal = document.getElementById('modalSeguidores');
             const usuarioId = <?php echo $usuario_id; ?>;
@@ -597,14 +570,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 return;
             }
 
-            // Exibe o modal
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
 
-            // Atualiza elementos do modal
             atualizarElementosModal(tipo);
 
-            // Exibe loading
             const loadingSeguidores = document.getElementById('loading-seguidores');
             if (loadingSeguidores) loadingSeguidores.style.display = 'flex';
 
@@ -617,7 +587,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
 
                 const data = await response.json();
 
-                // Esconde o loading
                 if (loadingSeguidores) loadingSeguidores.style.display = 'none';
 
                 if (data.sucesso) {
@@ -632,9 +601,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        /**
-         * Atualiza o título e limpa o conteúdo do modal
-         */
         function atualizarElementosModal(tipo) {
             const tituloModal = document.getElementById('titulo-modal');
             const semSeguidores = document.getElementById('sem-seguidores');
@@ -648,9 +614,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             if (listaSeguidores) listaSeguidores.innerHTML = '';
         }
 
-        /**
-         * Processa e exibe a lista de seguidores
-         */
         function processarListaSeguidores(lista, tipo) {
             if (!lista || lista.length === 0) {
                 exibirMensagemVazia(tipo);
@@ -659,9 +622,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        /**
-         * Exibe mensagem quando não há seguidores
-         */
         function exibirMensagemVazia(tipo) {
             const semSeguidores = document.getElementById('sem-seguidores');
             const mensagemVazia = document.getElementById('mensagem-vazia');
@@ -675,9 +635,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        /**
-         * Renderiza a lista de seguidores no DOM
-         */
         function renderizarListaSeguidores(lista, tipo) {
             const container = document.getElementById('lista-seguidores');
             if (!container) return;
@@ -689,9 +646,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             ).join('');
         }
 
-        /**
-         * Cria o HTML de um item de usuário
-         */
         function criarItemUsuario(usuario, usuarioLogadoId) {
             const ehProprioUsuario = usuarioLogadoId === usuario.id;
             const avatarHtml = gerarAvatarHtml(usuario);
@@ -710,9 +664,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     `;
         }
 
-        /**
-         * Gera o HTML do avatar do usuário
-         */
         function gerarAvatarHtml(usuario) {
             if (usuario.foto_perfil && usuario.foto_perfil.trim() !== '') {
                 const fotoUrl = `uploads/perfil/${usuario.foto_perfil}`;
@@ -728,14 +679,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             return gerarAvatarFallback(usuario);
         }
 
-        /**
-         * Gera avatar SVG de fallback
-         */
         function gerarAvatarFallback(usuario) {
             const corAvatar = usuario.is_admin ? '#070706ff' : '#6A53B8';
 
             return `
-        <svg width="40" height="40" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="40" height="40" viewBox="0 0 276 275" fill="none" xmlns="http:
             <circle cx="138" cy="137.5" r="137.5" fill="${corAvatar}"/>
             <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="white" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
@@ -743,9 +691,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     `;
         }
 
-        /**
-         * Renderiza o botão de seguir/seguindo com estilos apropriados
-         */
         function renderizarBotaoSeguir(usuario, ehProprioUsuario, usuarioLogadoId) {
             if (ehProprioUsuario || !usuarioLogadoId) {
                 return '';
@@ -773,14 +718,10 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
     `;
         }
 
-        /**
-         * Toggle de seguir/deixar de seguir em tempo real
-         */
         async function toggleSeguirModal(usuarioId, btn) {
             const estaSeguindo = btn.classList.contains('seguindo');
             const textoOriginal = btn.textContent;
 
-            // Desabilita o botão e mostra loading
             btn.disabled = true;
             btn.textContent = '...';
             btn.style.opacity = '0.6';
@@ -804,30 +745,28 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 const data = await response.json();
 
                 if (data.sucesso) {
-                    // Atualiza o botão baseado no novo estado
+                    
                     if (estaSeguindo) {
-                        // Estava seguindo, agora deixou de seguir
+                        
                         btn.classList.remove('seguindo');
                         btn.textContent = 'Seguir';
-                        // Remove os estilos inline para usar o CSS
+                        
                         btn.style.backgroundColor = '';
                         btn.style.color = '';
                     } else {
-                        // Não estava seguindo, agora está seguindo
+                        
                         btn.classList.add('seguindo');
                         btn.textContent = 'Deixar de Seguir';
-                        // Remove os estilos inline para usar o CSS
+                        
                         btn.style.backgroundColor = '';
                         btn.style.color = '';
                     }
 
-                    // Atualiza contadores em tempo real
                     await atualizarContadores();
 
-                    // Mostra feedback visual
                     mostrarFeedbackVisual(btn, !estaSeguindo);
                 } else {
-                    // Restaura o estado original em caso de erro
+                    
                     btn.textContent = textoOriginal;
                     mostrarNotificacao('erro', 'Erro', data.mensagem || 'Erro ao processar solicitação');
                 }
@@ -841,7 +780,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-        // Função para remover favorito
         function removerFavorito(serieId) {
             if (!confirm('Deseja remover esta série dos favoritos?')) {
                 return;
@@ -871,9 +809,8 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 });
         }
 
-        // Função mostrarNotificacao (se ainda não existir)
         function mostrarNotificacao(tipo, titulo, mensagem) {
-            // Use a mesma função que você já tem no explorar.php
+            
             alert(`${titulo}: ${mensagem}`);
         }
 
@@ -888,7 +825,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
         }
 
         function mostrarFeedbackVisual(btn, estaSeguindo) {
-            // Animação de sucesso
+            
             btn.style.transform = 'scale(1.05)';
             setTimeout(() => {
                 btn.style.transform = 'scale(1)';
@@ -927,7 +864,6 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             }
         }
 
-
         function escapeHtml(text) {
             if (!text) return '';
 
@@ -942,15 +878,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             return text.toString().replace(/[&<>"']/g, m => map[m]);
         }
 
-        // ========================================
-        // EVENT LISTENERS
-        // ========================================
-
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('modalSeguidores');
 
             if (modal) {
-                // Fecha o modal ao clicar fora
+                
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         fecharModalSeguidores();
@@ -958,14 +890,12 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 });
             }
 
-            // Fecha o modal com a tecla ESC
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     fecharModalSeguidores();
                 }
             });
         });
-
 
         function mostrarNotificacao(tipo, titulo, mensagem) {
             const notificacoesExistentes = document.querySelectorAll('.notificacao-popup');
@@ -974,13 +904,13 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             const notificacao = document.createElement('div');
             notificacao.className = `notificacao-popup ${tipo}`;
 
-            const iconeSucesso = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-            const iconeErro = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6L18 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            const iconeSucesso = `<svg viewBox="0 0 24 24" xmlns="http:
+            const iconeErro = `<svg viewBox="0 0 24 24" xmlns="http:
             const icone = tipo === 'sucesso' ? iconeSucesso : iconeErro;
 
             notificacao.innerHTML = `
             <button class="notificacao-fechar" onclick="fecharNotificacao(this)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http:
                     <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             </button>
@@ -1017,9 +947,8 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
             <?php endif; ?>
         });
 
-        // Função para excluir avaliação
         async function excluirAvaliacao(avaliacaoId, elemento) {
-            // Confirmação
+            
             if (!confirm('Tem certeza que deseja excluir esta avaliação?')) {
                 return;
             }
@@ -1038,7 +967,7 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                 const data = await response.json();
 
                 if (data.sucesso) {
-                    // Remove o card da avaliação da tela
+                    
                     const avaliacaoCard = elemento.closest('.avaliacao-card');
                     avaliacaoCard.style.opacity = '0';
                     avaliacaoCard.style.transform = 'translateX(-20px)';
@@ -1047,13 +976,11 @@ if (!$eh_proprio_perfil && isset($_SESSION['usuario_id'])) {
                     setTimeout(() => {
                         avaliacaoCard.remove();
 
-                        // Verifica se não há mais avaliações
                         const avaliacoesLista = document.querySelector('.avaliacoes-lista');
                         if (avaliacoesLista && avaliacoesLista.children.length === 0) {
                             avaliacoesLista.innerHTML = '<p class="sem-avaliacoes">Nenhuma avaliação realizada ainda.</p>';
                         }
 
-                        // Atualiza contador de avaliações no header
                         const contadorElement = document.querySelector('.perfil-status span:first-child strong');
                         if (contadorElement) {
                             const novoTotal = parseInt(contadorElement.textContent) - 1;

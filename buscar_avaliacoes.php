@@ -1,5 +1,5 @@
 <?php
-// buscar_avaliacoes.php
+
 session_start();
 require_once('src/ConexaoBD.php');
 require_once('src/AvaliacaoDAO.php');
@@ -15,32 +15,26 @@ if (!isset($_GET['serie_id'])) {
 
 $serie_id = intval($_GET['serie_id']);
 
-// Verifica se o usuário está logado
 $usuario_logado_id = isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : null;
 $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
 
 try {
-    // Buscar avaliações da série
+    
     $avaliacoes = AvaliacaoDAO::listarPorSerie($serie_id);
 
-    // Buscar informações dos usuários e votos
     $avaliacoesCompletas = [];
 
-    // Monta o array completo de avaliações
     foreach ($avaliacoes as $avaliacao) {
         $usuario = UsuarioDAO::buscarPorId($avaliacao['usuario_id']);
         $avaliacao_id = $avaliacao['id'];
 
-        // Busca os totais de likes e dislikes
         $totais = VotoDAO::contarVotos($avaliacao_id);
 
-        // Busca o voto do usuário logado (1 = like, -1 = dislike, null = sem voto)
         $voto_usuario = null;
         if ($usuario_logado_id && !$eh_admin) {
             $voto_usuario = VotoDAO::buscarVotoUsuario($avaliacao_id, $usuario_logado_id);
         }
 
-        // Pega as iniciais do usuário
         $iniciais = '';
         if ($usuario && $usuario['nome_completo']) {
             $nomes = explode(' ', $usuario['nome_completo']);
@@ -61,8 +55,8 @@ try {
             'iniciais' => $iniciais,
             'total_likes' => $totais['likes'],
             'total_dislikes' => $totais['dislikes'],
-            'usuario_voto' => $voto_usuario, // 1, -1 ou null
-            'pode_curtir' => true // Sempre mostra os botões (verifica login no JavaScript)
+            'usuario_voto' => $voto_usuario, 
+            'pode_curtir' => true 
         ];
     }
 

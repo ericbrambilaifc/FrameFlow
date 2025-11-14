@@ -3,7 +3,7 @@ require_once "ConexaoBD.php";
 
 class GeneroDAO
 {
-    // Listar todos os gêneros
+    
     public static function listar()
     {
         $conexao = ConexaoBD::conectar();
@@ -15,7 +15,6 @@ class GeneroDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Buscar gênero por ID
     public static function buscarPorId($id)
     {
         $conexao = ConexaoBD::conectar();

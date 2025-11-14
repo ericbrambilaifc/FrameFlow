@@ -3,7 +3,7 @@ require_once "ConexaoBD.php";
 
 class ComunidadeDAO
 {
-    // Ranking de usuários por avaliações
+    
     public static function rankingUsuarios($limite = 20)
     {
         $conexao = ConexaoBD::conectar();

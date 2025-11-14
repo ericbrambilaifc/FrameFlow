@@ -2,12 +2,10 @@
 session_start();
 require_once 'src/ConexaoBD.php';
 
-// Buscar séries aleatórias para a cruzadinha
 function buscarPalavrasCruzadinha($limite = 8)
 {
     $conexao = ConexaoBD::conectar();
 
-    // Busca títulos de séries do banco
     $sql = "SELECT id, titulo, 'serie' as tipo 
             FROM series 
             WHERE LENGTH(REPLACE(REPLACE(REPLACE(titulo, ' ', ''), ':', ''), '-', '')) BETWEEN 4 AND 12 
@@ -21,7 +19,6 @@ function buscarPalavrasCruzadinha($limite = 8)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Limpar título para usar na cruzadinha
 function limparTitulo($titulo)
 {
     $titulo = strtoupper($titulo);
@@ -29,7 +26,6 @@ function limparTitulo($titulo)
     return $titulo;
 }
 
-// Verificar se duas palavras compartilham uma letra
 function encontrarIntersecao($palavra1, $palavra2)
 {
     for ($i = 0; $i < strlen($palavra1); $i++) {
@@ -46,14 +42,12 @@ function encontrarIntersecao($palavra1, $palavra2)
     return null;
 }
 
-// Gerar cruzadinha com palavras interligadas
 function gerarCruzadinha($palavrasBanco)
 {
     $palavras = [];
     $grid = [];
-    $tamanhoGrid = 30; // Grid 30x30
+    $tamanhoGrid = 30; 
 
-    // Primeira palavra - horizontal no centro
     $primeiraPalavra = $palavrasBanco[0];
     $tituloLimpo = limparTitulo($primeiraPalavra['titulo']);
 
@@ -70,7 +64,6 @@ function gerarCruzadinha($palavrasBanco)
         'tipo' => $primeiraPalavra['tipo']
     ];
 
-    // Marcar letras no grid
     for ($i = 0; $i < strlen($tituloLimpo); $i++) {
         $grid[$linhaInicial][$colunaInicial + $i] = [
             'letra' => $tituloLimpo[$i],
@@ -78,37 +71,33 @@ function gerarCruzadinha($palavrasBanco)
         ];
     }
 
-    // Adicionar palavras restantes tentando interligar
     $idPalavra = 2;
     for ($idx = 1; $idx < count($palavrasBanco); $idx++) {
         $novaPalavra = limparTitulo($palavrasBanco[$idx]['titulo']);
         $adicionada = false;
 
-        // Tentar interligar com cada palavra já adicionada
         foreach ($palavras as $palavraExistente) {
             $intersecao = encontrarIntersecao($palavraExistente['resposta'], $novaPalavra);
 
             if ($intersecao) {
-                // Calcular posição da nova palavra
+                
                 if ($palavraExistente['orientacao'] === 'H') {
-                    // Palavra existente é horizontal, nova será vertical
+                    
                     $novaLinha = $palavraExistente['pos_l'] - $intersecao['pos2'];
                     $novaColuna = $palavraExistente['pos_c'] + $intersecao['pos1'];
                     $orientacao = 'V';
                 } else {
-                    // Palavra existente é vertical, nova será horizontal
+                    
                     $novaLinha = $palavraExistente['pos_l'] + $intersecao['pos1'];
                     $novaColuna = $palavraExistente['pos_c'] - $intersecao['pos2'];
                     $orientacao = 'H';
                 }
 
-                // Verificar se a posição é válida
                 if (
                     $novaLinha >= 0 && $novaColuna >= 0 &&
                     $novaLinha < $tamanhoGrid && $novaColuna < $tamanhoGrid
                 ) {
 
-                    // Verificar se não há conflitos
                     $temConflito = false;
                     for ($i = 0; $i < strlen($novaPalavra); $i++) {
                         $checkL = $orientacao === 'H' ? $novaLinha : $novaLinha + $i;
@@ -133,7 +122,6 @@ function gerarCruzadinha($palavrasBanco)
                             'tipo' => $palavrasBanco[$idx]['tipo']
                         ];
 
-                        // Marcar no grid
                         for ($i = 0; $i < strlen($novaPalavra); $i++) {
                             $markL = $orientacao === 'H' ? $novaLinha : $novaLinha + $i;
                             $markC = $orientacao === 'H' ? $novaColuna + $i : $novaColuna;
@@ -152,7 +140,6 @@ function gerarCruzadinha($palavrasBanco)
         }
     }
 
-    // Calcular tamanho real da matriz (área ocupada)
     $minL = $tamanhoGrid;
     $maxL = 0;
     $minC = $tamanhoGrid;
@@ -171,7 +158,6 @@ function gerarCruzadinha($palavrasBanco)
         }
     }
 
-    // Ajustar posições para começar de (1,1) e adicionar margem
     $margemL = 1 - $minL;
     $margemC = 1 - $minC;
 
@@ -188,7 +174,6 @@ function gerarCruzadinha($palavrasBanco)
     ];
 }
 
-// Gerar dicas baseadas no título
 function gerarDicas($titulo, $tipo, $resposta)
 {
     $vogais = preg_replace('/[^AEIOU]/', '', $resposta);
@@ -201,20 +186,16 @@ function gerarDicas($titulo, $tipo, $resposta)
     ];
 }
 
-// Buscar palavras do banco
 $palavrasBanco = buscarPalavrasCruzadinha(8);
 
-// Gerar cruzadinha interligada
 $resultado = gerarCruzadinha($palavrasBanco);
 $palavras = $resultado['palavras'];
 $tamanhoMatriz = $resultado['tamanho_matriz'];
 
-// Adicionar dicas
 foreach ($palavras as &$palavra) {
     $palavra['dicas'] = gerarDicas($palavra['titulo_original'], $palavra['tipo'], $palavra['resposta']);
 }
 
-// Configurações do jogo
 $gameData = [
     'tamanho_matriz' => $tamanhoMatriz,
     'palavras' => $palavras,
@@ -302,7 +283,6 @@ $gameData = [
         .btn-nova-cruzadinha:hover {
             opacity: 0.7;
         }
-
 
         .pontuacao-box {
             background: linear-gradient(135deg, #6a53b8 0%, #8b73d8 100%);
@@ -548,7 +528,7 @@ $gameData = [
                 Pontuação: <span id="pontuacao"><?php echo $gameData['pontuacao_base']; ?></span>
             </div>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn-nova-cruzadinha" onclick="location.reload()"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <button class="btn-nova-cruzadinha" onclick="location.reload()"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http:
                         <path
                             d="M19 10C19 7.61305 18.0518 5.32387 16.364 3.63604C14.6761 1.94821 12.3869 1 10 1C7.48395 1.00947 5.06897 1.99122 3.26 3.74L1 6"
                             stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -562,7 +542,7 @@ $gameData = [
                     </svg> Nova Cruzadinha</button>
                 <a href="explorar.php" class="btn-voltar">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
+                        xmlns="http:
                         <path
                             d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
                             stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -637,7 +617,6 @@ $gameData = [
 
             const grid = Array(rows).fill(0).map(() => Array(cols).fill(null));
 
-            // Preenche o grid
             gameData.palavras.forEach(palavra => {
                 for (let i = 0; i < palavra.resposta.length; i++) {
                     let r = palavra.pos_l - 1;
@@ -675,14 +654,13 @@ $gameData = [
                         cellWrapper.appendChild(input);
                         grid[r][c] = cellWrapper;
                     } else {
-                        // Célula compartilhada por duas palavras
+                        
                         const input = grid[r][c].querySelector('input');
                         input.setAttribute('data-palavra-id', input.getAttribute('data-palavra-id') + ',' + palavra.id);
                     }
                 }
             });
 
-            // Renderiza
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c]) {
@@ -801,7 +779,6 @@ $gameData = [
                 return;
             }
 
-            // Calcular tempo total
             const tempoTotal = Math.floor((Date.now() - tempoInicio) / 1000);
 
             console.log('📝 Salvando pontuação da cruzadinha...', {
@@ -815,7 +792,7 @@ $gameData = [
             formData.append('jogo', 'cruzadinha');
             formData.append('pontuacao', pontuacaoAtual);
             formData.append('tempo', tempoTotal);
-            formData.append('movimentos', null); // Cruzadinha não usa movimentos
+            formData.append('movimentos', null); 
             formData.append('nivel', 'normal');
 
             fetch('salvar_pontuacao.php', {
@@ -839,10 +816,9 @@ $gameData = [
                 .catch(error => console.error('❌ Erro na requisição:', error));
         }
 
-        // Na função verificarPalavraCompleta, quando todas as palavras forem completadas, adicione:
         if (palavrasCompletas.size === gameData.palavras.length) {
             setTimeout(() => {
-                salvarPontuacaoCruzadinha(); // ⭐ ADICIONE ESTA LINHA
+                salvarPontuacaoCruzadinha(); 
                 alert(`🏆 VOCÊ VENCEU!\n\nPontuação final: ${pontuacaoAtual}\n\nParabéns por completar toda a cruzadinha!`);
             }, 1000);
         }

@@ -5,7 +5,6 @@ require_once('src/SeguidorDAO.php');
 header('Content-Type: application/json');
 header('Cache-Control: no-cache, must-revalidate');
 
-// Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode([
         'sucesso' => false,
@@ -15,8 +14,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Pega os dados da requisição
-$dados = json_decode(file_get_contents('php://input'), true);
+$dados = json_decode(file_get_contents('php:
 
 if (!isset($dados['usuario_id']) || !isset($dados['acao'])) {
     echo json_encode([
@@ -31,7 +29,6 @@ $seguidor_id = $_SESSION['usuario_id'];
 $seguindo_id = (int)$dados['usuario_id'];
 $acao = trim($dados['acao']);
 
-// Validação adicional do ID
 if ($seguindo_id <= 0) {
     echo json_encode([
         'sucesso' => false,
@@ -41,7 +38,6 @@ if ($seguindo_id <= 0) {
     exit;
 }
 
-// Verifica se não está tentando seguir a si mesmo
 if ($seguidor_id == $seguindo_id) {
     echo json_encode([
         'sucesso' => false,
@@ -63,11 +59,11 @@ try {
                 'acao_realizada' => 'seguir'
             ]);
         } else {
-            // Verifica se já estava seguindo
+            
             $jaSeguindo = SeguidorDAO::estaSeguindo($seguidor_id, $seguindo_id);
 
             echo json_encode([
-                'sucesso' => $jaSeguindo, // Se já estava seguindo, considera sucesso
+                'sucesso' => $jaSeguindo, 
                 'mensagem' => $jaSeguindo ? 'Você já segue este usuário.' : 'Erro ao seguir usuário.',
                 'esta_seguindo' => $jaSeguindo,
                 'acao_realizada' => 'seguir'
@@ -84,11 +80,11 @@ try {
                 'acao_realizada' => 'deixar_seguir'
             ]);
         } else {
-            // Verifica se realmente não estava seguindo
+            
             $estaSeguindo = SeguidorDAO::estaSeguindo($seguidor_id, $seguindo_id);
 
             echo json_encode([
-                'sucesso' => !$estaSeguindo, // Se não estava seguindo, considera sucesso
+                'sucesso' => !$estaSeguindo, 
                 'mensagem' => !$estaSeguindo ? 'Você não estava seguindo este usuário.' : 'Erro ao deixar de seguir.',
                 'esta_seguindo' => $estaSeguindo,
                 'acao_realizada' => 'deixar_seguir'
@@ -108,6 +104,6 @@ try {
         'sucesso' => false,
         'mensagem' => 'Erro ao processar solicitação. Tente novamente.',
         'esta_seguindo' => false,
-        'erro_debug' => $e->getMessage() // Remova em produção
+        'erro_debug' => $e->getMessage() 
     ]);
 }

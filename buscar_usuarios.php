@@ -4,22 +4,19 @@ header('Content-Type: application/json');
 
 require_once('src/UsuarioDAO.php');
 
-// Recebe o termo de busca
 $termo = isset($_GET['termo']) ? trim($_GET['termo']) : '';
 
-// Se o termo estiver vazio, retorna array vazio
 if (empty($termo) || strlen($termo) < 2) {
     echo json_encode([]);
     exit;
 }
 
 try {
-    // Busca usuários
+    
     $usuarios = UsuarioDAO::buscarUsuarios($termo);
     
-    // Formata os resultados
     $resultados = array_map(function($usuario) {
-        // Pega a primeira letra do nome para o avatar
+        
         $iniciais = strtoupper(substr($usuario['nome_completo'], 0, 1));
         
         return [

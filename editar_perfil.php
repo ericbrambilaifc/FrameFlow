@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
         exit;
     }
 
-    // Atualizar no banco
     $conexao = ConexaoBD::conectar();
     $sql = "UPDATE usuarios SET nome_completo = :nome WHERE id = :id";
     $stmt = $conexao->prepare($sql);

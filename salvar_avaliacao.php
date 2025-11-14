@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $comentario = isset($_POST['comentario']) ? trim($_POST['comentario']) : '';
     $usuario_id = $_SESSION['usuario_id'];
 
-    // Validações
     if ($serie_id <= 0) {
         $_SESSION['erro'] = 'Série inválida!';
         header('Location: explorar.php');

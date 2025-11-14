@@ -2,11 +2,9 @@
 session_start();
 require_once 'src/ConexaoBD.php';
 
-// Definir nível de dificuldade
 $nivel = isset($_GET['nivel']) ? $_GET['nivel'] : 'facil';
 $numeroPares = ($nivel === 'facil') ? 6 : (($nivel === 'medio') ? 8 : 10);
 
-// Buscar séries para o jogo
 function buscarSeriesJogo($limite)
 {
     $conexao = ConexaoBD::conectar();
@@ -27,7 +25,6 @@ function buscarSeriesJogo($limite)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Buscar uma avaliação aleatória para dica difícil
 function buscarAvaliacaoDica($serieId)
 {
     $conexao = ConexaoBD::conectar();
@@ -45,15 +42,13 @@ function buscarAvaliacaoDica($serieId)
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Buscar séries e preparar cartas
 $series = buscarSeriesJogo($numeroPares);
 $cartas = [];
 
 foreach ($series as $serie) {
-    // Buscar avaliação para o nível difícil
+    
     $avaliacao = buscarAvaliacaoDica($serie['id']);
 
-    // Criar duas cartas iguais (par)
     for ($i = 0; $i < 2; $i++) {
         $cartas[] = [
             'id' => $serie['id'],
@@ -63,23 +58,21 @@ foreach ($series as $serie) {
             'classificacao' => $serie['classificacao'] ?? 'Livre',
             'avaliacao' => $avaliacao['comentario'] ?? 'Série incrível!',
             'nota_avaliacao' => $avaliacao['nota'] ?? 5.0,
-            'uniqueId' => uniqid() // ID único para cada carta
+            'uniqueId' => uniqid() 
         ];
     }
 }
 
-// Embaralhar as cartas
 shuffle($cartas);
 
-// Configurações do jogo
 $config = [
     'nivel' => $nivel,
     'pares' => $numeroPares,
     'totalCartas' => count($cartas),
     'pontuacao_base' => 1000,
     'penalidade_erro' => 50,
-    'bonus_tempo' => 10, // pontos por segundo restante
-    'tempo_limite' => 180 // 3 minutos
+    'bonus_tempo' => 10, 
+    'tempo_limite' => 180 
 ];
 ?>
 <!DOCTYPE html>
@@ -127,7 +120,6 @@ $config = [
             align-items: center;
             gap: 0.5rem;
         }
-
 
         .stats-container {
             display: flex;
@@ -188,7 +180,6 @@ $config = [
         .btn-voltar:hover {
             opacity: 0.7;
         }
-
 
         .btn-reiniciar {
             display: inline-flex;
@@ -462,7 +453,7 @@ $config = [
 
 <body>
     <div class="container-jogo">
-        <!-- Header -->
+        
         <div class="header-jogo">
             <h1>Jogo da Memória</h1>
 
@@ -488,7 +479,7 @@ $config = [
             <div class="btn-menu">
 
                 <button class="btn btn-reiniciar" onclick="reiniciarJogo()"><svg width="16" height="16"
-                        viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        viewBox="0 0 20 20" fill="none" xmlns="http:
                         <path
                             d="M19 10C19 7.61305 18.0518 5.32387 16.364 3.63604C14.6761 1.94821 12.3869 1 10 1C7.48395 1.00947 5.06897 1.99122 3.26 3.74L1 6"
                             stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -503,7 +494,7 @@ $config = [
                     Reiniciar</button>
                 <a href="explorar.php" class="btn-voltar">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
+                        xmlns="http:
                         <path
                             d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
                             stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -516,7 +507,6 @@ $config = [
             </div>
         </div>
 
-        <!-- Seletor de Nível -->
         <div class="nivel-selector">
             <h3>Nível de Dificuldade</h3>
             <div class="nivel-btns">
@@ -535,13 +525,12 @@ $config = [
             </div>
         </div>
 
-        <!-- Tabuleiro do Jogo -->
         <div class="game-board nivel-<?php echo $nivel; ?>" id="gameBoard">
             <?php foreach ($cartas as $index => $carta): ?>
                 <div class="card" data-id="<?php echo $carta['id']; ?>" data-unique="<?php echo $carta['uniqueId']; ?>"
                     onclick="virarCarta(this)">
                     <div class="card-face card-front">
-                        <svg width="28" height="28" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="28" height="28" viewBox="0 0 21 21" fill="none" xmlns="http:
                             <path
                                 d="M19.1768 4.97676L1.97676 9.97676L1.07676 7.57676C0.77676 6.47676 1.37676 5.37676 2.37676 5.07676L15.8768 1.07676C16.9768 0.77676 18.0768 1.37676 18.3768 2.37676L19.1768 4.97676Z"
                                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -572,7 +561,6 @@ $config = [
         </div>
     </div>
 
-    <!-- Modal de Resultado -->
     <div class="modal-resultado" id="modalResultado">
         <div class="modal-content">
             <h2>🎉 Parabéns!</h2>
@@ -595,7 +583,7 @@ $config = [
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button class="btn btn-reiniciar" style="flex: 1;" onclick="reiniciarJogo()">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http:
                         <path
                             d="M19 10C19 7.61305 18.0518 5.32387 16.364 3.63604C14.6761 1.94821 12.3869 1 10 1C7.48395 1.00947 5.06897 1.99122 3.26 3.74L1 6"
                             stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -610,7 +598,7 @@ $config = [
                     Jogar Novamente
                 </button>
                 <a href="explorar.php" class="btn btn-voltar" style="flex: 1;">
-                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http:
                         <path
                             d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
                             stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -637,7 +625,6 @@ $config = [
         let tempoInicio = Date.now();
         let timerInterval;
 
-        // Iniciar timer
         function iniciarTimer() {
             timerInterval = setInterval(() => {
                 const tempoDecorrido = Math.floor((Date.now() - tempoInicio) / 1000);
@@ -648,7 +635,6 @@ $config = [
             }, 1000);
         }
 
-        // Virar carta
         function virarCarta(carta) {
             if (bloqueado) return;
             if (carta === primeiraCarta) return;
@@ -669,13 +655,12 @@ $config = [
             verificarPar();
         }
 
-        // Verificar se as cartas formam um par
         function verificarPar() {
             const id1 = primeiraCarta.getAttribute('data-id');
             const id2 = segundaCarta.getAttribute('data-id');
 
             if (id1 === id2) {
-                // Par encontrado!
+                
                 primeiraCarta.classList.add('matched');
                 segundaCarta.classList.add('matched');
                 paresEncontrados++;
@@ -688,7 +673,7 @@ $config = [
                     finalizarJogo();
                 }
             } else {
-                // Par errado
+                
                 pontuacao = Math.max(0, pontuacao - config.penalidade_erro);
                 document.getElementById('pontuacao').textContent = pontuacao;
 
@@ -700,13 +685,11 @@ $config = [
             }
         }
 
-        // Resetar seleção de cartas
         function resetarCartas() {
             [primeiraCarta, segundaCarta] = [null, null];
             bloqueado = false;
         }
 
-        // Finalizar jogo
         function finalizarJogo() {
             clearInterval(timerInterval);
 
@@ -719,7 +702,6 @@ $config = [
                 document.getElementById('tempo').textContent;
             document.getElementById('resultPontuacao').textContent = pontuacao;
 
-            // SALVAR PONTUAÇÃO NO BANCO DE DADOS
             salvarPontuacao('memoria', pontuacao, tempoDecorrido, tentativas, config.nivel);
 
             setTimeout(() => {
@@ -776,17 +758,14 @@ $config = [
                 });
         }
 
-        // Reiniciar jogo
         function reiniciarJogo() {
             window.location.href = window.location.href;
         }
 
-        // Mudar nível
         function mudarNivel(nivel) {
             window.location.href = `?nivel=${nivel}`;
         }
 
-        // Iniciar timer ao carregar
         window.onload = () => {
             iniciarTimer();
             console.log('🎮 Jogo da Memória iniciado!');

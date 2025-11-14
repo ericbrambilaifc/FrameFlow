@@ -1,5 +1,5 @@
 <?php
-// src/VotoDAO.php
+
 class VotoDAO
 {
     public static function votar($avaliacao_id, $usuario_id, $tipo_voto)
@@ -7,7 +7,6 @@ class VotoDAO
         try {
             $pdo = ConexaoBD::conectar();
 
-            // Verifica se já existe um voto
             $stmt = $pdo->prepare("
                 SELECT id, tipo_voto 
                 FROM votos_avaliacoes 
@@ -17,7 +16,7 @@ class VotoDAO
             $voto_existente = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($voto_existente) {
-                // Se o voto é o mesmo, remove (toggle off)
+                
                 if ($voto_existente['tipo_voto'] == $tipo_voto) {
                     $stmt = $pdo->prepare("
                         DELETE FROM votos_avaliacoes 
@@ -25,7 +24,7 @@ class VotoDAO
                     ");
                     return $stmt->execute([$avaliacao_id, $usuario_id]);
                 } else {
-                    // Se o voto é diferente, atualiza
+                    
                     $stmt = $pdo->prepare("
                         UPDATE votos_avaliacoes 
                         SET tipo_voto = ?, data_voto = NOW() 
@@ -34,7 +33,7 @@ class VotoDAO
                     return $stmt->execute([$tipo_voto, $avaliacao_id, $usuario_id]);
                 }
             } else {
-                // Insere novo voto
+                
                 $stmt = $pdo->prepare("
                     INSERT INTO votos_avaliacoes (avaliacao_id, usuario_id, tipo_voto) 
                     VALUES (?, ?, ?)
@@ -47,12 +46,6 @@ class VotoDAO
         }
     }
 
-    /**
-     * Busca o voto de um usuário em uma avaliação específica
-     * @param int $avaliacao_id
-     * @param int $usuario_id
-     * @return int|null Retorna 1 (like), -1 (dislike) ou null (sem voto)
-     */
     public static function buscarVotoUsuario($avaliacao_id, $usuario_id)
     {
         try {
@@ -73,12 +66,6 @@ class VotoDAO
         }
     }
 
-    /**
-     * Busca os votos de um usuário em múltiplas avaliações
-     * @param int $usuario_id
-     * @param array $avaliacoes_ids
-     * @return array Array associativo [avaliacao_id => tipo_voto]
-     */
     public static function buscarVotosUsuario($usuario_id, $avaliacoes_ids)
     {
         if (empty($avaliacoes_ids)) {
@@ -110,11 +97,6 @@ class VotoDAO
         }
     }
 
-    /**
-     * Conta o total de likes de uma avaliação
-     * @param int $avaliacao_id
-     * @return int
-     */
     public static function contarLikes($avaliacao_id)
     {
         try {
@@ -134,11 +116,6 @@ class VotoDAO
         }
     }
 
-    /**
-     * Conta o total de dislikes de uma avaliação
-     * @param int $avaliacao_id
-     * @return int
-     */
     public static function contarDislikes($avaliacao_id)
     {
         try {
@@ -158,11 +135,6 @@ class VotoDAO
         }
     }
 
-    /**
-     * Conta likes e dislikes de uma avaliação
-     * @param int $avaliacao_id
-     * @return array ['likes' => int, 'dislikes' => int]
-     */
     public static function contarVotos($avaliacao_id)
     {
         try {
@@ -188,11 +160,6 @@ class VotoDAO
         }
     }
 
-    /**
-     * Remove todos os votos de uma avaliação
-     * @param int $avaliacao_id
-     * @return bool
-     */
     public static function removerVotosAvaliacao($avaliacao_id)
     {
         try {

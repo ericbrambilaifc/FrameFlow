@@ -4,7 +4,7 @@ require_once "ConexaoBD.php";
 class AvaliacaoDAO
 
 {
-    // Cadastrar nova avaliação
+    
     public static function inserir($dados)
     {
         $conexao = ConexaoBD::conectar();
@@ -21,7 +21,6 @@ class AvaliacaoDAO
         return $stmt->execute();
     }
 
-    // Atualizar avaliação existente
     public static function atualizar($dados)
     {
         $conexao = ConexaoBD::conectar();
@@ -39,7 +38,6 @@ class AvaliacaoDAO
         return $stmt->execute();
     }
 
-    // Verificar se usuário já avaliou a série
     public static function jaAvaliou($usuario_id, $serie_id)
     {
         $conexao = ConexaoBD::conectar();
@@ -53,7 +51,6 @@ class AvaliacaoDAO
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Listar avaliações de uma série
     public static function listarPorSerie($serie_id)
     {
         $conexao = ConexaoBD::conectar();
@@ -71,7 +68,6 @@ class AvaliacaoDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Listar avaliações de um usuário
     public static function listarPorUsuario($usuario_id)
     {
         $conexao = ConexaoBD::conectar();
@@ -89,7 +85,6 @@ class AvaliacaoDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Feed de avaliações recentes
     public static function feedRecente($limite = 20)
     {
         $conexao = ConexaoBD::conectar();
@@ -110,7 +105,6 @@ class AvaliacaoDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Obter avaliação por ID
     public static function obterPorId($avaliacao_id)
     {
         $conexao = ConexaoBD::conectar();
@@ -123,7 +117,6 @@ class AvaliacaoDAO
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Deletar avaliação por ID
     public static function deletarPorId($avaliacao_id)
     {
         $conexao = ConexaoBD::conectar();

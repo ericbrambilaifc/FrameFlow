@@ -4,7 +4,6 @@ require_once('ConexaoBD.php');
 class UsuarioDAO
 {
 
-    // Método para fazer login do usuário
     public static function login($email, $senha)
     {
         try {
@@ -16,7 +15,6 @@ class UsuarioDAO
 
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Verifica se o usuário existe e se a senha está correta
             if ($usuario && password_verify($senha, $usuario['senha'])) {
                 return $usuario;
             }
@@ -28,8 +26,6 @@ class UsuarioDAO
         }
     }
 
-
-    // Método para obter usuário por ID
     public static function obterPorId($id)
     {
         try {
@@ -45,13 +41,11 @@ class UsuarioDAO
         }
     }
 
-    // ADICIONE ESTE MÉTODO - Alias para obterPorId
     public static function buscarPorId($id)
     {
         return self::obterPorId($id);
     }
 
-    // Método para obter perfil do usuário com estatísticas
     public static function obterPerfil($usuario_id)
     {
         try {
@@ -94,7 +88,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para obter ranking de avaliações
     public static function obterRankingAvaliacoes($limite = 50)
     {
         try {
@@ -122,18 +115,16 @@ class UsuarioDAO
         }
     }
 
-    // Método para obter ranking de jogadores
     public static function obterRankingJogadores($limite = 50)
     {
         try {
             $conexao = ConexaoBD::conectar();
 
-            // Primeiro verifica se a tabela pontuacoes_jogos existe
             $checkTable = "SHOW TABLES LIKE 'pontuacoes_jogos'";
             $result = $conexao->query($checkTable);
 
             if ($result->rowCount() == 0) {
-                // Tabela não existe, retorna array vazio
+                
                 return [];
             }
 
@@ -161,7 +152,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para buscar usuários por termo (busca)
     public static function buscar($termo, $limite = 10)
     {
         try {
@@ -181,7 +171,6 @@ class UsuarioDAO
 
             $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Adiciona as iniciais para cada usuário
             foreach ($usuarios as &$usuario) {
                 $nomes = explode(' ', $usuario['nome_completo']);
                 $iniciais = '';
@@ -206,7 +195,6 @@ class UsuarioDAO
         try {
             $conexao = ConexaoBD::conectar();
 
-            // SQL para buscar por nome completo ou email
             $sql = "SELECT 
                     id, 
                     nome_completo, 
@@ -227,12 +215,10 @@ class UsuarioDAO
 
             $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Adiciona as iniciais para cada usuário
             foreach ($usuarios as &$usuario) {
                 $nomes = explode(' ', $usuario['nome_completo']);
                 $iniciais = '';
 
-                // Pega as primeiras letras dos dois primeiros nomes
                 $contador = 0;
                 foreach ($nomes as $nome) {
                     if (!empty($nome) && $contador < 2) {
@@ -241,7 +227,6 @@ class UsuarioDAO
                     }
                 }
 
-                // Se conseguiu apenas uma inicial, pega a segunda letra do primeiro nome
                 if (strlen($iniciais) < 2 && !empty($nomes[0])) {
                     $iniciais = strtoupper(substr($nomes[0], 0, 2));
                 }
@@ -256,8 +241,6 @@ class UsuarioDAO
         }
     }
 
-
-    // Método para listar todos os usuários
     public static function listar()
     {
         try {
@@ -271,7 +254,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para inserir novo usuário
     public static function inserir($dados)
     {
         try {
@@ -292,7 +274,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para atualizar usuário
     public static function atualizar($dados)
     {
         try {
@@ -330,7 +311,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para deletar usuário
     public static function deletar($id)
     {
         try {
@@ -345,7 +325,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para buscar usuário por email
     public static function buscarPorEmail($email)
     {
         try {
@@ -361,7 +340,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para verificar se email já existe
     public static function emailExiste($email, $excluir_id = null)
     {
         try {
@@ -387,7 +365,6 @@ class UsuarioDAO
         }
     }
 
-    // Método para atualizar foto de perfil
     public static function atualizarFotoPerfil($usuario_id, $nome_arquivo)
     {
         try {

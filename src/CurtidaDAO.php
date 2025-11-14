@@ -3,19 +3,12 @@ require_once('ConexaoBD.php');
 
 class CurtidaDAO
 {
-    /**
-     * Adiciona ou remove uma curtida em uma avaliação
-     * 
-     * @param int $usuario_id ID do usuário que está curtindo
-     * @param int $avaliacao_id ID da avaliação a ser curtida
-     * @return array ['sucesso' => bool, 'acao' => 'curtiu'|'descurtiu', 'total_curtidas' => int]
-     */
+    
     public static function toggleCurtida($usuario_id, $avaliacao_id)
     {
         try {
             $conexao = ConexaoBD::conectar();
             
-            // Verifica se já curtiu
             $sqlVerifica = "SELECT id FROM curtidas_avaliacoes 
                            WHERE usuario_id = :usuario_id 
                            AND avaliacao_id = :avaliacao_id";
@@ -28,7 +21,7 @@ class CurtidaDAO
             $jaCurtiu = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($jaCurtiu) {
-                // Remove curtida
+                
                 $sqlRemove = "DELETE FROM curtidas_avaliacoes 
                              WHERE usuario_id = :usuario_id 
                              AND avaliacao_id = :avaliacao_id";
@@ -40,7 +33,7 @@ class CurtidaDAO
                 
                 $acao = 'descurtiu';
             } else {
-                // Adiciona curtida
+                
                 $sqlAdiciona = "INSERT INTO curtidas_avaliacoes (usuario_id, avaliacao_id) 
                                VALUES (:usuario_id, :avaliacao_id)";
                 
@@ -52,7 +45,6 @@ class CurtidaDAO
                 $acao = 'curtiu';
             }
             
-            // Busca total de curtidas da avaliação
             $totalCurtidas = self::contarCurtidas($avaliacao_id);
             
             return [
@@ -70,12 +62,6 @@ class CurtidaDAO
         }
     }
     
-    /**
-     * Conta total de curtidas de uma avaliação
-     * 
-     * @param int $avaliacao_id ID da avaliação
-     * @return int Total de curtidas
-     */
     public static function contarCurtidas($avaliacao_id)
     {
         try {
@@ -98,13 +84,6 @@ class CurtidaDAO
         }
     }
     
-    /**
-     * Verifica se um usuário curtiu uma avaliação
-     * 
-     * @param int $usuario_id ID do usuário
-     * @param int $avaliacao_id ID da avaliação
-     * @return bool True se já curtiu, False caso contrário
-     */
     public static function verificarCurtida($usuario_id, $avaliacao_id)
     {
         try {
@@ -129,13 +108,6 @@ class CurtidaDAO
         }
     }
     
-    /**
-     * Busca curtidas de múltiplas avaliações para um usuário
-     * 
-     * @param int $usuario_id ID do usuário
-     * @param array $avaliacoes_ids Array de IDs das avaliações
-     * @return array Array com IDs das avaliações curtidas pelo usuário
-     */
     public static function buscarCurtidasUsuario($usuario_id, $avaliacoes_ids)
     {
         try {

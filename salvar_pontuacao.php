@@ -1,42 +1,34 @@
 <?php
 
-/**
- * Sistema de Salvamento de Pontuações - FrameFlow
- * Salva pontuações dos jogos (quebra-cabeça, memória, cruzadinha) no banco de dados
- */
-
 session_start();
 require_once 'src/ConexaoBD.php';
 
-// Configurar para retornar JSON
 header('Content-Type: application/json');
 
-// Função para calcular pontuação baseada no desempenho
 function calcularPontuacaoFinal($jogo, $pontuacaoBase, $tempo, $movimentos, $nivel)
 {
     $pontuacao = $pontuacaoBase;
 
     switch ($jogo) {
         case 'quebra_cabeca':
-            // Penalidade por tempo (quanto mais rápido, melhor)
+            
             $penalTempo = ($tempo > 300) ? ($tempo - 300) * 5 : 0;
-            // Penalidade por movimentos (mínimo ideal é ~30)
+            
             $penalMovimentos = ($movimentos > 30) ? ($movimentos - 30) * 10 : 0;
             $pontuacao = max(100, $pontuacaoBase - $penalTempo - $penalMovimentos);
             break;
 
         case 'memoria':
-            // Já vem calculado do jogo
+            
             $pontuacao = $pontuacaoBase;
             break;
 
         case 'cruzadinha':
-            // Já vem calculado do jogo
+            
             $pontuacao = $pontuacaoBase;
             break;
     }
 
-    // Multiplicador por nível
     $multiplicadores = [
         'facil' => 1.0,
         'medio' => 1.5,
@@ -47,11 +39,9 @@ function calcularPontuacaoFinal($jogo, $pontuacaoBase, $tempo, $movimentos, $niv
     $mult = $multiplicadores[$nivel] ?? 1.0;
     $pontuacao = round($pontuacao * $mult);
 
-    // Garantir que a pontuação seja razoável (entre 100 e 20000)
     return max(100, min(20000, $pontuacao));
 }
 
-// Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode([
         'sucesso' => false,
@@ -60,7 +50,6 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Verificar se a requisição é POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'sucesso' => false,
@@ -69,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Receber dados do jogo
 $usuario_id = $_SESSION['usuario_id'];
 $jogo = $_POST['jogo'] ?? null;
 $pontuacao = isset($_POST['pontuacao']) ? intval($_POST['pontuacao']) : 0;
@@ -77,7 +65,6 @@ $tempo = isset($_POST['tempo']) ? intval($_POST['tempo']) : 0;
 $movimentos = isset($_POST['movimentos']) ? intval($_POST['movimentos']) : null;
 $nivel = $_POST['nivel'] ?? 'normal';
 
-// Log para debug
 error_log("🎮 Recebendo pontuação:");
 error_log("   Usuário ID: $usuario_id");
 error_log("   Jogo: $jogo");
@@ -86,7 +73,6 @@ error_log("   Tempo: $tempo segundos");
 error_log("   Movimentos: " . ($movimentos ?? 'N/A'));
 error_log("   Nível: $nivel");
 
-// Validar dados obrigatórios
 if (!$jogo || !in_array($jogo, ['quebra_cabeca', 'memoria', 'cruzadinha'])) {
     echo json_encode([
         'sucesso' => false,
@@ -96,12 +82,10 @@ if (!$jogo || !in_array($jogo, ['quebra_cabeca', 'memoria', 'cruzadinha'])) {
     exit;
 }
 
-// Calcular pontuação final (garantir valores razoáveis)
 $pontuacaoFinal = calcularPontuacaoFinal($jogo, $pontuacao, $tempo, $movimentos, $nivel);
 
 error_log("   Pontuação final calculada: $pontuacaoFinal");
 
-// Salvar no banco de dados
 try {
     $conexao = ConexaoBD::conectar();
 
@@ -129,7 +113,6 @@ try {
 
         error_log("✅ Pontuação salva com sucesso! ID: $id_inserido");
 
-        // Buscar ranking atualizado do usuário
         $sqlRanking = "SELECT 
                           COUNT(*) + 1 as posicao
                        FROM (

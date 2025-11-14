@@ -2,7 +2,6 @@
 session_start();
 require_once('src/SerieDAO.php');
 
-// Verificar se usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     $_SESSION['erro'] = "Você precisa estar logado para cadastrar séries!";
     header("Location: explorar.php");
@@ -15,21 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $genero_id = $_POST['genero_id'];
     $classificacao_id = $_POST['classificacao_id'];
 
-    // Validações
     if (empty($titulo) || empty($imagem_url) || empty($genero_id) || empty($classificacao_id)) {
         $_SESSION['erro'] = "Todos os campos são obrigatórios!";
         header("Location: cadastrar_serie.php");
         exit();
     }
 
-    // Validar URL
     if (!filter_var($imagem_url, FILTER_VALIDATE_URL)) {
         $_SESSION['erro'] = "URL da imagem inválida!";
         header("Location: cadastrar_serie.php");
         exit();
     }
 
-    // Preparar dados para inserir
     $dados = [
         'titulo' => $titulo,
         'imagem_url' => $imagem_url,

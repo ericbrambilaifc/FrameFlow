@@ -9,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
     $confirmar_senha = $_POST['confirmar_senha'];
     $usuario_id = $_SESSION['usuario_id'];
     
-    // Validações
     if ($nova_senha !== $confirmar_senha) {
         $_SESSION['erro'] = 'As senhas não coincidem.';
         header('Location: perfil.php?id=' . $usuario_id);
@@ -22,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
         exit;
     }
     
-    // Buscar senha atual do banco
     $usuario = UsuarioDAO::buscarPorEmail($_SESSION['usuario_email']);
     
     if (!password_verify($senha_atual, $usuario['senha'])) {
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
         exit;
     }
     
-    // Atualizar senha
     $senhaHash = password_hash($nova_senha, PASSWORD_DEFAULT);
     $conexao = ConexaoBD::conectar();
     $sql = "UPDATE usuarios SET senha = :senha WHERE id = :id";

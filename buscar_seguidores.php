@@ -5,7 +5,6 @@ require_once('src/SeguidorDAO.php');
 header('Content-Type: application/json');
 header('Cache-Control: no-cache, must-revalidate');
 
-// Verifica se está logado
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode([
         'sucesso' => false,
@@ -14,12 +13,10 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Pega os parâmetros
 $usuario_id = isset($_GET['usuario_id']) ? (int)$_GET['usuario_id'] : null;
 $tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : 'seguidores';
 $usuario_logado_id = $_SESSION['usuario_id'];
 
-// Validações
 if (!$usuario_id || $usuario_id <= 0) {
     echo json_encode([
         'sucesso' => false,
@@ -38,18 +35,17 @@ if (!in_array($tipo, ['seguidores', 'seguindo'])) {
 
 try {
     if ($tipo === 'seguidores') {
-        // Busca os seguidores do usuário
+        
         $lista = SeguidorDAO::listarSeguidores($usuario_id);
     } else {
-        // Busca quem o usuário está seguindo
+        
         $lista = SeguidorDAO::listarSeguindo($usuario_id);
     }
 
-    // Processa a lista para adicionar informação de "está seguindo"
     $listaProcessada = [];
 
     foreach ($lista as $usuario) {
-        // Verifica se o usuário logado está seguindo este usuário
+        
         $estaSeguindo = SeguidorDAO::estaSeguindo($usuario_logado_id, $usuario['id']);
 
         $listaProcessada[] = [
@@ -75,6 +71,6 @@ try {
     echo json_encode([
         'sucesso' => false,
         'erro' => 'Erro ao buscar dados. Tente novamente.',
-        'erro_debug' => $e->getMessage() // Remova em produção
+        'erro_debug' => $e->getMessage() 
     ]);
 }

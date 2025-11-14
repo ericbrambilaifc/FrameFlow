@@ -4,9 +4,6 @@ require_once('ConexaoBD.php');
 class SeguidorDAO
 {
 
-    /**
-     * Verifica se um usuário está seguindo outro
-     */
     public static function estaSeguindo($seguidor_id, $seguindo_id)
     {
         try {
@@ -31,13 +28,10 @@ class SeguidorDAO
         }
     }
 
-    /**
-     * Seguir um usuário
-     */
     public static function seguir($seguidor_id, $seguindo_id)
     {
         try {
-            // Verifica se já está seguindo
+            
             if (self::estaSeguindo($seguidor_id, $seguindo_id)) {
                 return false;
             }
@@ -58,9 +52,6 @@ class SeguidorDAO
         }
     }
 
-    /**
-     * Deixar de seguir um usuário
-     */
     public static function deixarDeSeguir($seguidor_id, $seguindo_id)
     {
         try {
@@ -81,12 +72,6 @@ class SeguidorDAO
         }
     }
 
-    /**
-     * Listar seguidores de um usuário
-     */
-    /**
-     * Listar seguidores de um usuário (COM FOTO DE PERFIL)
-     */
     public static function listarSeguidores($usuario_id)
     {
         try {
@@ -109,9 +94,6 @@ class SeguidorDAO
         }
     }
 
-    /**
-     * Listar usuários que o usuário está seguindo (COM FOTO DE PERFIL)
-     */
     public static function listarSeguindo($usuario_id)
     {
         try {
@@ -134,9 +116,6 @@ class SeguidorDAO
         }
     }
 
-    /**
-     * Contar total de seguidores
-     */
     public static function contarSeguidores($usuario_id)
     {
         try {
@@ -159,11 +138,6 @@ class SeguidorDAO
         }
     }
 
-    
-
-    /**
-     * Contar total de usuários que está seguindo
-     */
     public static function contarSeguindo($usuario_id)
     {
         try {

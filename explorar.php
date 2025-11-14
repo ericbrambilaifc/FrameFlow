@@ -10,25 +10,20 @@ require_once('src/FavoritoDAO.php');
 $classificacoes = ClassificacaoDAO::listar();
 $generos = GeneroDAO::listar();
 
-// Capturar filtros
 $buscar = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
 $genero_id = isset($_GET['genero']) && $_GET['genero'] !== '' ? $_GET['genero'] : null;
 $classificacao_id = isset($_GET['classificacao']) && $_GET['classificacao'] !== '' ? $_GET['classificacao'] : null;
 
-// Verificar se há algum filtro ativo
 $temFiltro = !empty($buscar) || $genero_id !== null || $classificacao_id !== null;
 
-// Verifica se o usuário logado é admin
 $eh_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
 
-// Buscar séries com ou sem filtros
 if ($temFiltro) {
     $series = SerieDao::buscar($buscar, $genero_id, $classificacao_id);
 } else {
     $series = SerieDao::listar();
 }
 
-// Buscar favoritos do usuário logado
 $favoritos_usuario = [];
 if (isset($_SESSION['usuario_id'])) {
     $favoritos_lista = FavoritoDAO::listarPorUsuario($_SESSION['usuario_id']);
@@ -54,7 +49,7 @@ if (isset($_SESSION['usuario_id'])) {
 
 <body>
     <header>
-        <!-- Menu Toggle para dispositivos móveis -->
+        
         <input type="checkbox" id="menu-toggle">
         <label for="menu-toggle" class="menu-icon">
             <svg fill="#ffffff" width="30" height="30" viewBox="0 0 100 80">
@@ -64,18 +59,17 @@ if (isset($_SESSION['usuario_id'])) {
             </svg>
         </label>
 
-        <!-- Navegação principal -->
         <ul>
-            <!-- Busca de Usuários -->
+            
             <div class="search-container">
                 <div class="search-box">
-                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http:
                         <circle cx="11" cy="11" r="8" stroke="#6A53B8" stroke-width="2" />
                         <path d="M21 21L16.65 16.65" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" />
                     </svg>
                     <input type="text" class="search-input" placeholder="Buscar usuários..." id="searchUsers" autocomplete="off">
                     <button class="clear-search" id="clearSearch">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http:
                             <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                         </svg>
                     </button>
@@ -85,7 +79,7 @@ if (isset($_SESSION['usuario_id'])) {
 
             <li style="background-color: #fff; padding: 10px; border-radius: 20px;">
                 <a href="#" onclick="abrirModalJogos(); return false;">
-                    <svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http:
                         <path d="M5.80005 8.2H10.6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M8.19995 5.79999V10.6" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M16.6001 9.39999H16.6121" stroke="#6A53B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -97,12 +91,12 @@ if (isset($_SESSION['usuario_id'])) {
             <li><a href="explorar.php">Explorar</a></li>
             <li><a href="comunidade.php">Comunidade</a></li>
         </ul>
-        <!-- Perfil do usuário -->
+        
         <div class="header-perfil">
             <?php if (isset($_SESSION['usuario_id'])): ?>
                 <a href="perfil.php?id=<?php echo $_SESSION['usuario_id']; ?>">
                     <i>
-                        <svg width="30" height="30" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="30" height="30" viewBox="0 0 276 275" fill="none" xmlns="http:
                             <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M137.799 271C211.529 271 271.299 211.23 271.299 137.5C271.299 63.77 211.529 4 137.799 4C64.0686 4 4.29858 63.77 4.29858 137.5C4.29858 211.23 64.0686 271 137.799 271Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
@@ -113,7 +107,7 @@ if (isset($_SESSION['usuario_id'])) {
             <?php else: ?>
                 <a href="#" id="openModal">
                     <i>
-                        <svg width="30" height="30" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="30" height="30" viewBox="0 0 276 275" fill="none" xmlns="http:
                             <path d="M217.898 244.3C217.898 223.056 209.459 202.683 194.438 187.661C179.416 172.639 159.042 164.2 137.798 164.2C116.555 164.2 96.1808 172.639 81.1591 187.661C66.1375 202.683 57.6984 223.056 57.6984 244.3" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M137.798 164.2C167.29 164.2 191.198 140.292 191.198 110.8C191.198 81.3081 167.29 57.4001 137.798 57.4001C108.306 57.4001 84.3983 81.3081 84.3983 110.8C84.3983 140.292 108.306 164.2 137.798 164.2Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M137.799 271C211.529 271 271.299 211.23 271.299 137.5C271.299 63.77 211.529 4 137.799 4C64.0686 4 4.29858 63.77 4.29858 137.5C4.29858 211.23 64.0686 271 137.799 271Z" stroke="#6A53B8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
@@ -125,9 +119,8 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
     </header>
 
-    <!-- Barra de busca de séries -->
     <section style="padding: 20px; max-width: 90%; margin: 0 auto;">
-        <!-- Formulário de Busca em Linha -->
+        
         <form method="GET" action="explorar.php" style="margin: 0 auto 30px; width: 100%;">
             <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center;">
                 <input type="text" name="buscar" placeholder="Pesquisar por título de série" class="input-estilizado" value="<?php echo isset($_GET['buscar']) ? htmlspecialchars($_GET['buscar']) : ''; ?>" style="flex: 1; min-width: 200px; padding: 12px; font-size: 16px;">
@@ -156,7 +149,6 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
         </form>
 
-        <!-- Resultados da busca -->
         <h2 style="color: #6A53B8; margin-bottom: 20px;">
             <?php if ($temFiltro): ?>
                 Resultados da busca
@@ -173,12 +165,12 @@ if (isset($_SESSION['usuario_id'])) {
                 <?php foreach ($series as $serie): ?>
                     <?php $isFavorito = in_array($serie['id'], $favoritos_usuario); ?>
                     <div class="card-serie" data-serie-id="<?php echo $serie['id']; ?>">
-                        <!-- Botão de Favoritar -->
+                        
                         <button class="btn-favorito <?php echo $isFavorito ? 'favorito-ativo' : ''; ?>"
                             data-serie-id="<?php echo $serie['id']; ?>"
                             onclick="toggleFavorito(event, <?php echo $serie['id']; ?>)"
                             title="<?php echo $isFavorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos'; ?>">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg viewBox="0 0 24 24" xmlns="http:
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                         </button>
@@ -203,11 +195,10 @@ if (isset($_SESSION['usuario_id'])) {
 
     </section>
 
-    <!-- Modal de Jogos (ÚNICA VERSÃO) -->
     <div id="modalJogos" class="modal">
         <div class="modal-jogos-content">
             <button class="close" id="closeJogos">
-                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                     <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -217,10 +208,10 @@ if (isset($_SESSION['usuario_id'])) {
             <h2 class="modal-jogos-titulo">Escolha seu jogo</h2>
 
             <div class="jogos-grid">
-                <!-- Quebra-Cabeça -->
+                
                 <a href="#" onclick="verificarLoginJogo(event, 'quebra_cabeca.php')" class="jogo-card">
                     <div class="jogo-icon">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http:
                             <path d="M4 14H7C7.55228 14 8 14.4477 8 15V19C8 19.5523 7.55228 20 7 20H4C3.44772 20 3 19.5523 3 19V15C3 14.4477 3.44772 14 4 14Z" fill="white" />
                             <path d="M10 14H13C13.5523 14 14 14.4477 14 15V19C14 19.5523 13.5523 20 13 20H10C9.44772 20 9 19.5523 9 19V15C9 14.4477 9.44772 14 10 14Z" fill="white" />
                             <path d="M16 14H19C19.5523 14 20 14.4477 20 15V19C20 19.5523 19.5523 20 19 20H16C15.4477 20 15 19.5523 15 19V15C15 14.4477 15.4477 14 16 14Z" fill="white" />
@@ -233,10 +224,9 @@ if (isset($_SESSION['usuario_id'])) {
                     <p class="jogo-descricao">Monte a imagem da sua série favorita</p>
                 </a>
 
-                <!-- Jogo da Memória -->
                 <a href="#" onclick="verificarLoginJogo(event, 'jogo_memoria.php')" class="jogo-card">
                     <div class="jogo-icon">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http:
                             <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="white" />
                             <path d="M12 8V16M8 12H16" stroke="#6a53b8" stroke-width="2" stroke-linecap="round" />
                         </svg>
@@ -245,10 +235,9 @@ if (isset($_SESSION['usuario_id'])) {
                     <p class="jogo-descricao">Encontre os pares das séries</p>
                 </a>
 
-                <!-- Cruzadinha -->
                 <a href="#" onclick="verificarLoginJogo(event, 'cruzadinha.php')" class="jogo-card">
                     <div class="jogo-icon">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http:
                             <rect x="3" y="3" width="5" height="5" fill="white" />
                             <rect x="9" y="3" width="5" height="5" fill="white" />
                             <rect x="15" y="3" width="5" height="5" fill="white" />
@@ -266,11 +255,11 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </div>
-    <!-- Modal fazer login -->
+    
     <div id="modal" class="modal">
         <div class="modal-login">
             <button class="close" id="closeLogin">
-                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                     <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -292,11 +281,10 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
     </div>
 
-    <!-- Modal criar conta -->
     <div id="modalCriarConta" class="modal">
         <div class="modal-login">
             <button class="close" id="closeCriar">
-                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                     <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -320,11 +308,10 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
     </div>
 
-    <!-- Modal de Avaliações -->
     <div id="modalAvaliacoes" class="modal">
         <div class="modal-avaliacoes">
             <button class="close" id="closeAvaliacoes">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http:
                     <path d="M20 38C29.9411 38 38 29.9411 38 20C38 10.0589 29.9411 2 20 2C10.0589 2 2 10.0589 2 20C2 29.9411 10.0589 38 20 38Z" stroke="black" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M25.3999 14.6L14.5999 25.4" stroke="black" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M14.5999 14.6L25.3999 25.4" stroke="black" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -336,7 +323,7 @@ if (isset($_SESSION['usuario_id'])) {
 
                 <?php if (!$eh_admin): ?>
                     <button class="botao-nova-avaliacao" id="btnNovaAvaliacao">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http:
                             <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" />
                             <path d="M12 8V16M8 12H16" stroke="white" stroke-width="2" stroke-linecap="round" />
                         </svg>
@@ -351,11 +338,10 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
     </div>
 
-    <!-- Modal de Nova Avaliação -->
     <div id="modalNovaAvaliacao" class="modal">
         <div class="modal-login">
             <button class="close" id="closeNovaAvaliacao">
-                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 276 275" fill="none" xmlns="http:
                     <path d="M137.798 271C211.528 271 271.298 211.23 271.298 137.5C271.298 63.77 211.528 4 137.798 4C64.0683 4 4.29834 63.77 4.29834 137.5C4.29834 211.23 64.0683 271 137.798 271Z" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M177.848 97.4497L97.7479 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M97.7479 97.4497L177.848 177.55" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -390,7 +376,7 @@ if (isset($_SESSION['usuario_id'])) {
                             width: 22px;
                             height: 22px;
                             transition: background-image 0.2s;
-                            background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.5288 1.29489C10.5726 1.20635 10.6403 1.13183 10.7242 1.07972C10.8081 1.02761 10.905 1 11.0038 1C11.1025 1 11.1994 1.02761 11.2833 1.07972C11.3672 1.13183 11.4349 1.20635 11.4788 1.29489L13.7888 5.97389C13.9409 6.28186 14.1656 6.5483 14.4434 6.75035C14.7212 6.95239 15.0439 7.08401 15.3838 7.13389L20.5498 7.88989C20.6476 7.90408 20.7396 7.94537 20.8152 8.00909C20.8909 8.07282 20.9472 8.15644 20.9778 8.2505C21.0084 8.34456 21.012 8.4453 20.9883 8.54133C20.9647 8.63736 20.9146 8.72485 20.8438 8.79389L17.1078 12.4319C16.8614 12.672 16.677 12.9684 16.5706 13.2955C16.4642 13.6227 16.4388 13.9708 16.4968 14.3099L17.3788 19.4499C17.396 19.5477 17.3855 19.6485 17.3483 19.7406C17.311 19.8327 17.2487 19.9125 17.1683 19.9709C17.0879 20.0293 16.9927 20.0639 16.8936 20.0708C16.7945 20.0777 16.6955 20.0566 16.6078 20.0099L11.9898 17.5819C11.6855 17.4221 11.3469 17.3386 11.0033 17.3386C10.6596 17.3386 10.321 17.4221 10.0168 17.5819L5.39975 20.0099C5.31208 20.0563 5.21315 20.0772 5.1142 20.0701C5.01526 20.0631 4.92027 20.0285 4.84005 19.9701C4.75982 19.9118 4.69759 19.8321 4.66041 19.7401C4.62323 19.6482 4.61261 19.5476 4.62975 19.4499L5.51075 14.3109C5.56895 13.9716 5.54374 13.6233 5.43729 13.2959C5.33084 12.9686 5.14636 12.672 4.89975 12.4319L1.16375 8.79489C1.09235 8.72593 1.04175 8.63829 1.01772 8.54197C0.993684 8.44565 0.99719 8.34451 1.02783 8.25008C1.05847 8.15566 1.11502 8.07174 1.19103 8.00788C1.26704 7.94402 1.35946 7.90279 1.45775 7.88889L6.62275 7.13389C6.96301 7.08439 7.28614 6.95295 7.56434 6.75088C7.84253 6.54881 8.06746 6.28216 8.21975 5.97389L10.5288 1.29489Z' stroke='black' stroke-opacity='0.6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+                            background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='none' xmlns='http:
                             background-repeat: no-repeat;
                             background-size: contain;
                         }
@@ -398,7 +384,7 @@ if (isset($_SESSION['usuario_id'])) {
                         .rating-input>input:checked~label,
                         .rating-input>label:hover,
                         .rating-input>label:hover~label {
-                            background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.5268 1.29489C10.5706 1.20635 10.6383 1.13183 10.7223 1.07972C10.8062 1.02761 10.903 1 11.0018 1C11.1006 1 11.1974 1.02761 11.2813 1.07972C11.3653 1.13183 11.433 1.20635 11.4768 1.29489L13.7868 5.97389C13.939 6.28186 14.1636 6.5483 14.4414 6.75035C14.7192 6.95239 15.0419 7.08401 15.3818 7.13389L20.5478 7.88989C20.6457 7.90408 20.7376 7.94537 20.8133 8.00909C20.8889 8.07282 20.9452 8.15644 20.9758 8.2505C21.0064 8.34456 21.0101 8.4453 20.9864 8.54133C20.9627 8.63736 20.9126 8.72485 20.8418 8.79389L17.1058 12.4319C16.8594 12.672 16.6751 12.9684 16.5686 13.2955C16.4622 13.6227 16.4369 13.9708 16.4948 14.3099L17.3768 19.4499C17.3941 19.5477 17.3835 19.6485 17.3463 19.7406C17.3091 19.8327 17.2467 19.9125 17.1663 19.9709C17.086 20.0293 16.9908 20.0639 16.8917 20.0708C16.7926 20.0777 16.6935 20.0566 16.6058 20.0099L11.9878 17.5819C11.6835 17.4221 11.345 17.3386 11.0013 17.3386C10.6576 17.3386 10.3191 17.4221 10.0148 17.5819L5.3978 20.0099C5.31013 20.0563 5.2112 20.0772 5.11225 20.0701C5.0133 20.0631 4.91832 20.0285 4.83809 19.9701C4.75787 19.9118 4.69563 19.8321 4.65846 19.7401C4.62128 19.6482 4.61066 19.5476 4.6278 19.4499L5.5088 14.3109C5.567 13.9716 5.54178 13.6233 5.43534 13.2959C5.32889 12.9686 5.14441 12.672 4.8978 12.4319L1.1618 8.79489C1.09039 8.72593 1.03979 8.63829 1.01576 8.54197C0.991731 8.44565 0.995237 8.34451 1.02588 8.25008C1.05652 8.15566 1.11307 8.07174 1.18908 8.00788C1.26509 7.94402 1.3575 7.90279 1.4558 7.88889L6.6208 7.13389C6.96106 7.08439 7.28419 6.95295 7.56238 6.75088C7.84058 6.54881 8.0655 6.28216 8.2178 5.97389L10.5268 1.29489Z' fill='%23FFF600' stroke='black' stroke-opacity='0.6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+                            background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='none' xmlns='http:
                         }
                     </style>
 
@@ -427,7 +413,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 
     <script>
-        // Verifica se deve abrir o modal ao carregar a página
+        
         window.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('login') === 'true') {
@@ -435,7 +421,6 @@ if (isset($_SESSION['usuario_id'])) {
             }
         });
 
-        // Voltar para o modal de login
         const voltarLoginBtn = document.getElementById('voltarLogin');
         if (voltarLoginBtn) {
             voltarLoginBtn.addEventListener('click', function(event) {
@@ -461,7 +446,6 @@ if (isset($_SESSION['usuario_id'])) {
             }
         }
 
-        // Função para verificar login antes de acessar os jogos
         function verificarLoginJogo(event, urlJogo) {
             event.preventDefault();
 
@@ -477,7 +461,6 @@ if (isset($_SESSION['usuario_id'])) {
             <?php endif; ?>
         }
 
-        // Sistema de notificações popup
         function mostrarNotificacao(tipo, titulo, mensagem) {
             const notificacoesExistentes = document.querySelectorAll('.notificacao-popup');
             notificacoesExistentes.forEach(n => n.remove());
@@ -486,12 +469,12 @@ if (isset($_SESSION['usuario_id'])) {
             notificacao.className = `notificacao-popup ${tipo}`;
 
             const iconeSucesso = `
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 24 24" xmlns="http:
             <path d="M20 6L9 17L4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
             const iconeErro = `
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 24 24" xmlns="http:
             <path d="M18 6L6 18M6 6L18 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     `;
@@ -500,7 +483,7 @@ if (isset($_SESSION['usuario_id'])) {
 
             notificacao.innerHTML = `
         <button class="notificacao-fechar" onclick="fecharNotificacao(this)">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http:
 <path d="M13 1L1 13" stroke="#BABABA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M1 1L13 13" stroke="#BABABA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
@@ -537,12 +520,11 @@ if (isset($_SESSION['usuario_id'])) {
             }
         }
 
-        // Função para favoritar/desfavoritar série
         function toggleFavorito(event, serieId) {
-            event.stopPropagation(); // Impede que o card seja clicado
+            event.stopPropagation(); 
 
             <?php if (!isset($_SESSION['usuario_id'])): ?>
-                // Se não estiver logado, mostra notificação e abre modal de login
+                
                 mostrarNotificacao('erro', 'Login necessário', 'Você precisa estar logado para favoritar séries!');
                 setTimeout(() => {
                     document.getElementById('modal').style.display = 'block';
@@ -553,7 +535,6 @@ if (isset($_SESSION['usuario_id'])) {
             const btn = event.currentTarget;
             const isFavorito = btn.classList.contains('favorito-ativo');
 
-            // Desabilita o botão temporariamente
             btn.disabled = true;
             btn.style.opacity = '0.6';
 
@@ -567,7 +548,7 @@ if (isset($_SESSION['usuario_id'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
-                        // Alterna a classe de favorito
+                        
                         if (data.isFavorito) {
                             btn.classList.add('favorito-ativo');
                             btn.title = 'Remover dos favoritos';
@@ -586,14 +567,12 @@ if (isset($_SESSION['usuario_id'])) {
                     mostrarNotificacao('erro', 'Erro', 'Erro ao processar favorito');
                 })
                 .finally(() => {
-                    // Reabilita o botão
+                    
                     btn.disabled = false;
                     btn.style.opacity = '1';
                 });
         }
 
-
-        // Event Listeners dos Modais
         document.addEventListener('DOMContentLoaded', function() {
             <?php if (isset($_SESSION['sucesso'])): ?>
                 mostrarNotificacao('sucesso', 'Login efetuado com sucesso', '<?php echo addslashes($_SESSION['sucesso']); ?>');
@@ -610,7 +589,6 @@ if (isset($_SESSION['usuario_id'])) {
                 <?php unset($_SESSION['erro']); ?>
             <?php endif; ?>
 
-            // Abrir modais
             const openModalBtn = document.getElementById('openModal');
             if (openModalBtn) {
                 openModalBtn.addEventListener('click', function(event) {
@@ -628,7 +606,6 @@ if (isset($_SESSION['usuario_id'])) {
                 });
             }
 
-            // FECHAR MODAIS COM IDs ÚNICOS
             const closeLogin = document.getElementById('closeLogin');
             if (closeLogin) {
                 closeLogin.addEventListener('click', function() {
@@ -664,7 +641,6 @@ if (isset($_SESSION['usuario_id'])) {
                 });
             }
 
-            // Fechar modais clicando fora
             window.addEventListener('click', function(event) {
                 if (event.target.classList.contains('modal')) {
                     event.target.style.display = 'none';
@@ -672,7 +648,6 @@ if (isset($_SESSION['usuario_id'])) {
                 }
             });
 
-            // Fechar com ESC
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
                     const modais = document.querySelectorAll('.modal');
@@ -685,7 +660,6 @@ if (isset($_SESSION['usuario_id'])) {
                 }
             });
 
-            // Validar senhas
             const formCadastro = document.getElementById('formCadastro');
             if (formCadastro) {
                 formCadastro.addEventListener('submit', function(event) {
@@ -707,7 +681,6 @@ if (isset($_SESSION['usuario_id'])) {
             }
         });
 
-        // Tornar cards clicáveis
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.card-serie');
 
@@ -721,7 +694,6 @@ if (isset($_SESSION['usuario_id'])) {
             });
         });
 
-        // Abrir modal de avaliações
         function abrirModalAvaliacoes(serieId, titulo) {
             document.getElementById('modalAvaliacoes').style.display = 'block';
             document.getElementById('tituloSerie').textContent = titulo;
@@ -729,7 +701,6 @@ if (isset($_SESSION['usuario_id'])) {
             document.getElementById('modalAvaliacoes').dataset.serieId = serieId;
         }
 
-        // Função para carregar avaliações
         function carregarAvaliacoes(serieId) {
             const conteudo = document.getElementById('conteudoAvaliacoes');
             conteudo.innerHTML = '<div class="loading">Carregando avaliações...</div>';
@@ -756,7 +727,6 @@ if (isset($_SESSION['usuario_id'])) {
                                 `<img src="uploads/perfil/${av.foto_perfil}" alt="${av.usuario_nome}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` :
                                 av.usuario_nome.charAt(0).toUpperCase();
 
-                            // MUDANÇA: Sempre mostra os botões, independente de estar logado
                             const likeAtivo = av.usuario_voto === 1 ? 'ativo' : '';
                             const dislikeAtivo = av.usuario_voto === -1 ? 'ativo' : '';
                             const likeBg = av.usuario_voto === 1 ? '#6A53B8' : 'transparent';
@@ -819,13 +789,12 @@ if (isset($_SESSION['usuario_id'])) {
                 });
         }
 
-        // Função para processar votos (LIKE/DISLIKE)
         function processarVoto(avaliacaoId, tipoVoto) {
-            // MUDANÇA: Verifica se o usuário está logado via JavaScript
+            
             const usuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
 
             if (!usuarioLogado) {
-                // Redireciona para a página de login
+                
                 mostrarNotificacao('info', 'Login necessário', 'Você precisa estar logado para votar!');
                 setTimeout(() => {
                     window.location.href = 'explorar.php?login=true';
@@ -838,7 +807,6 @@ if (isset($_SESSION['usuario_id'])) {
 
             if (!btnLike || !btnDislike) return;
 
-            // Desabilita ambos os botões temporariamente
             btnLike.disabled = true;
             btnDislike.disabled = true;
             btnLike.style.opacity = '0.6';
@@ -854,14 +822,13 @@ if (isset($_SESSION['usuario_id'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
-                        // Atualiza os contadores
+                        
                         const contadorLikes = btnLike.querySelector('.contador-votos');
                         const contadorDislikes = btnDislike.querySelector('.contador-votos');
 
                         contadorLikes.textContent = data.total_likes;
                         contadorDislikes.textContent = data.total_dislikes;
 
-                        // Remove classes ativas e reseta estilos
                         btnLike.classList.remove('ativo');
                         btnDislike.classList.remove('ativo');
                         btnLike.style.background = 'transparent';
@@ -869,7 +836,6 @@ if (isset($_SESSION['usuario_id'])) {
                         btnDislike.style.background = 'transparent';
                         btnDislike.style.color = '#6A53B8';
 
-                        // Adiciona classe ativa no botão correspondente (se houver voto)
                         if (data.voto_atual === 1) {
                             btnLike.classList.add('ativo');
                             btnLike.style.background = '#6A53B8';
@@ -890,7 +856,7 @@ if (isset($_SESSION['usuario_id'])) {
                     mostrarNotificacao('erro', 'Erro', 'Erro ao processar voto');
                 })
                 .finally(() => {
-                    // Reabilita ambos os botões
+                    
                     btnLike.disabled = false;
                     btnDislike.disabled = false;
                     btnLike.style.opacity = '1';
@@ -898,11 +864,10 @@ if (isset($_SESSION['usuario_id'])) {
                 });
         }
 
-
         function gerarEstrelas(nota) {
             let estrelas = '';
             const estrelaPreenchida = `
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http:
             <path d="M10.5268 1.29489C10.5706 1.20635 10.6383 1.13183 10.7223 1.07972C10.8062 1.02761 10.903 1 11.0018 1C11.1006 1 11.1974 1.02761 11.2813 1.07972C11.3653 1.13183 11.433 1.20635 11.4768 1.29489L13.7868 5.97389C13.939 6.28186 14.1636 6.5483 14.4414 6.75035C14.7192 6.95239 15.0419 7.08401 15.3818 7.13389L20.5478 7.88989C20.6457 7.90408 20.7376 7.94537 20.8133 8.00909C20.8889 8.07282 20.9452 8.15644 20.9758 8.2505C21.0064 8.34456 21.0101 8.4453 20.9864 8.54133C20.9627 8.63736 20.9126 8.72485 20.8418 8.79389L17.1058 12.4319C16.8594 12.672 16.6751 12.9684 16.5686 13.2955C16.4622 13.6227 16.4369 13.9708 16.4948 14.3099L17.3768 19.4499C17.3941 19.5477 17.3835 19.6485 17.3463 19.7406C17.3091 19.8327 17.2467 19.9125 17.1663 19.9709C17.086 20.0293 16.9908 20.0639 16.8917 20.0708C16.7926 20.0777 16.6935 20.0566 16.6058 20.0099L11.9878 17.5819C11.6835 17.4221 11.345 17.3386 11.0013 17.3386C10.6576 17.3386 10.3191 17.4221 10.0148 17.5819L5.3978 20.0099C5.31013 20.0563 5.2112 20.0772 5.11225 20.0701C5.0133 20.0631 4.91832 20.0285 4.83809 19.9701C4.75787 19.9118 4.69563 19.8321 4.65846 19.7401C4.62128 19.6482 4.61066 19.5476 4.6278 19.4499L5.5088 14.3109C5.567 13.9716 5.54178 13.6233 5.43534 13.2959C5.32889 12.9686 5.14441 12.672 4.8978 12.4319L1.1618 8.79489C1.09039 8.72593 1.03979 8.63829 1.01576 8.54197C0.991731 8.44565 0.995237 8.34451 1.02588 8.25008C1.05652 8.15566 1.11307 8.07174 1.18908 8.00788C1.26509 7.94402 1.3575 7.90279 1.4558 7.88889L6.6208 7.13389C6.96106 7.08439 7.28419 6.95295 7.56238 6.75088C7.84058 6.54881 8.0655 6.28216 8.2178 5.97389L10.5268 1.29489Z"
                 fill="#FFF600"
                 stroke="black"
@@ -913,7 +878,7 @@ if (isset($_SESSION['usuario_id'])) {
         </svg>
     `;
             const estrelaVazia = `
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http:
             <path d="M10.5288 1.29489C10.5726 1.20635 10.6403 1.13183 10.7242 1.07972C10.8081 1.02761 10.905 1 11.0038 1C11.1025 1 11.1994 1.02761 11.2833 1.07972C11.3672 1.13183 11.4349 1.20635 11.4788 1.29489L13.7888 5.97389C13.9409 6.28186 14.1656 6.5483 14.4434 6.75035C14.7212 6.95239 15.0439 7.08401 15.3838 7.13389L20.5498 7.88989C20.6476 7.90408 20.7396 7.94537 20.8152 8.00909C20.8909 8.07282 20.9472 8.15644 20.9778 8.2505C21.0084 8.34456 21.012 8.4453 20.9883 8.54133C20.9647 8.63736 20.9146 8.72485 20.8438 8.79389L17.1078 12.4319C16.8614 12.672 16.677 12.9684 16.5706 13.2955C16.4642 13.6227 16.4388 13.9708 16.4968 14.3099L17.3788 19.4499C17.396 19.5477 17.3855 19.6485 17.3483 19.7406C17.311 19.8327 17.2487 19.9125 17.1683 19.9709C17.0879 20.0293 16.9927 20.0639 16.8936 20.0708C16.7945 20.0777 16.6955 20.0566 16.6078 20.0099L11.9898 17.5819C11.6855 17.4221 11.3469 17.3386 11.0033 17.3386C10.6596 17.3386 10.321 17.4221 10.0168 17.5819L5.39975 20.0099C5.31208 20.0563 5.21315 20.0772 5.1142 20.0701C5.01526 20.0631 4.92027 20.0285 4.84005 19.9701C4.75982 19.9118 4.69759 19.8321 4.66041 19.7401C4.62323 19.6482 4.61261 19.5476 4.62975 19.4499L5.51075 14.3109C5.56895 13.9716 5.54374 13.6233 5.43729 13.2959C5.33084 12.9686 5.14636 12.672 4.89975 12.4319L1.16375 8.79489C1.09235 8.72593 1.04175 8.63829 1.01772 8.54197C0.993684 8.44565 0.99719 8.34451 1.02783 8.25008C1.05847 8.15566 1.11502 8.07174 1.19103 8.00788C1.26704 7.94402 1.35946 7.90279 1.45775 7.88889L6.62275 7.13389C6.96301 7.08439 7.28614 6.95295 7.56434 6.75088C7.84253 6.54881 8.06746 6.28216 8.21975 5.97389L10.5288 1.29489Z"
                 stroke="black"
                 stroke-opacity="0.6"
@@ -944,7 +909,6 @@ if (isset($_SESSION['usuario_id'])) {
             return date.toLocaleDateString('pt-BR', opcoes);
         }
 
-        // Botão Nova Avaliação
         const btnNovaAvaliacao = document.getElementById('btnNovaAvaliacao');
         if (btnNovaAvaliacao) {
             btnNovaAvaliacao.addEventListener('click', function() {
@@ -961,7 +925,6 @@ if (isset($_SESSION['usuario_id'])) {
             });
         }
 
-        // Busca de usuários
         const searchInput = document.getElementById('searchUsers');
         const searchResults = document.getElementById('searchResults');
         const clearSearch = document.getElementById('clearSearch');

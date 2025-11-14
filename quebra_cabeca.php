@@ -135,7 +135,6 @@ try {
             opacity: 0.7;
         }
 
-
         .game-area {
             display: grid;
             grid-template-columns: 250px 1fr;
@@ -398,7 +397,7 @@ try {
         </div>
     <?php else: ?>
         <div class="container-puzzle">
-            <!-- Header -->
+            
             <div class="header-puzzle">
                 <div>
                     <h1>Quebra-Cabeça</h1>
@@ -418,7 +417,7 @@ try {
 
                 <div class="btn-menu">
                     <a href="explorar.php" class="btn-voltar"><svg width="26" height="26" viewBox="0 0 26 26"
-                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            fill="none" xmlns="http:
                             <path
                                 d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
                                 stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -431,14 +430,13 @@ try {
                 </div>
             </div>
 
-            <!-- Game Area -->
             <div class="game-area">
-                <!-- Preview Section -->
+                
                 <div class="preview-section">
                     <h3>Imagem Original</h3>
                     <img id="preview" src="<?= htmlspecialchars($imagem_selecionada_url) ?>" alt="Imagem original">
                     <button class="btn-preview" id="mostrar-original"><svg width="22" height="16" viewBox="0 0 22 16"
-                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            fill="none" xmlns="http:
                             <path
                                 d="M1.06251 8.34738C0.979165 8.12287 0.979165 7.8759 1.06251 7.65138C1.87421 5.68324 3.25202 4.00042 5.02128 2.81628C6.79053 1.63214 8.87155 1 11.0005 1C13.1295 1 15.2105 1.63214 16.9797 2.81628C18.749 4.00042 20.1268 5.68324 20.9385 7.65138C21.0218 7.8759 21.0218 8.12287 20.9385 8.34738C20.1268 10.3155 18.749 11.9983 16.9797 13.1825C15.2105 14.3666 13.1295 14.9988 11.0005 14.9988C8.87155 14.9988 6.79053 14.3666 5.02128 13.1825C3.25202 11.9983 1.87421 10.3155 1.06251 8.34738Z"
                                 stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -449,7 +447,6 @@ try {
                         Mostrar</button>
                 </div>
 
-                <!-- Puzzle Section -->
                 <div class="puzzle-section">
                     <div class="puzzle-container">
                         <div id="tabuleiro"></div>
@@ -595,7 +592,6 @@ try {
                 iniciarBtn.textContent = '🔄 Jogar Novamente';
                 embaralharBtn.style.display = 'none';
 
-                // ⭐ SALVAR PONTUAÇÃO - LINHA PRINCIPAL ADICIONADA!
                 const pontuacaoFinal = calcularPontuacao(movimentos, segundos);
                 salvarPontuacao('quebra_cabeca', pontuacaoFinal, segundos, movimentos, 'normal');
 
@@ -639,7 +635,6 @@ try {
                 nivel
             });
 
-            // Verificar se está logado (a variável é injetada do PHP)
             const usuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
 
             if (!usuarioLogado) {
@@ -671,7 +666,6 @@ try {
                             console.log('   Pontuação:', data.dados.pontuacao);
                             console.log('   Posição no ranking:', data.dados.posicao_ranking);
 
-                            // Opcional: Mostrar notificação visual
                             mostrarNotificacaoSucesso(data.dados);
                         } else {
                             console.error('❌ Erro ao salvar:', data.erro);
@@ -727,10 +721,9 @@ try {
             }
         });
 
-        // SVG para Mostrar (Olho Aberto)
         const SVG_MOSTRAR = `
 <svg width="22" height="16" viewBox="0 0 22 16"
-fill="none" xmlns="http://www.w3.org/2000/svg">
+fill="none" xmlns="http:
 <path
 d="M1.06251 8.34738C0.979165 8.12287 0.979165 7.8759 1.06251 7.65138C1.87421 5.68324 3.25202 4.00042 5.02128 2.81628C6.79053 1.63214 8.87155 1 11.0005 1C13.1295 1 15.2105 1.63214 16.9797 2.81628C18.749 4.00042 20.1268 5.68324 20.9385 7.65138C21.0218 7.8759 21.0218 8.12287 20.9385 8.34738C20.1268 10.3155 18.749 11.9983 16.9797 13.1825C15.2105 14.3666 13.1295 14.9988 11.0005 14.9988C8.87155 14.9988 6.79053 14.3666 5.02128 13.1825C3.25202 11.9983 1.87421 10.3155 1.06251 8.34738Z"
 stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -740,9 +733,8 @@ stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
 `;
 
-        // SVG para Esconder (Olho Fechado)
         const SVG_ESCONDER = `
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 22px; height: 16px;">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http:
 <path d="M15 18L14.278 14.75" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M2 8C2.74835 10.0508 4.10913 11.8219 5.8979 13.0733C7.68667 14.3247 9.81695 14.9959 12 14.9959C14.1831 14.9959 16.3133 14.3247 18.1021 13.0733C19.8909 11.8219 21.2516 10.0508 22 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M20 15L18.274 12.95" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

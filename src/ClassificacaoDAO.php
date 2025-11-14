@@ -3,7 +3,7 @@ require_once "ConexaoBD.php";
 
 class ClassificacaoDAO
 {
-    // Listar todas as classificações
+    
     public static function listar()
     {
         $conexao = ConexaoBD::conectar();
@@ -15,7 +15,6 @@ class ClassificacaoDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Buscar classificação por ID
     public static function buscarPorId($id)
     {
         $conexao = ConexaoBD::conectar();

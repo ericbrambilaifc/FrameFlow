@@ -18,16 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     
-    // Verifica se já é favorito
     $isFavorito = FavoritoDAO::isFavorito($usuario_id, $serie_id);
     
     if ($isFavorito) {
-        // Remove dos favoritos
+        
         $resultado = FavoritoDAO::remover($usuario_id, $serie_id);
         $mensagem = 'Removido dos favoritos!';
         $acao = 'removido';
     } else {
-        // Adiciona aos favoritos
+        
         $resultado = FavoritoDAO::adicionar($usuario_id, $serie_id);
         $mensagem = 'Adicionado aos favoritos!';
         $acao = 'adicionado';

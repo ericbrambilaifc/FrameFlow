@@ -3,7 +3,7 @@ require_once "ConexaoBD.php";
 
 class SerieDao
 {
-    // Cadastrar nova série (com classificação e gênero)
+    
     public static function inserir($dados)
     {
         $conexao = ConexaoBD::conectar();
@@ -19,7 +19,6 @@ class SerieDao
         return $stmt->execute();
     }
 
-    // Listar todas as séries
     public static function listar()
     {
         $conexao = ConexaoBD::conectar();
@@ -42,7 +41,6 @@ class SerieDao
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Buscar série por ID
     public static function buscarPorId($id)
     {
         $conexao = ConexaoBD::conectar();
@@ -66,7 +64,6 @@ class SerieDao
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Buscar séries por título e filtros
     public static function buscar($termo, $genero_id = null, $classificacao_id = null)
     {
         $conexao = ConexaoBD::conectar();
@@ -84,12 +81,10 @@ class SerieDao
                 LEFT JOIN generos g ON s.genero_id = g.id
                 WHERE s.titulo LIKE :termo";
 
-        // Adicionar filtro de gênero se fornecido
         if ($genero_id !== null && $genero_id != '') {
             $sql .= " AND s.genero_id = :genero_id";
         }
 
-        // Adicionar filtro de classificação se fornecido
         if ($classificacao_id !== null && $classificacao_id != '') {
             $sql .= " AND s.classificacao_id = :classificacao_id";
         }

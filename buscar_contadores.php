@@ -7,7 +7,6 @@ header('Cache-Control: no-cache, must-revalidate');
 
 $usuario_id = isset($_GET['usuario_id']) ? (int)$_GET['usuario_id'] : null;
 
-// Validação do ID
 if (!$usuario_id || $usuario_id <= 0) {
     echo json_encode([
         'sucesso' => false,
@@ -17,7 +16,7 @@ if (!$usuario_id || $usuario_id <= 0) {
 }
 
 try {
-    // Busca os contadores
+    
     $total_seguidores = SeguidorDAO::contarSeguidores($usuario_id);
     $total_seguindo = SeguidorDAO::contarSeguindo($usuario_id);
 

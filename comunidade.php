@@ -2,13 +2,10 @@
 session_start();
 require_once('src/UsuarioDAO.php');
 
-// Buscar ranking de avaliadores
 $rankingAvaliacoes = UsuarioDAO::obterRankingAvaliacoes();
 
-// Buscar ranking de jogadores
 $rankingJogadores = UsuarioDAO::obterRankingJogadores();
 
-// Informações do usuário logado
 $usuario_logado = null;
 $foto_perfil_logado = null;
 
@@ -30,7 +27,7 @@ if (isset($_SESSION['usuario_id'])) {
 
 <body>
     <div class="container-comunidade">
-        <!-- Header -->
+        
         <div class="comunidade-header">
             <?php if ($usuario_logado): ?>
                 <div class="perfil-usuario">
@@ -50,7 +47,7 @@ if (isset($_SESSION['usuario_id'])) {
             <?php endif; ?>
 
             <a href="explorar.php" class="btn-voltar">
-                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http:
                     <path
                         d="M0.649902 12.6499C0.649902 19.2773 6.02248 24.6499 12.6499 24.6499C19.2773 24.6499 24.6499 19.2773 24.6499 12.6499C24.6499 6.02249 19.2773 0.649902 12.6499 0.649902C6.02248 0.649903 0.649902 6.02249 0.649902 12.6499Z"
                         stroke="#6A53B8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -63,7 +60,6 @@ if (isset($_SESSION['usuario_id'])) {
             </a>
         </div>
 
-        <!-- Título -->
         <div class="titulo-secao">
             <svg width="50" height="50" viewBox="0 0 24 24" fill="#6A53B8">
                 <path
@@ -72,7 +68,6 @@ if (isset($_SESSION['usuario_id'])) {
             <h1>Comunidade FrameFlow</h1>
         </div>
 
-        <!-- Toggle Ranking -->
         <div class="toggle-ranking">
             <button class="toggle-btn active" id="btnAvaliacoes" onclick="alternarRanking('avaliacoes')">
                 ⭐ Maiores Avaliadores
@@ -82,12 +77,11 @@ if (isset($_SESSION['usuario_id'])) {
             </button>
         </div>
 
-        <!-- RANKING DE AVALIADORES -->
         <div class="ranking-section active" id="rankingAvaliacoes">
-            <!-- Pódio -->
+            
             <?php if (count($rankingAvaliacoes) >= 3): ?>
                 <div class="podio">
-                    <!-- 2º Lugar -->
+                    
                     <div class="posicao posicao-2">
                         <div class="avatar-podio">
                             <?php if ($rankingAvaliacoes[1]['foto_perfil']): ?>
@@ -107,7 +101,6 @@ if (isset($_SESSION['usuario_id'])) {
                         <p class="total-avaliacoes"><?php echo $rankingAvaliacoes[1]['total_avaliacoes']; ?> avaliações</p>
                     </div>
 
-                    <!-- 1º Lugar -->
                     <div class="posicao posicao-1">
                         <div class="avatar-podio">
                             <?php if ($rankingAvaliacoes[0]['foto_perfil']): ?>
@@ -127,7 +120,6 @@ if (isset($_SESSION['usuario_id'])) {
                         <p class="total-avaliacoes"><?php echo $rankingAvaliacoes[0]['total_avaliacoes']; ?> avaliações</p>
                     </div>
 
-                    <!-- 3º Lugar -->
                     <div class="posicao posicao-3">
                         <div class="avatar-podio">
                             <?php if ($rankingAvaliacoes[2]['foto_perfil']): ?>
@@ -149,7 +141,6 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
             <?php endif; ?>
 
-            <!-- Demais Colocados -->
             <?php if (count($rankingAvaliacoes) > 3): ?>
                 <div class="lista-demais">
                     <?php for ($i = 3; $i < count($rankingAvaliacoes); $i++): ?>
@@ -167,12 +158,11 @@ if (isset($_SESSION['usuario_id'])) {
             <?php endif; ?>
         </div>
 
-        <!-- RANKING DE JOGADORES -->
         <div class="ranking-section" id="rankingJogadores">
             <?php if (count($rankingJogadores) >= 3): ?>
-                <!-- Pódio Jogadores -->
+                
                 <div class="podio">
-                    <!-- 2º Lugar -->
+                    
                     <div class="posicao posicao-2">
                         <div class="avatar-podio">
                             <?php if ($rankingJogadores[1]['foto_perfil']): ?>
@@ -196,7 +186,6 @@ if (isset($_SESSION['usuario_id'])) {
                         </div>
                     </div>
 
-                    <!-- 1º Lugar -->
                     <div class="posicao posicao-1">
                         <div class="avatar-podio">
                             <?php if ($rankingJogadores[0]['foto_perfil']): ?>
@@ -220,7 +209,6 @@ if (isset($_SESSION['usuario_id'])) {
                         </div>
                     </div>
 
-                    <!-- 3º Lugar -->
                     <div class="posicao posicao-3">
                         <div class="avatar-podio">
                             <?php if ($rankingJogadores[2]['foto_perfil']): ?>
@@ -245,7 +233,6 @@ if (isset($_SESSION['usuario_id'])) {
                     </div>
                 </div>
 
-                <!-- Demais Colocados Jogadores -->
                 <?php if (count($rankingJogadores) > 3): ?>
                     <div class="lista-demais">
                         <?php for ($i = 3; $i < count($rankingJogadores); $i++): ?>
@@ -283,11 +270,10 @@ if (isset($_SESSION['usuario_id'])) {
 
     <script>
         function alternarRanking(tipo) {
-            // Alternar botões
+            
             const btnAvaliacoes = document.getElementById('btnAvaliacoes');
             const btnJogadores = document.getElementById('btnJogadores');
 
-            // Alternar seções
             const rankingAvaliacoes = document.getElementById('rankingAvaliacoes');
             const rankingJogadores = document.getElementById('rankingJogadores');
 

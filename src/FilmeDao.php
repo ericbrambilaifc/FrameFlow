@@ -18,7 +18,6 @@ class FilmeDAO
         $idclassificacao = $dados['idclassificacao'];
         $detalhes = $dados['detalhes'];
       
-
         $sql = "INSERT INTO Filme (titulo, diretor, elenco, ano, oscar, imagem, idcategoria, idclassificacao, detalhes) 
                 VALUES (:titulo, :diretor, :elenco, :ano, :oscar, :imagem, :idcategoria, :idclassificacao, :detalhes )";
 
@@ -33,7 +32,6 @@ class FilmeDAO
         $stmt->bindParam(':idcategoria', $idcategoria);
         $stmt->bindParam(':idclassificacao', $idclassificacao);
         $stmt->bindParam(':detalhes', $detalhes);
-
 
         $stmt->execute();
     }

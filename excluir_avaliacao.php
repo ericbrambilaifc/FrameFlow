@@ -2,7 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Você precisa estar logado.']);
     exit;
@@ -10,8 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 require_once('src/AvaliacaoDAO.php');
 
-// Recebe os dados JSON
-$dados = json_decode(file_get_contents('php://input'), true);
+$dados = json_decode(file_get_contents('php:
 
 if (!isset($dados['avaliacao_id'])) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'ID da avaliação não informado.']);
@@ -22,7 +20,7 @@ $avaliacao_id = (int) $dados['avaliacao_id'];
 $usuario_id = $_SESSION['usuario_id'];
 
 try {
-    // Verifica se a avaliação existe e pertence ao usuário
+    
     $avaliacao = AvaliacaoDAO::obterPorId($avaliacao_id);
     
     if (!$avaliacao) {
@@ -35,7 +33,6 @@ try {
         exit;
     }
     
-    // Exclui a avaliação
     $sucesso = AvaliacaoDAO::deletarPorId($avaliacao_id);
     
     if ($sucesso) {

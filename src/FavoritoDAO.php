@@ -3,7 +3,6 @@ require_once('ConexaoBD.php');
 
 class FavoritoDAO {
     
-    // Adicionar série aos favoritos
     public static function adicionar($usuario_id, $serie_id) {
         try {
             $conexao = ConexaoBD::conectar();
@@ -18,7 +17,6 @@ class FavoritoDAO {
         }
     }
     
-    // Remover série dos favoritos
     public static function remover($usuario_id, $serie_id) {
         try {
             $conexao = ConexaoBD::conectar();
@@ -33,7 +31,6 @@ class FavoritoDAO {
         }
     }
     
-    // Verificar se série está nos favoritos
     public static function isFavorito($usuario_id, $serie_id) {
         try {
             $conexao = ConexaoBD::conectar();
@@ -50,7 +47,6 @@ class FavoritoDAO {
         }
     }
     
-    // Listar todos os favoritos de um usuário
     public static function listarPorUsuario($usuario_id) {
         try {
             $conexao = ConexaoBD::conectar();
@@ -69,7 +65,6 @@ class FavoritoDAO {
         }
     }
     
-    // Contar favoritos de um usuário
     public static function contarPorUsuario($usuario_id) {
         try {
             $conexao = ConexaoBD::conectar();
