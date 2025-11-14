@@ -209,6 +209,8 @@ if (isset($_SESSION['usuario_id'])) {
                         </div>
                     </div>
 
+                    
+
                     <div class="posicao posicao-3">
                         <div class="avatar-podio">
                             <?php if ($rankingJogadores[2]['foto_perfil']): ?>
